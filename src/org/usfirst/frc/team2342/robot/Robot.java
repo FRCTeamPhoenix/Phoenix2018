@@ -8,22 +8,22 @@ import edu.wpi.first.wpilibj.SampleRobot;
  */
 public class Robot extends SampleRobot {
 
-	public Robot() {
-		
-	}
+    public Robot() {
 
-	@Override
-	public void operatorControl() {
-		
-	}
-	
-	@Override
-	public void autonomous() {
-		
-	}
-	
-	@Override
-	public void test() {
-		
-	}
+    }
+
+    @Override
+    public void operatorControl() {
+
+    }
+
+    @Override
+    public void autonomous() {
+
+    }
+
+    @Override
+    public void test() {
+
+    }
 }

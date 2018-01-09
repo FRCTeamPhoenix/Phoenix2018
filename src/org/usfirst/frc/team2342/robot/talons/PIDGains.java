@@ -2,70 +2,68 @@ package org.usfirst.frc.team2342.robot.talons;
 
 public class PIDGains {
 
-	private double p;
-	private double i;
-	private double d;
-	private double ff;
-	private double rr;
-	private int izone;
-	
-	public PIDGains(double p, double i, double d, double ff, double rr, int izone) {
-		this.p = p;
-		this.i = i;
-		this.d = d;
-		this.ff = ff;
-		this.rr = rr;
-		this.izone = izone;
-	}
+    private double p;
+    private double i;
+    private double d;
+    private double ff;
+    private double rr;
+    private int izone;
 
-	public double getP() {
-		return p;
-	}
+    public PIDGains(double p, double i, double d, double ff, double rr, int izone) {
+        this.p = p;
+        this.i = i;
+        this.d = d;
+        this.ff = ff;
+        this.rr = rr;
+        this.izone = izone;
+    }
 
-	public void setP(double p) {
-		this.p = p;
-	}
+    public double getP() {
+        return p;
+    }
 
-	public double getI() {
-		return i;
-	}
+    public void setP(double p) {
+        this.p = p;
+    }
 
-	public void setI(double i) {
-		this.i = i;
-	}
+    public double getI() {
+        return i;
+    }
 
-	public double getD() {
-		return d;
-	}
+    public void setI(double i) {
+        this.i = i;
+    }
 
-	public void setD(double d) {
-		this.d = d;
-	}
+    public double getD() {
+        return d;
+    }
 
-	public double getFf() {
-		return ff;
-	}
+    public void setD(double d) {
+        this.d = d;
+    }
 
-	public void setFf(double ff) {
-		this.ff = ff;
-	}
+    public double getFf() {
+        return ff;
+    }
 
-	public double getRr() {
-		return rr;
-	}
+    public void setFf(double ff) {
+        this.ff = ff;
+    }
 
-	public void setRr(double rr) {
-		this.rr = rr;
-	}
+    public double getRr() {
+        return rr;
+    }
 
-	public int getIzone() {
-		return izone;
-	}
+    public void setRr(double rr) {
+        this.rr = rr;
+    }
 
-	public void setIzone(int izone) {
-		this.izone = izone;
-	}
-	
-	
-	
+    public int getIzone() {
+        return izone;
+    }
+
+    public void setIzone(int izone) {
+        this.izone = izone;
+    }
+
 }

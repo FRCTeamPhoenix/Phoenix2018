@@ -3,7 +3,17 @@ package org.usfirst.frc.team2342.robot.subsystems;
 import org.usfirst.frc.team2342.loops.Looper;
 
 public class WestCoastTankDrive extends Subsystem {
-
+    
+    private static WestCoastTankDrive mInstance = new WestCoastTankDrive();
+    
+    public static WestCoastTankDrive getInstance() {
+        return mInstance;
+    }
+    
+    private WestCoastTankDrive() {
+        // TODO initialization here
+    }
+    
     @Override
     public void outputToSmartDashboard() {
         // TODO Auto-generated method stub

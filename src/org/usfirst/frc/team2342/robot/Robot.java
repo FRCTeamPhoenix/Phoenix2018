@@ -1,7 +1,5 @@
 package org.usfirst.frc.team2342.robot;
 
-import org.usfirst.frc.team2342.util.NetworkTableInterface;
-
 import edu.wpi.first.wpilibj.SampleRobot;
 
 /**
@@ -16,9 +14,7 @@ public class Robot extends SampleRobot {
 
     @Override
     public void operatorControl() {
-    	NetworkTableInterface.updateTable("test", "firstVar", "sup");
-    	NetworkTableInterface.updateTable("test/nextlevel", "firstVar", 1);
-    	NetworkTableInterface.updateTable("test/nextlevel/wow", "firstVar", "sup");
+
     }
 
     @Override
@@ -30,5 +26,4 @@ public class Robot extends SampleRobot {
     public void test() {
 
     }
- 
 }

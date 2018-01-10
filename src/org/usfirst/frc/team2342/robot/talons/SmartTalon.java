@@ -84,7 +84,8 @@ public class SmartTalon extends WPI_TalonSRX {
             mode = TalonControlMode.Speed.getValue();
         }
 
-        configMaxOutputVoltage(12);
+        configPeakOutputForward(speed, 0);
+        configPeakOutputReverse(speed, 0);
 
         if (!inverted)
             setSetpoint(speed);
@@ -108,7 +109,8 @@ public class SmartTalon extends WPI_TalonSRX {
             set(speed);
         }
 
-        configMaxOutputVoltage(12);
+        configPeakOutputForward(speed, 0);
+        configPeakOutputReverse(speed, 0);
         
     }
 
@@ -116,25 +118,29 @@ public class SmartTalon extends WPI_TalonSRX {
      * Go a specific distance, using distance PID gains
      */
     public void goDistance(double distance, double speed) {
-        speed = (speed > 1) ? 1 : speed;
+        
+    	speed = (speed > 1) ? 1 : speed;
         speed = (speed < -1) ? -1 : speed;
+        
+        double setPoint = getSelectedSensorPosition(0) + distance;
 
-        double setPoint = getPosition() + distance;
-
-        if (mode != TalonControlMode.Position.getValue()) {
+        if (inverted)
+            setPoint *= -1;
+        
+        if (!mode.equals(ControlMode.Position)) {
             setToDistance();
-            changeControlMode(TalonControlMode.Position);
-            mode = TalonControlMode.Position.getValue();
+            set(ControlMode.Position, setPoint);
+            mode = ControlMode.Position;
         }
-
-        configMaxOutputVoltage(12 * speed);
-
-        if (!inverted)
-            setSetpoint(setPoint);
         else
-            setSetpoint(-setPoint);
+        	set(setPoint);
+        
+       
+        configPeakOutputForward(speed, 0);
+        configPeakOutputReverse(speed, 0);
+        
     }
-
+    
     public boolean isInverted() {
         return inverted;
     }

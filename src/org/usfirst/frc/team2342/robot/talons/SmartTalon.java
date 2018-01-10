@@ -35,6 +35,7 @@ public class SmartTalon extends WPI_TalonSRX {
     public SmartTalon(int deviceNumber, boolean inverted, int initialMode, FeedbackDevice device) {
         super(deviceNumber);
         this.inverted = inverted;
+        // TODO do mode setting stuff
         configSelectedFeedbackSensor(device, 0, 0);
     }
     

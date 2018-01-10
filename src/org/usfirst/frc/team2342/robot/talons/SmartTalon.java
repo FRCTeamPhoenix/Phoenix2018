@@ -94,6 +94,9 @@ public class SmartTalon extends WPI_TalonSRX {
             set(ControlMode.PercentOutput, speed);
             mode = ControlMode.PercentOutput.value;
         }
+        else {
+            set(speed);
+        }
 
         configMaxOutputVoltage(12);
         

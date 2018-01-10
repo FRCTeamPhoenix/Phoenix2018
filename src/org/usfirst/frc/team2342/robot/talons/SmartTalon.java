@@ -35,6 +35,10 @@ public class SmartTalon extends WPI_TalonSRX {
     public SmartTalon(int deviceNumber, boolean inverted, int initialMode, FeedbackDevice device) {
         super(deviceNumber);
         this.inverted = inverted;
+<<<<<<< HEAD
+=======
+        // TODO do mode setting stuff
+>>>>>>> parent of ddbc80b... Fix some initialization things and mode setting stuff in SmartTalon
         configSelectedFeedbackSensor(device, 0, 0);
     }
     
@@ -92,6 +96,12 @@ public class SmartTalon extends WPI_TalonSRX {
         if (mode != ControlMode.PercentOutput.value) {
             set(ControlMode.PercentOutput, speed);
             mode = ControlMode.PercentOutput.value;
+<<<<<<< HEAD
+=======
+        }
+        else {
+            set(speed);
+>>>>>>> parent of ddbc80b... Fix some initialization things and mode setting stuff in SmartTalon
         }
 
         configMaxOutputVoltage(12);

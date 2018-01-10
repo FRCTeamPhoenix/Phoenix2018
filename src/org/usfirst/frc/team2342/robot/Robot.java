@@ -1,5 +1,7 @@
 package org.usfirst.frc.team2342.robot;
 
+import org.usfirst.frc.team2342.robot.talons.SmartTalon;
+
 import edu.wpi.first.wpilibj.SampleRobot;
 
 /**
@@ -8,6 +10,8 @@ import edu.wpi.first.wpilibj.SampleRobot;
  */
 public class Robot extends SampleRobot {
 
+	SmartTalon talon = new SmartTalon(1);
+	
     public Robot() {
 
     }
@@ -15,6 +19,11 @@ public class Robot extends SampleRobot {
     @Override
     public void operatorControl() {
 
+    	while(isEnabled()){
+    		talon.goVoltage(0.3);
+    	}
+    	talon.goVoltage(0);
+    	
     }
 
     @Override
@@ -25,5 +34,6 @@ public class Robot extends SampleRobot {
     @Override
     public void test() {
 
+    	
     }
 }

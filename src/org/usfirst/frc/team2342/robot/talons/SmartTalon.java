@@ -78,19 +78,19 @@ public class SmartTalon extends WPI_TalonSRX {
 
         speed = (speed > 0) ? speed * maxForwardSpeed : speed * maxReverseSpeed;
 
-        if (mode != TalonControlMode.Speed.getValue()) {
+        if (!ControlMode.Velocity.equals(mode)) {
             setToVelocity();
-            changeControlMode(TalonControlMode.Speed);
-            mode = TalonControlMode.Speed.getValue();
+            set(ControlMode.Velocity,speed);
+            mode = ControlMode.Velocity;
         }
 
         configPeakOutputForward(speed, 0);
         configPeakOutputReverse(speed, 0);
 
         if (!inverted)
-            setSetpoint(speed);
+            set(speed);
         else
-            setSetpoint(-speed);
+            set(-speed);
     }
 
     /*

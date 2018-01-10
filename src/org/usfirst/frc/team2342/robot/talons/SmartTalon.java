@@ -13,35 +13,44 @@ public class SmartTalon extends WPI_TalonSRX {
     // maximum forward and reverse speeds
     private double maxForwardSpeed;
     private double maxReverseSpeed;
-
-    /*
-     * current mode, offset by MODE_OFFSET 0: VOLTAGE MODE 1: POSITION MODE 2:
-     * VELOCITY MODE
-     */
-    private int mode;
+    
+    // current mode
+    private ControlMode mode;
     
     // PID gains for velocity and distance
     private PIDGains velocityGains;
     private PIDGains distanceGains;
     
     public SmartTalon(int deviceNumber) {
-        this(deviceNumber, false, 0);
+        this(deviceNumber, false, ControlMode.Current);
     }
     
-    public SmartTalon(int deviceNumber, boolean inverted, int initialMode) {
+    public SmartTalon(int deviceNumber, boolean inverted, ControlMode initialMode) {
         this(deviceNumber, inverted, initialMode, FeedbackDevice.QuadEncoder);
     }
     
-    public SmartTalon(int deviceNumber, boolean inverted, int initialMode, FeedbackDevice device) {
+    public SmartTalon(int deviceNumber, boolean inverted, ControlMode initialMode, FeedbackDevice device) {
         super(deviceNumber);
         this.inverted = inverted;
-<<<<<<< HEAD
-=======
-        // TODO do mode setting stuff
->>>>>>> parent of ddbc80b... Fix some initialization things and mode setting stuff in SmartTalon
+        
+        maxForwardSpeed = 1.0;
+        maxReverseSpeed = 1.0;
+
+        velocityGains = new PIDGains(0, 0, 0, 0, 0, 0);
+        distanceGains = new PIDGains(0, 0, 0, 0, 0, 0);
+        mode = initialMode;
+
+        if (ControlMode.Current.equals(initialMode))
+            setToVelocity();
+        else if (ControlMode.Position.equals(initialMode))
+            setToDistance();
+        else if (ControlMode.Velocity.equals(initialMode))
+            setToVelocity();
         configSelectedFeedbackSensor(device, 0, 0);
     }
     
+    
+    // TODO first argument? slotidx?
     private void setToVelocity() {
         config_kP(0, velocityGains.getP(), 0);
         config_kI(0, velocityGains.getI(), 0);
@@ -91,15 +100,12 @@ public class SmartTalon extends WPI_TalonSRX {
         speed = (speed < -1) ? -1 : speed;
         speed = (inverted) ? -speed : speed;
 
-        if (mode != ControlMode.PercentOutput.value) {
+        if (!ControlMode.PercentOutput.equals(mode)) {
             set(ControlMode.PercentOutput, speed);
-            mode = ControlMode.PercentOutput.value;
-<<<<<<< HEAD
-=======
+            mode = ControlMode.PercentOutput;
         }
         else {
             set(speed);
->>>>>>> parent of ddbc80b... Fix some initialization things and mode setting stuff in SmartTalon
         }
 
         configMaxOutputVoltage(12);

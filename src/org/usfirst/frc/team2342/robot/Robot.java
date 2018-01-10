@@ -1,5 +1,7 @@
 package org.usfirst.frc.team2342.robot;
 
+import org.usfirst.frc.team2342.loops.Looper;
+
 import edu.wpi.first.wpilibj.SampleRobot;
 
 /**
@@ -7,9 +9,14 @@ import edu.wpi.first.wpilibj.SampleRobot;
  * class.
  */
 public class Robot extends SampleRobot {
-
+	private Looper looper;
+	private LidarLoop lidarloop;
+	
     public Robot() {
-
+    	looper = new Looper();
+    	lidarloop = new LidarLoop();
+    	looper.register(lidarloop);
+    	looper.start();
     }
 
     @Override

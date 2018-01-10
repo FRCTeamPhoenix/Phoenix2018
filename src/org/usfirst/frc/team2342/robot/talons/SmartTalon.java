@@ -42,8 +42,6 @@ public class SmartTalon extends WPI_TalonSRX {
         configSelectedFeedbackSensor(device, 0, 0);
     }
     
-    
-    // TODO first argument? slotidx?
     private void setToVelocity() {
         config_kP(0, velocityGains.getP(), 0);
         config_kI(0, velocityGains.getI(), 0);

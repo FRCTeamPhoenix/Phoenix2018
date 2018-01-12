@@ -8,7 +8,8 @@ public class NetworkTableInterface {
 	
 	//use slashes to seperate subtables sort of like a file system
 	
-	public static void updateTable(String subtablePath, String varName, double value){
+	@SuppressWarnings("deprecation")
+	public static void setValue(String subtablePath, String varName, double value){
 		String[] tables = splitString(subtablePath);
 		NetworkTable table = NetworkTable.getTable(tables[0]);
 		ITable subtable = null;
@@ -24,7 +25,8 @@ public class NetworkTableInterface {
 		}
 	}
 	
-	public static void updateTable(String subtablePath, String varName, String value){
+	@SuppressWarnings("deprecation")
+	public static void setValue(String subtablePath, String varName, String value){
 		String[] tables = splitString(subtablePath);
 		NetworkTable table = NetworkTable.getTable(tables[0]);
 		ITable subtable = null;
@@ -37,6 +39,40 @@ public class NetworkTableInterface {
 			table.putString(varName, value);
 		}else{
 			subtable.putString(varName, value);
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static double getDouble(String subtablePath, String varName){
+		String[] tables = splitString(subtablePath);
+		NetworkTable table = NetworkTable.getTable(tables[0]);
+		ITable subtable = null;
+		if(tables.length > 1)
+			subtable = table.getSubTable(tables[1]);
+		for(int i = 2; i < tables.length; i++){
+			subtable = subtable.getSubTable(tables[i]);
+		}
+		if(tables.length == 1){
+			return table.getDouble(varName, 0.0);
+		}else{
+			return subtable.getDouble(varName, 0.0);
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static String getString(String subtablePath, String varName){
+		String[] tables = splitString(subtablePath);
+		NetworkTable table = NetworkTable.getTable(tables[0]);
+		ITable subtable = null;
+		if(tables.length > 1)
+			subtable = table.getSubTable(tables[1]);
+		for(int i = 2; i < tables.length; i++){
+			subtable = subtable.getSubTable(tables[i]);
+		}
+		if(tables.length == 1){
+			return table.getString(varName, "NULL");
+		}else{
+			return subtable.getString(varName, "NULL");
 		}
 	}
 	

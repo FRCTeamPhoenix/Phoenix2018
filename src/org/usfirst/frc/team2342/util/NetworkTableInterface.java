@@ -42,17 +42,14 @@ public class NetworkTableInterface {
 	
 	private static String[] splitString(String target){
 		String[] tables = {"one"};
-		System.out.println(target);
-		if(target.contains("(/\\)")){
-			tables = target.split("(/\\)");
+		if(target.contains("/")){
+			tables = target.split("/");
+		}else if(target.contains("\\")){
+			//have to use four slashes for some reason
+			tables = target.split("\\\\");
 		}else{
 			tables[0] = target;
 		}
-		String i = "";
-		for(int t = 0; t<tables.length; t++){
-			i+=tables[t];
-		}
-		SmartDashboard.putString("DB/String 0", i);
 		return tables;
 	}
 	

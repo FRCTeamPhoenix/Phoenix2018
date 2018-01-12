@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2342.util;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.tables.ITable;
 
 public class NetworkTableInterface {
@@ -40,12 +41,18 @@ public class NetworkTableInterface {
 	}
 	
 	private static String[] splitString(String target){
-		String[] tables = null;
+		String[] tables = {"one"};
+		System.out.println(target);
 		if(target.contains("(/\\)")){
 			tables = target.split("(/\\)");
 		}else{
 			tables[0] = target;
 		}
+		String i = "";
+		for(int t = 0; t<tables.length; t++){
+			i+=tables[t];
+		}
+		SmartDashboard.putString("DB/String 0", i);
 		return tables;
 	}
 	

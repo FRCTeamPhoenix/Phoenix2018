@@ -1,6 +1,11 @@
 package org.usfirst.frc.team2342.robot;
 
+<<<<<<< HEAD
 import edu.wpi.first.wpilibj.Joystick;
+=======
+import org.usfirst.frc.team2342.util.NetworkTableInterface;
+
+>>>>>>> refs/remotes/origin/develop
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -35,11 +40,16 @@ stick = new Joystick(0);
 
     @Override
     public void autonomous() {
-
+    	
     }
 
     @Override
     public void test() {
-
+    	while(isEnabled()){
+	    	NetworkTableInterface.setValue("test", "firstVar", "sup");
+	    	NetworkTableInterface.setValue("test/nextlevel", "firstVar", 1);
+	    	NetworkTableInterface.setValue("test/nextlevel/wow", "firstVar", "sup");
+	    	SmartDashboard.putString("DB/String 1", NetworkTableInterface.getString("test/nextlevel/wow", "firstVar"));
+    	}
     }
 }

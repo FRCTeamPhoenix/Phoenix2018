@@ -1,87 +1,72 @@
 package org.usfirst.frc.team2342.robot.talons;
 
-import com.ctre.CANTalon;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-/**
- * General wrapper class for CANTalons. Supports voltage, velocity, and position
- * talon modes.
- * 
- * @author cooli
- *
- */
-public class SmartTalon extends CANTalon {
-
-    /*
-     * translates between TalonControlMode enum and user mode input via:
-     * TalonControlMode mode = user input mode + MODE_OFFSET
-     */
-    private static final int MODE_OFFSET = 4;
-
+public class SmartTalon extends WPI_TalonSRX {
+    
     // put a minus sign in front of all setpoints,
     // used for reversed-polarity talons and devices
     private boolean inverted;
-
+    
     // maximum forward and reverse speeds
     private double maxForwardSpeed;
     private double maxReverseSpeed;
-
-    /*
-     * current mode, offset by MODE_OFFSET 0: VOLTAGE MODE 1: POSITION MODE 2:
-     * VELOCITY MODE
-     */
-    private int mode;
-
+    
+    // current mode
+    private ControlMode mode;
+    
     // PID gains for velocity and distance
     private PIDGains velocityGains;
     private PIDGains distanceGains;
-
+    
     public SmartTalon(int deviceNumber) {
-        this(deviceNumber, false, 0);
+        this(deviceNumber, false, ControlMode.Current);
     }
-
-    public SmartTalon(int deviceNumber, boolean inverted, int initialMode) {
+    
+    public SmartTalon(int deviceNumber, boolean inverted, ControlMode initialMode) {
+        this(deviceNumber, inverted, initialMode, FeedbackDevice.QuadEncoder);
+    }
+    
+    public SmartTalon(int deviceNumber, boolean inverted, ControlMode initialMode, FeedbackDevice device) {
         super(deviceNumber);
         this.inverted = inverted;
-
+        
         maxForwardSpeed = 1.0;
         maxReverseSpeed = 1.0;
 
         velocityGains = new PIDGains(0, 0, 0, 0, 0, 0);
         distanceGains = new PIDGains(0, 0, 0, 0, 0, 0);
-        mode = initialMode + MODE_OFFSET;
+        mode = initialMode;
 
-        if (initialMode == 0)
+        if (ControlMode.Current.equals(initialMode))
             setToVelocity();
-        else if (initialMode == 1)
+        else if (ControlMode.Position.equals(initialMode))
             setToDistance();
-        else if (initialMode == 2)
+        else if (ControlMode.Velocity.equals(initialMode))
             setToVelocity();
-
-        setFeedbackDevice(FeedbackDevice.QuadEncoder);
+        configSelectedFeedbackSensor(device, 0, 0);
     }
-
-    public SmartTalon(int deviceNumber, boolean inverted, int initialMode, FeedbackDevice device) {
-        this(deviceNumber, inverted, initialMode);
-
-        setFeedbackDevice(device);
-    }
-
+    
+    
+    // TODO first argument? slotidx?
     private void setToVelocity() {
-        setP(velocityGains.getP());
-        setI(velocityGains.getI());
-        setD(velocityGains.getD());
-        setIZone(velocityGains.getIzone());
-        setF(velocityGains.getFf());
-        setVoltageRampRate(velocityGains.getRr());
+        config_kP(0, velocityGains.getP(), 0);
+        config_kI(0, velocityGains.getI(), 0);
+        config_kD(0, velocityGains.getD(), 0);
+        config_IntegralZone(0, velocityGains.getIzone(), 0);
+        config_kF(0, velocityGains.getFf(), 0);
+        configOpenloopRamp(velocityGains.getRr(), 0);
     }
 
     private void setToDistance() {
-        setP(distanceGains.getP());
-        setI(distanceGains.getI());
-        setD(distanceGains.getD());
-        setIZone(distanceGains.getIzone());
-        setF(distanceGains.getFf());
-        setVoltageRampRate(distanceGains.getRr());
+        config_kP(0, distanceGains.getP(), 0);
+        config_kI(0, distanceGains.getI(), 0);
+        config_kD(0, distanceGains.getD(), 0);
+        config_IntegralZone(0, distanceGains.getIzone(), 0);
+        config_kF(0, distanceGains.getFf(), 0);
+        configOpenloopRamp(distanceGains.getRr(), 0);
     }
 
     /*
@@ -93,18 +78,19 @@ public class SmartTalon extends CANTalon {
 
         speed = (speed > 0) ? speed * maxForwardSpeed : speed * maxReverseSpeed;
 
-        if (mode != TalonControlMode.Speed.getValue()) {
+        if (!ControlMode.Velocity.equals(mode)) {
             setToVelocity();
-            changeControlMode(TalonControlMode.Speed);
-            mode = TalonControlMode.Speed.getValue();
+            set(ControlMode.Velocity,speed);
+            mode = ControlMode.Velocity;
         }
 
-        configMaxOutputVoltage(12);
+        configPeakOutputForward(speed, 0);
+        configPeakOutputReverse(speed, 0);
 
         if (!inverted)
-            setSetpoint(speed);
+            set(speed);
         else
-            setSetpoint(-speed);
+            set(-speed);
     }
 
     /*
@@ -113,43 +99,48 @@ public class SmartTalon extends CANTalon {
     public void goVoltage(double speed) {
         speed = (speed > 1) ? 1 : speed;
         speed = (speed < -1) ? -1 : speed;
+        speed = (inverted) ? -speed : speed;
 
-        if (mode != TalonControlMode.PercentVbus.getValue()) {
-            changeControlMode(TalonControlMode.PercentVbus);
-            mode = TalonControlMode.PercentVbus.getValue();
+        if (!ControlMode.PercentOutput.equals(mode)) {
+            set(ControlMode.PercentOutput, speed);
+            mode = ControlMode.PercentOutput;
+        }
+        else {
+            set(speed);
         }
 
-        configMaxOutputVoltage(12);
-
-        if (inverted)
-            set(-speed);
-        else
-            set(speed);
+        configPeakOutputForward(speed, 0);
+        configPeakOutputReverse(speed, 0);
+        
     }
 
     /*
      * Go a specific distance, using distance PID gains
      */
     public void goDistance(double distance, double speed) {
-        speed = (speed > 1) ? 1 : speed;
+        
+    	speed = (speed > 1) ? 1 : speed;
         speed = (speed < -1) ? -1 : speed;
+        
+        double setPoint = getSelectedSensorPosition(0) + distance;
 
-        double setPoint = getPosition() + distance;
-
-        if (mode != TalonControlMode.Position.getValue()) {
+        if (inverted)
+            setPoint *= -1;
+        
+        if (!mode.equals(ControlMode.Position)) {
             setToDistance();
-            changeControlMode(TalonControlMode.Position);
-            mode = TalonControlMode.Position.getValue();
+            set(ControlMode.Position, setPoint);
+            mode = ControlMode.Position;
         }
-
-        configMaxOutputVoltage(12 * speed);
-
-        if (!inverted)
-            setSetpoint(setPoint);
         else
-            setSetpoint(-setPoint);
+        	set(setPoint);
+        
+       
+        configPeakOutputForward(speed, 0);
+        configPeakOutputReverse(speed, 0);
+        
     }
-
+    
     public boolean isInverted() {
         return inverted;
     }

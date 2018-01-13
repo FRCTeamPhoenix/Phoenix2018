@@ -23,10 +23,10 @@ public class Robot extends SampleRobot {
     @Override
     public void autonomous() {
     	while(isEnabled()){
-	    	SmartDashboard.putString("DB/String 1", "oof");
-	    	NetworkTableInterface.updateTable("test", "firstVar", "sup");
-	    	//NetworkTableInterface.updateTable("test/nextlevel", "firstVar", 1);
-	    	//NetworkTableInterface.updateTable("test/nextlevel/wow", "firstVar", "sup");
+	    	NetworkTableInterface.setValue("test", "firstVar", "sup");
+	    	NetworkTableInterface.setValue("test/nextlevel", "firstVar", 1);
+	    	NetworkTableInterface.setValue("test/nextlevel/wow", "firstVar", "sup");
+	    	SmartDashboard.putString("DB/String 1", NetworkTableInterface.getString("test/nextlevel/wow", "firstVar"));
     	}
     }
 

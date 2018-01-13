@@ -1,11 +1,8 @@
 package org.usfirst.frc.team2342.robot;
 
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj.Joystick;
-=======
 import org.usfirst.frc.team2342.util.NetworkTableInterface;
 
->>>>>>> refs/remotes/origin/develop
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 

@@ -1,4 +1,4 @@
-package org.usfirst.frc.team2342.robot;
+package org.usfirst.frc.team342.robot;
 
 
 import org.usfirst.frc.team2342.robot.talons.SmartTalon;
@@ -37,34 +37,31 @@ PCM = new PCMHandler(5);
     public void operatorControl() {
 
     	double y = joystick1.getY();
-    	double y2 = joystick2.getY();
+    	double y2 = joystick1.getRawAxis(3);
     	double speedv = 0.5;
     	while(isEnabled()){
     		y = joystick1.getY();
-    		y2 = joystick2.getY();
+    		y2 = joystick1.getRawAxis(3);
     		talon1.goVoltage(-speedv*y);
     		talon2.goVoltage(speedv*y2);
     		talon3.goVoltage(-speedv*y);
     		talon4.goVoltage(speedv*y2);
-    	}
-    	talon1.goVoltage(0);
-    	talon2.goVoltage(0);
-    	talon3.goVoltage(0);
-    	talon4.goVoltage(0);
-
+    	
     	//teliopInit
     	
-    	while (isEnabled()) {
-    		//teliopPeriodic
-    	if (joystick1.getRawButton(8)) {
-    		PCM.setHighGear(true);
-    		PCM.setLowGear(false);
+    	
+	    		//teliopPeriodic
+	    	if (joystick1.getRawButton(8)) {
+	    		PCM.setHighGear(true);
+	    		PCM.setLowGear(false);
+	    	}
+	    	else {
+	    		PCM.setHighGear(false);
+	    		PCM.setLowGear(true);
+	    	}
+    	
     	}
-    	else {
-    		PCM.setHighGear(false);
-    		PCM.setLowGear(true);
-    	}
-    	}
+    	
     }
 
     @Override

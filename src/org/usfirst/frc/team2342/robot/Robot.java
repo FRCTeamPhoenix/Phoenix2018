@@ -27,12 +27,7 @@ public class Robot extends SampleRobot {
 
     @Override
     public void test() {
-    	while(isEnabled()){
-	    	NetworkTableInterface.setValue("test", "firstVar", "sup");
-	    	NetworkTableInterface.setValue("test/nextlevel", "firstVar", 1);
-	    	NetworkTableInterface.setValue("test/nextlevel/wow", "firstVar", "sup");
-	    	SmartDashboard.putString("DB/String 1", NetworkTableInterface.getString("test/nextlevel/wow", "firstVar"));
-    	}
+    	NetworkTableInterface.setTalon("talons", 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, "Magic Wizard Googenheimer");
     }
  
 }

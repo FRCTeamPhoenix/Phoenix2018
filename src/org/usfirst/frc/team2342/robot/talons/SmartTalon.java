@@ -40,7 +40,7 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
         maxForwardSpeed = 1.0;
         maxReverseSpeed = 1.0;
 
-        velocityGains = new PIDGains(0, 0, 0, 0, 0, 0);
+        velocityGains = new PIDGains(0, 0, 0, 1, 0, 0);
         distanceGains = new PIDGains(0, 0, 0, 0, 0, 0);
         mode = initialMode;
 

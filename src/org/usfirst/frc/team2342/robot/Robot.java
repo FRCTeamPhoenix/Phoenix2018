@@ -10,6 +10,7 @@ import org.usfirst.frc.team2342.util.NetworkTableInterface;
 
 
 import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -18,44 +19,43 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends SampleRobot {
 
-	Joystick joystick1 = new Joystick(0);
-	Joystick joystick2 = new Joystick(1);
-	SmartTalon talon1 = new SmartTalon(1);
-	SmartTalon talon2 = new SmartTalon(2);
-	SmartTalon talon3 = new SmartTalon(3);
-	SmartTalon talon4 = new SmartTalon(4);
+	Joystick joystickR = new Joystick(1);
+	Joystick joystickL = new Joystick(2);
 	
-
+	SmartTalon talonFR = new SmartTalon(1);
+	SmartTalon talonFL = new SmartTalon(2);
+	SmartTalon talonBR = new SmartTalon(3);
+	SmartTalon talonBL = new SmartTalon(4);
+	
 	PCMHandler PCM;
 
     public Robot() {
-PCM = new PCMHandler(5);
-
+    	PCM = new PCMHandler(5);
     }
 
     @Override
     public void operatorControl() {
 
-    	double y = joystick1.getY();
-    	double y2 = joystick1.getRawAxis(3);
+    	double r = joystickR.getRawAxis(1);
+    	double l = joystickL.getRawAxis(1);
     	double speedv = 0.5;
+    	
     	while(isEnabled()){
-    		y = joystick1.getY();
-    		y2 = joystick1.getRawAxis(3);
-    		talon1.goVoltage(-speedv*y);
-    		talon2.goVoltage(speedv*y2);
-    		talon3.goVoltage(-speedv*y);
-    		talon4.goVoltage(speedv*y2);
+    		r = joystickR.getRawAxis(1);
+    		l = joystickL.getRawAxis(1);
+    		talonFR.goAt(-speedv*r);
+    		talonFL.goAt(speedv*l);
+    		talonBR.goAt(-speedv*r);
+    		talonBL.goAt(speedv*l);
     	
     	//teliopInit
     	
     	
 	    		//teliopPeriodic
-	    	if (joystick1.getRawButton(8)) {
+	    	if (joystickR.getRawButton(8)) {
 	    		PCM.setHighGear(true);
 	    		PCM.setLowGear(false);
-	    	}
-	    	else {
+	    	} else {
 	    		PCM.setHighGear(false);
 	    		PCM.setLowGear(true);
 	    	}
@@ -73,15 +73,17 @@ PCM = new PCMHandler(5);
     public void test() {
     	while(isEnabled()){
 
-    		talon1.goVoltage(0.3);
-    		talon2.goVoltage(-0.3);
-    		talon3.goVoltage(0.3);
-    		talon4.goVoltage(-0.3);
+    		talonFR.goAt(0.3);
+    		talonFL.goAt(-0.3);
+    		talonBR.goAt(0.3);
+    		talonBL.goAt(-0.3);
+    		
+    		
     	
-    	talon1.goVoltage(0);
-    	talon2.goVoltage(0);
-    	talon3.goVoltage(0);
-    	talon4.goVoltage(0);
+    		talonFR.goAt(0);
+    		talonFL.goAt(0);
+    		talonBR.goAt(0);
+    		talonBL.goAt(0);
     	
 
 	    	NetworkTableInterface.setValue("test", "firstVar", "sup");

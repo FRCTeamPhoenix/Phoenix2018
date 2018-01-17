@@ -30,7 +30,7 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
     }
     
     public SmartTalon(int deviceNumber, boolean inverted, ControlMode initialMode) {
-        this(deviceNumber, inverted, initialMode, FeedbackDevice.QuadEncoder);
+        this(deviceNumber, inverted, initialMode, FeedbackDevice.CTRE_MagEncoder_Relative);
     }
     
     public SmartTalon(int deviceNumber, boolean inverted, ControlMode initialMode, FeedbackDevice device) {
@@ -41,7 +41,7 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
         maxReverseSpeed = 1.0;
 
         velocityGains = new PIDGains(0, 0, 0, 0, 0, 0);
-        distanceGains = new PIDGains(0, 0, 0, 0, 0, 0);
+        distanceGains = new PIDGains(0.02, 0.002, 0, 0, 0, 0);
         mode = initialMode;
 
         if (ControlMode.Current.equals(initialMode))

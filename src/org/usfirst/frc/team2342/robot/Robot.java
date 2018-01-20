@@ -89,16 +89,16 @@ public class Robot extends SampleRobot {
     		//talon3.goAt(0.3);
     		//talon4.goAt(-0.3);
     	
-	    	//talon1.goAt(0);
-	    	//talon2.goAt(0);
-	    	//talon3.goAt(0);
-	    	//talon4.goAt(0);
+	    	talon1.goVoltage(-0.4);
+	    	talon2.goVoltage(0.4);
+	    	talon3.goVoltage(-0.4);
+	    	talon4.goVoltage(0.4);
     	
 
-	    	NetworkTableInterface.setValue("test", "firstVar", "sup");
-	    	NetworkTableInterface.setValue("test/nextlevel", "firstVar", 1);
-	    	NetworkTableInterface.setValue("test/nextlevel/wow", "firstVar", "sup");
-	    	SmartDashboard.putString("DB/String 1", NetworkTableInterface.getString("test/nextlevel/wow", "firstVar"));
+	    	//NetworkTableInterface.setValue("test", "firstVar", "sup");
+	    	//NetworkTableInterface.setValue("test/nextlevel", "firstVar", 1);
+	    	//NetworkTableInterface.setValue("test/nextlevel/wow", "firstVar", "sup");
+	    	//SmartDashboard.putString("DB/String 1", NetworkTableInterface.getString("test/nextlevel/wow", "firstVar"));
     	}
 
     }

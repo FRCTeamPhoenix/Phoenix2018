@@ -3,51 +3,35 @@ import java.util.ArrayList;
 public class DriveAction extends Action{
 	
 	private double distance = 0;
-	private double speed = 0;
+	private double angle = 0;
 	
 	private String name;
 	
 	private boolean running;
 	
-	public DriveAction(double distance, double speed, ArrayList<String> dependencies){
+	public DriveAction(double distance, double angle, ArrayList<String> dependencies){
 		
 		super("drive", dependencies);
 		
 		this.distance = distance;
-		this.speed = speed;
-
+		this.angle = angle;
+		
 	}
 	
+	//Start driving a certain distance
 	public void start(){
 		
-		//more stuff might go here in the future
+		//TODO: Drive train: move certain distance at the given angle
 		
-		running = true;
+		super.start();
 		
 	}
 	
-	public void run(ArrayList<Action> actions){
-		
-		if(!running && dependenceFufilled(actions)){
-			
-			start();
-		}
-		
-		if(running){
-			
-			//TODO: Drive train move certain distance needs to be implemented
-			
-		}
-	}
-	
+	//Stop driving
 	public void stop(){
 		
-		running = false;
-	}
-	
-	public void reset(){
+		//TODO: Drive train stop
 		
-		stop();
-		super.reset();
+		super.stop();
 	}
 }

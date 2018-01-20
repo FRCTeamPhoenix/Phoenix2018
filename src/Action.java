@@ -45,23 +45,42 @@ public class Action {
 		return (ammountFulfilled == dependencies.size());
 	}
 	
-	public void start(){}
+	//
+	public void start(){
+		
+		running = true;
+	}
 	
-	public void run(){}
-	
+	//
 	public boolean isCompleted()
 	{
 		return (currentState == 2);
 	}
 	
-	public void stop(){}
+	//
+	public void run(ArrayList<Action> actions){
+		
+		if(!running && dependenceFufilled(actions)){
+			
+			start();
+		}
+	}
 	
+	//
+	public void stop(){
+		
+		running = false;
+	}
 	
+	//
 	public void reset(){
+		
+		stop();
 		
 		currentState = 0;
 	}
 	
+	//
 	public String getName(){
 		
 		return name;

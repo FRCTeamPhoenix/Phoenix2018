@@ -28,7 +28,7 @@ public class Robot extends SampleRobot {
 	PCMHandler PCM;
 
     public Robot() {
-    	PCM = new PCMHandler(5);
+    	PCM = new PCMHandler(11);
     }
 
     @Override
@@ -38,30 +38,30 @@ public class Robot extends SampleRobot {
     	double y2 = joystick1.getRawAxis(3);
     	double speedv = 0.5;
     	while(isEnabled()){
-    		//y = joystick1.getY();
-    		//y2 = joystick2.getY();
+    		y = joystick1.getY();
+    		y2 = joystick2.getY();
     		
-    		SmartDashboard.putString("DB/String 0", "t1: " + String.valueOf(talon1.getSelectedSensorPosition(0)));
-    		SmartDashboard.putString("DB/String 1", "t2: " + String.valueOf(talon2.getSelectedSensorPosition(0)));
-    		SmartDashboard.putString("DB/String 2", "t3: " + String.valueOf(talon3.getSelectedSensorPosition(0)));
-    		SmartDashboard.putString("DB/String 3", "t4: " + String.valueOf(talon4.getSelectedSensorPosition(0)));
+    		//SmartDashboard.putString("DB/String 0", "t1: " + String.valueOf(talon1.getSelectedSensorPosition(0)));
+    		//SmartDashboard.putString("DB/String 1", "t2: " + String.valueOf(talon2.getSelectedSensorPosition(0)));
+    		//SmartDashboard.putString("DB/String 2", "t3: " + String.valueOf(talon3.getSelectedSensorPosition(0)));
+    		//SmartDashboard.putString("DB/String 3", "t4: " + String.valueOf(talon4.getSelectedSensorPosition(0)));
 
     		
     		//SmartDashboard.putString("DB/String 1", "y2 (24): " + String.valueOf(y2));
     		
-    		//talon1.goAt(speedv*y);
-    		//talon2.goAt(-speedv*y2);
-    		//talon3.goAt(speedv*y);
-    		//talon4.goAt(-speedv*y2);
+    		talon1.goAt(speedv*y);
+    		talon2.goAt(-speedv*y2);
+    		talon3.goAt(speedv*y);
+    		talon4.goAt(-speedv*y2);
     	
     		//teliopInit
     	
-    		if (joystick1.getRawButton(1)) {
+    		/*if (joystick1.getRawButton(1)) {
     			talon1.goDistance(0.25, 0.4);
     			talon2.goDistance(-0.25, 0.4);
     			talon3.goDistance(0.25, 0.4);
     			talon4.goDistance(-0.25, 0.4);
-    		}
+    		}*/
     	
 	    	//teliopPeriodic
 	    	if (joystick1.getRawButton(8)) {

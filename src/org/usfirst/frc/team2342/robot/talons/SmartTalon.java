@@ -1,6 +1,5 @@
 package org.usfirst.frc.team2342.robot.talons;
 
-import com.ctre.CANTalon;
 
 /**
  * General wrapper class for CANTalons. Supports voltage, velocity, and position
@@ -9,12 +8,12 @@ import com.ctre.CANTalon;
  * @author cooli
  *
  */
-public class SmartTalon extends CANTalon {
+/*public class SmartTalon extends CANTalon {
 
     /*
      * translates between TalonControlMode enum and user mode input via:
      * TalonControlMode mode = user input mode + MODE_OFFSET
-     */
+     
     private static final int MODE_OFFSET = 4;
 
     // put a minus sign in front of all setpoints,
@@ -28,7 +27,7 @@ public class SmartTalon extends CANTalon {
     /*
      * current mode, offset by MODE_OFFSET 0: VOLTAGE MODE 1: POSITION MODE 2:
      * VELOCITY MODE
-     */
+     
     private int mode;
 
     // PID gains for velocity and distance
@@ -86,7 +85,7 @@ public class SmartTalon extends CANTalon {
 
     /*
      * Go at a speed using velocity gains
-     */
+     
     public void goAt(double speed) {
         speed = (speed > 1) ? 1 : speed;
         speed = (speed < -1) ? -1 : speed;
@@ -109,7 +108,7 @@ public class SmartTalon extends CANTalon {
 
     /*
      * Go at a specific voltage, independent of all PID gains
-     */
+     
     public void goVoltage(double speed) {
         speed = (speed > 1) ? 1 : speed;
         speed = (speed < -1) ? -1 : speed;
@@ -129,7 +128,7 @@ public class SmartTalon extends CANTalon {
 
     /*
      * Go a specific distance, using distance PID gains
-     */
+     
     public void goDistance(double distance, double speed) {
         speed = (speed > 1) ? 1 : speed;
         speed = (speed < -1) ? -1 : speed;
@@ -191,3 +190,4 @@ public class SmartTalon extends CANTalon {
     }
 
 }
+*/

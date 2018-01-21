@@ -1,22 +1,14 @@
 package org.usfirst.frc.team2342.robot;
 
-import org.usfirst.frc.team2342.loops.Looper;
-
 import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This is a demo program showing how to use Mecanum control with the RobotDrive
  * class.
  */
 public class Robot extends SampleRobot {
-	private Looper looper;
-	private LidarLoop lidarloop;
-	
     public Robot() {
-    	looper = new Looper();
-    	lidarloop = new LidarLoop();
-    	looper.register(lidarloop);
-    	looper.start();
     }
 
     @Override
@@ -31,6 +23,11 @@ public class Robot extends SampleRobot {
 
     @Override
     public void test() {
-
+    	Lidar test = new Lidar();
+    	test.start();
+    	while(isEnabled()){
+    		SmartDashboard.putString("DB/String 0", ""+test.getDistanceIn());
+    	}
+    	test.stop();
     }
 }

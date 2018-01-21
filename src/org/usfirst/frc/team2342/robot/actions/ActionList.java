@@ -16,11 +16,21 @@ public class ActionList{
 		
 		for(Action action: actions){
 			
-			if(!emergancyStop)
-				action.run(actions);
-			
-			else
-				action.stop();
+			if(action.currentState == Action.State.finished)
+				continue;
+			else{
+				if(action.currentState == Action.State.notStarted) {
+					action.onStart();
+					action.currentState = Action.State.inProgress;
+				}
+				else{
+					action.run();
+				}
+				if(action.isCompleted()) {
+					action.onStop();
+					action.currentState = Action.State.finished;
+				}
+			}
 		}
 	}
 	

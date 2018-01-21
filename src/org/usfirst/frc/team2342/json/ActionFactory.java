@@ -3,7 +3,7 @@ package org.usfirst.frc.team2342.json;
 import org.usfirst.frc.team2342.robot.actions.DriveAction;
 
 public class ActionFactory {
-	public static org.usfirst.frc.team2342.robot.actions.Action createAction(Action action) {
+	public static org.usfirst.frc.team2342.robot.actions.ActionOld createAction(Action action) {
 		switch (action.Type)
 		{
 		case "DriveAction":

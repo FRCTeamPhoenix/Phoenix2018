@@ -3,7 +3,7 @@ package org.usfirst.frc.team2342.robot.actions;
 import java.util.ArrayList;
 
 public abstract class Action {
-	public State currentState;
+	public State state;
 
 	public String name = "";
 	
@@ -15,8 +15,8 @@ public abstract class Action {
 	public abstract boolean isCompleted();
 	
 	enum State{
-		notStarted,
-		inProgress,
-		finished
+		NOT_STARTED,
+		IN_PROGRESS,
+		FINISHED
 	}
 }

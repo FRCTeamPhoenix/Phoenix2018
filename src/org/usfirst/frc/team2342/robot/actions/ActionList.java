@@ -4,11 +4,16 @@ import java.util.*;
 public class ActionList{
 	
 	private ArrayList<Action> actions;
+	private ArrayList<String> names;
 	
 	private boolean emergancyStop = false;
 	
-	public ActionList(){
-		
+	public ActionList(ArrayList<Action> actions){
+		this.actions = actions;
+		names = new ArrayList<String>();
+		for(Action action: actions){
+			names.add(action.name);
+		}
 	}
 	
 	//Execute all actions who's conditions have been satisfied

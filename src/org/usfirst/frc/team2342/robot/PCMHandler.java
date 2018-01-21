@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class PCMHandler {
 	Compressor compressor; 
-	Solenoid highgearSol = new Solenoid(5,0);
-	Solenoid lowgearSol = new Solenoid(5,1);
+	Solenoid highgearSol = new Solenoid(11,0);
+	Solenoid lowgearSol = new Solenoid(11,1);
 
 	public PCMHandler(int port) {
 		

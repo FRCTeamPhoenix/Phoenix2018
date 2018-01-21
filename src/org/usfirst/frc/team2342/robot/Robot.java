@@ -3,15 +3,8 @@ package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.robot.talons.SmartTalon;
 
-
-
 import edu.wpi.first.wpilibj.Joystick;
-import org.usfirst.frc.team2342.util.NetworkTableInterface;
-
-
 import edu.wpi.first.wpilibj.SampleRobot;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This is a demo program showing how to use Mecanum control with the RobotDrive
@@ -30,7 +23,7 @@ public class Robot extends SampleRobot {
 	PCMHandler PCM;
 
     public Robot() {
-    	PCM = new PCMHandler(5);
+    	PCM = new PCMHandler(11);
     }
 
     @Override
@@ -48,9 +41,15 @@ public class Robot extends SampleRobot {
     		talonBR.goAt(-speedv*r);
     		talonBL.goAt(speedv*l);
     	
-    	//teliopInit
+    		//teliopInit
     	
-    	
+    		/*if (joystick1.getRawButton(1)) {
+    			talon1.goDistance(0.25, 0.4);
+    			talon2.goDistance(-0.25, 0.4);
+    			talon3.goDistance(0.25, 0.4);
+    			talon4.goDistance(-0.25, 0.4);
+    		}*/
+    		
 	    		//teliopPeriodic
 	    	if (joystickR.getRawButton(8)) {
 	    		PCM.setHighGear(true);
@@ -72,24 +71,16 @@ public class Robot extends SampleRobot {
     @Override
     public void test() {
     	while(isEnabled()){
-
-    		talonFR.goAt(0.3);
-    		talonFL.goAt(-0.3);
-    		talonBR.goAt(0.3);
-    		talonBL.goAt(-0.3);
-    		
-    		
-    	
-    		talonFR.goAt(0);
-    		talonFL.goAt(0);
-    		talonBR.goAt(0);
-    		talonBL.goAt(0);
+	    	talonFR.goVoltage(-0.4);
+	    	talonFL.goVoltage(0.4);
+	    	talonBR.goVoltage(-0.4);
+	    	talonBL.goVoltage(0.4);
     	
 
-	    	NetworkTableInterface.setValue("test", "firstVar", "sup");
-	    	NetworkTableInterface.setValue("test/nextlevel", "firstVar", 1);
-	    	NetworkTableInterface.setValue("test/nextlevel/wow", "firstVar", "sup");
-	    	SmartDashboard.putString("DB/String 1", NetworkTableInterface.getString("test/nextlevel/wow", "firstVar"));
+	    	//NetworkTableInterface.setValue("test", "firstVar", "sup");
+	    	//NetworkTableInterface.setValue("test/nextlevel", "firstVar", 1);
+	    	//NetworkTableInterface.setValue("test/nextlevel/wow", "firstVar", "sup");
+	    	//SmartDashboard.putString("DB/String 1", NetworkTableInterface.getString("test/nextlevel/wow", "firstVar"));
     	}
 
     }

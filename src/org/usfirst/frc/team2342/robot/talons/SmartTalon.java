@@ -39,9 +39,9 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
         
         maxForwardSpeed = 1.0;
         maxReverseSpeed = 1.0;
-
-        velocityGains = new PIDGains(0, 0, 0, 1, 0, 0);
-        distanceGains = new PIDGains(0, 0, 0, 0, 0, 0);
+        
+        velocityGains = new PIDGains(0, 0, 0, 0, 0, 0);
+        distanceGains = new PIDGains(0.01, 0.001, 0, 0, 0, 0);
         mode = initialMode;
 
         if (ControlMode.Current.equals(initialMode))
@@ -144,7 +144,6 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
        
         configPeakOutputForward(speed, 0);
         configPeakOutputReverse(speed, 0);
-        
     }
     
     public boolean isInverted() {
@@ -187,17 +186,14 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
         this.distanceGains = distanceGains;
     }
 
-	@Override
 	public void setPIDSourceType(PIDSourceType pidSource) {
 		this.pidSource = pidSource;
 	}
 
-	@Override
 	public PIDSourceType getPIDSourceType() {
 		return pidSource;
 	}
 
-	@Override
 	public double pidGet() {
 		if (getPIDSourceType() == PIDSourceType.kDisplacement) {
 			getSelectedSensorPosition(0);

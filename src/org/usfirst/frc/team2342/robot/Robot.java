@@ -27,6 +27,8 @@ public class Robot extends SampleRobot {
     	test.start();
     	while(isEnabled()){
     		SmartDashboard.putString("DB/String 0", ""+test.getDistanceIn());
+    		SmartDashboard.putString("DB/String 1", ""+test.getFDistanceIn());
+    		SmartDashboard.putString("DB/String 2", ""+test.getSDistanceIn());
     	}
     	test.stop();
     }

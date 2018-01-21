@@ -24,9 +24,14 @@ public class PCMHandler {
 	
 	public double getPressure (){
 		return compressor.getCompressorCurrent();
-		
-
+	}
 	
+	public void compressorRegulate () {
+		if (compressor.getPressureSwitchValue()) {
+			compressor.start();
+		} else {
+			compressor.stop();
+		}
 	}
 	
 }

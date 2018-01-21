@@ -36,10 +36,13 @@ public class Robot extends SampleRobot {
     	while(isEnabled()){
     		r = joystickR.getRawAxis(1);
     		l = joystickL.getRawAxis(1);
+    		
     		talonFR.goAt(-speedv*r);
     		talonFL.goAt(speedv*l);
     		talonBR.goAt(-speedv*r);
     		talonBL.goAt(speedv*l);
+    		
+    		
     	
     		//teliopInit
     	
@@ -59,6 +62,8 @@ public class Robot extends SampleRobot {
 	    		PCM.setLowGear(true);
 	    	}
     	
+	    	PCM.compressorRegulate();
+	    	
     	}
     	
     }

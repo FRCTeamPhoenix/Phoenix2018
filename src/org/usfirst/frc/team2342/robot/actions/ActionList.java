@@ -1,3 +1,4 @@
+package org.usfirst.frc.team2342.robot.actions;
 import java.util.*;
 
 public class ActionList{
@@ -16,7 +17,7 @@ public class ActionList{
 		for(Action action: actions){
 			
 			if(!emergancyStop)
-				action.run();
+				action.run(actions);
 			
 			else
 				action.stop();

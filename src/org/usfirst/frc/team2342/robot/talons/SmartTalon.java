@@ -4,8 +4,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-public class SmartTalon extends WPI_TalonSRX {
-    
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
+
+public class SmartTalon extends WPI_TalonSRX implements PIDSource {
     // put a minus sign in front of all setpoints,
     // used for reversed-polarity talons and devices
     private boolean inverted;
@@ -13,6 +15,10 @@ public class SmartTalon extends WPI_TalonSRX {
     // maximum forward and reverse speeds
     private double maxForwardSpeed;
     private double maxReverseSpeed;
+
+
+    private PIDSourceType pidSource;
+
     
     // current mode
     private ControlMode mode;
@@ -37,7 +43,11 @@ public class SmartTalon extends WPI_TalonSRX {
         maxReverseSpeed = 1.0;
 
         velocityGains = new PIDGains(0, 0, 0, 0, 0, 0);
+
         distanceGains = new PIDGains(0, 0, 0, 0, 0, 0);
+
+
+
         mode = initialMode;
 
         if (ControlMode.Current.equals(initialMode))
@@ -58,6 +68,10 @@ public class SmartTalon extends WPI_TalonSRX {
         config_IntegralZone(0, velocityGains.getIzone(), 0);
         config_kF(0, velocityGains.getFf(), 0);
         configOpenloopRamp(velocityGains.getRr(), 0);
+
+
+        setPIDSourceType(PIDSourceType.kRate);
+
     }
 
     private void setToDistance() {
@@ -67,6 +81,10 @@ public class SmartTalon extends WPI_TalonSRX {
         config_IntegralZone(0, distanceGains.getIzone(), 0);
         config_kF(0, distanceGains.getFf(), 0);
         configOpenloopRamp(distanceGains.getRr(), 0);
+
+
+        setPIDSourceType(PIDSourceType.kDisplacement);
+
     }
 
     /*
@@ -138,7 +156,8 @@ public class SmartTalon extends WPI_TalonSRX {
        
         configPeakOutputForward(speed, 0);
         configPeakOutputReverse(speed, 0);
-        
+
+
     }
     
     public boolean isInverted() {
@@ -181,4 +200,20 @@ public class SmartTalon extends WPI_TalonSRX {
         this.distanceGains = distanceGains;
     }
 
+	public void setPIDSourceType(PIDSourceType pidSource) {
+		this.pidSource = pidSource;
+	}
+
+	public PIDSourceType getPIDSourceType() {
+		return pidSource;
+	}
+
+	public double pidGet() {
+		if (getPIDSourceType() == PIDSourceType.kDisplacement) {
+			getSelectedSensorPosition(0);
+		} else {
+			getSelectedSensorVelocity(0);
+		}
+		return 0;
+	}
 }

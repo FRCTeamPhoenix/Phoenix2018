@@ -1,0 +1,1 @@
+{"talons":[{"inverted":false,"maxForwardSpeed":1.2,"maxReverseSpeed":0.0,"mode":0,"velocityGains":{"p":0.0,"i":0.0,"d":1.7,"ff":2.1,"rr":0.0,"izone":0},"distanceGains":null}],"actions":[{"Name":"MoveForward","Type":"DriveAction","dependencies":null,"Parameters":[{"Name":"distance","Value":"0"},{"Name":"angle","Value":"0"}]}],"Parameters":null}

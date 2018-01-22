@@ -6,13 +6,24 @@ public class DriveAction extends Action{
 	private double distance = 0;
 	private double angle = 0;
 	
-	private String name;
+	private String tag;
 	
 	private boolean running;
 	
-	public DriveAction(double distance, double angle, ArrayList<String> dependencies){
+	//Constructor with a tag taken in for naming
+	public DriveAction(double distance, double angle, String tag, ArrayList<String> dependencies){
 		
-		super("drive", dependencies);
+		super(tag, dependencies);
+		
+		this.distance = distance;
+		this.angle = angle;
+		
+	}
+	
+	//Constructor with tagNumber for naming the action
+	public DriveAction(double distance, double angle, int tagNumber, ArrayList<String> dependencies){
+		
+		super("drive" + tagNumber, dependencies);
 		
 		this.distance = distance;
 		this.angle = angle;

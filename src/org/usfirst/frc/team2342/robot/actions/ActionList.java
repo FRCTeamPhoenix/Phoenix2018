@@ -1,5 +1,5 @@
 package org.usfirst.frc.team2342.robot.actions;
-import java.util.*;
+import java.util.ArrayList;
 
 public class ActionList{
 	
@@ -7,7 +7,9 @@ public class ActionList{
 	
 	private boolean emergancyStop = false;
 	
-	public ActionList(){
+	public ActionList(ArrayList<Action> actions){
+		
+		this.actions = actions;
 		
 	}
 	

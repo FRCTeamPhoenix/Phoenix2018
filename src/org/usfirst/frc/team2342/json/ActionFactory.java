@@ -13,7 +13,7 @@ public class ActionFactory {
 			String jAngle = JsonHelper.getParameterValueByName(action.Parameters, "angle");
 			double angle = Double.parseDouble(jAngle);
 			
-			DriveAction driveAction = new DriveAction(distance, angle, action.dependencies);
+			DriveAction driveAction = new DriveAction(distance, angle, action.Name, action.dependencies);
 			return driveAction;
 			default:
 				return null;

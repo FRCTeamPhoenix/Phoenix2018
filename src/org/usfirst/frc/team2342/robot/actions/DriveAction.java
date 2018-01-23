@@ -6,9 +6,8 @@ public class DriveAction extends Action{
 	private double distance = 0;
 	private double angle = 0;
 	
+	//Tag associated with the action for dependency detection
 	private String tag;
-	
-	private boolean running;
 	
 	//Constructor with a tag taken in for naming
 	public DriveAction(double distance, double angle, String tag, ArrayList<String> dependencies){
@@ -34,6 +33,7 @@ public class DriveAction extends Action{
 	public void start(){
 		
 		//TODO: Drive train: move certain distance at the given angle
+		System.out.println("started");
 		
 		super.start();
 		
@@ -43,6 +43,7 @@ public class DriveAction extends Action{
 	public void stop(){
 		
 		//TODO: Drive train stop
+		System.out.println("stoped");
 		
 		super.stop();
 	}

@@ -13,18 +13,14 @@ public class Action {
 	//Tag associated with the action for dependency detection
 	private static String tag = "";
 	
-	private static ArrayList<String> dependencies;
-	
-	private boolean running;
+	private static ArrayList<String> dependencies = new ArrayList<String>();
 	
 	public Action(String tag, ArrayList<String> dependencies){
 		this.tag = tag;
-		
+
 		this.dependencies.addAll(dependencies);
 		
 		currentState = 0;
-		
-		running = false;
 	}
 
 	//Are the dependencies fulfilled?

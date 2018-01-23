@@ -5,6 +5,7 @@ import org.usfirst.frc.team2342.robot.talons.SmartTalon;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This is a demo program showing how to use Mecanum control with the RobotDrive
@@ -37,11 +38,17 @@ public class Robot extends SampleRobot {
     		r = joystickR.getRawAxis(1);
     		l = joystickL.getRawAxis(1);
     		
-    		talonFR.goAt(-speedv*r);
-    		talonFL.goAt(speedv*l);
-    		talonBR.goAt(-speedv*r);
-    		talonBL.goAt(speedv*l);
+//    		talonFR.goAt(-speedv*r);
+//    		talonFL.goAt(speedv*l);
+//    		talonBR.goAt(-speedv*r);
+//    		talonBL.goAt(speedv*l);
     		
+//    		talonFR.goDistance(-0.25, 0.4);
+//    		talonFL.goDistance(-0.25, 0.4);
+//    		talonBR.goDistance(-0.25, 0.4);
+//    		talonBL.goDistance(-0.25, 0.4);
+    		
+    		SmartDashboard.putString("DB/String 5", Double.toString(talonFR.getSelectedSensorPosition(0)));
     		
     	
     		//teliopInit

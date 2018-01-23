@@ -25,6 +25,9 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
     private PIDGains velocityGains;
     private PIDGains distanceGains;
     
+    // Timeout for communication with Talon (in ms). 0 = no timeout
+    private int timeout = 0;
+    
     public SmartTalon(int deviceNumber) {
         this(deviceNumber, false, ControlMode.Current);
     }
@@ -37,8 +40,13 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
         super(deviceNumber);
         this.inverted = inverted;
         
-        maxForwardSpeed = 1.0;
-        maxReverseSpeed = 1.0;
+        maxForwardSpeed = 0.3;
+        maxReverseSpeed = 0.3;
+        
+        configNominalOutputForward(0, timeout);
+        configNominalOutputReverse(0, timeout);
+        configPeakOutputForward(maxForwardSpeed, timeout);
+        configPeakOutputReverse(-maxReverseSpeed, timeout);
         
         velocityGains = new PIDGains(0, 0, 0, 0, 0, 0);
         distanceGains = new PIDGains(0.01, 0.001, 0, 0, 0, 0);
@@ -90,9 +98,6 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
             mode = ControlMode.Velocity;
         }
 
-        configPeakOutputForward(speed, 0);
-        configPeakOutputReverse(speed, 0);
-
         if (!inverted)
             set(speed);
         else
@@ -114,9 +119,6 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
         else {
             set(speed);
         }
-
-        configPeakOutputForward(speed, 0);
-        configPeakOutputReverse(speed, 0);
         
     }
 
@@ -125,8 +127,8 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
      */
     public void goDistance(double distance, double speed) {
         
-    	speed = (speed > 1) ? 1 : speed;
-        speed = (speed < -1) ? -1 : speed;
+    	speed = (speed > maxForwardSpeed) ? maxForwardSpeed : speed;
+        speed = (speed < -maxReverseSpeed) ? -maxReverseSpeed : speed;
         
         double setPoint = getSelectedSensorPosition(0) + distance;
 
@@ -141,9 +143,6 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
         else
         	set(setPoint);
         
-       
-        configPeakOutputForward(speed, 0);
-        configPeakOutputReverse(speed, 0);
     }
     
     public boolean isInverted() {

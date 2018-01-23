@@ -1,16 +1,18 @@
 package org.usfirst.frc.team2342.robot;
 
 
+import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
+import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.talons.SmartTalon;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.RobotBase;
 
 /**
  * This is a demo program showing how to use Mecanum control with the RobotDrive
  * class.
  */
-public class Robot extends SampleRobot {
+public class Robot extends RobotBase {
 
 	Joystick joystickR = new Joystick(1);
 	Joystick joystickL = new Joystick(2);
@@ -21,12 +23,18 @@ public class Robot extends SampleRobot {
 	SmartTalon talonBL = new SmartTalon(4);
 	
 	PCMHandler PCM;
+	
+	private static BoxManipulator boxManipulator;
+	private static CascadeElevator cascadeElevator;
 
     public Robot() {
     	PCM = new PCMHandler(11);
+    	SmartTalon talon = new SmartTalon(0);
+    	SmartTalon talon2 = new SmartTalon(1);
+    	boxManipulator = new BoxManipulator(talon);
+    	cascadeElevator = new CascadeElevator(talon2);
     }
 
-    @Override
     public void operatorControl() {
 
     	double r = joystickR.getRawAxis(1);
@@ -68,12 +76,10 @@ public class Robot extends SampleRobot {
     	
     }
 
-    @Override
     public void autonomous() {
     	
     }
 
-    @Override
     public void test() {
     	while(isEnabled()){
 	    	talonFR.goVoltage(-0.4);
@@ -89,4 +95,10 @@ public class Robot extends SampleRobot {
     	}
 
     }
+
+	@Override
+	public void startCompetition() {
+		// TODO Auto-generated method stub
+		
+	}
 }

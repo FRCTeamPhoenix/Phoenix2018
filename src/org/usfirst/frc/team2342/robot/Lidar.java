@@ -1,9 +1,9 @@
 package org.usfirst.frc.team2342.robot;
 
 import java.util.TimerTask;
+import org.usfirst.frc.team2342.robot.Constants;
 
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Lidar {
@@ -17,9 +17,9 @@ public class Lidar {
 	
 	public Lidar(){
 		distance = 1;
-		port = new SerialPort(115200, Port.kMXP);
+		port = new SerialPort(Constants.SERIAL_BAUD_RATE, Constants.LIDAR_PORT);
 		updater = new java.util.Timer();
-		distances = new int[25];
+		distances = new int[Constants.SLOW_AVERAGE_SIZE];
 		for(int i = 0; i < distances.length; i++){
 			distances[i] = 0;
 		}
@@ -40,7 +40,7 @@ public class Lidar {
 	
 	public double getDistanceIn(){
 		//from cm to inches
-		return distance * 0.393701;
+		return distance * Constants.CM_TO_INCHES;
 	}
 	
 	public int getDistanceCm(){
@@ -50,7 +50,7 @@ public class Lidar {
 	//fast average (smaller sample size)
 	public double getFDistanceIn(){
 		//from cm to inches
-		return faverage * 0.393701;
+		return faverage * Constants.CM_TO_INCHES;
 	}
 	
 	public int getFDistanceCm(){
@@ -60,7 +60,7 @@ public class Lidar {
 	//slow average
 	public double getSDistanceIn(){
 		//from cm to inches
-		return saverage * 0.393701;
+		return saverage * Constants.CM_TO_INCHES;
 	}
 	
 	public int getSDistanceCm(){
@@ -94,16 +94,16 @@ public class Lidar {
 		
 		//calculate the averages
 		int locfaverage = 0;
-		for(int i = 0; i<10; i++){
+		for(int i = 0; i<Constants.FAST_AVERAGE_SIZE; i++){
 			locfaverage += distances[i];
 		}
-		faverage = locfaverage / 10;
+		faverage = locfaverage / Constants.FAST_AVERAGE_SIZE;
 		
 		int locsaverage = 0;
-		for(int i = 0; i<25; i++){
+		for(int i = 0; i<Constants.SLOW_AVERAGE_SIZE; i++){
 			locsaverage += distances[i];
 		}
-		saverage = locsaverage / 25;
+		saverage = locsaverage / Constants.SLOW_AVERAGE_SIZE;
 		
 		Timer.delay(0.005);
 	}

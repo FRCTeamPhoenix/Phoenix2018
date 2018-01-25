@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public class Infrared {
 	private DigitalInput infraSensor;
 	
-	public Infrared(int dioPort){
-		infraSensor = new DigitalInput(dioPort);
+	public Infrared(){
+		infraSensor = new DigitalInput(Constants.INFRARED_PORT);
 	}
 	
 	public boolean detectsObject(){

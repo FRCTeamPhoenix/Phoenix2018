@@ -29,6 +29,7 @@ public class Robot extends SampleRobot {
     public Robot() {
     	imu = new ADIS16448_IMU();
     	PCM = new PCMHandler(5);
+    	PCM.turnOn();
     }
 
     @Override
@@ -38,7 +39,8 @@ public class Robot extends SampleRobot {
     	//double y2 = joystick1.getRawAxis(3);
     	double speedv = 0.5;
     	imu.reset();
-    	double startAngle = imu.getAngleX() + 180;
+    	double startAngle = imu.getAngleX();
+    	PCM.turnOn(); 
     	while(isEnabled()){
     		y = joystick1.getY();
     		//y2 = joystick2.getY();
@@ -58,17 +60,38 @@ public class Robot extends SampleRobot {
     		//}
     		SmartDashboard.putString("DB/String 0", ""+imu.getAngleX());
     		
-    		double angle = (imu.getAngleX()-startAngle)/2;
-    		SmartDashboard.putString("DB/String 1", ""+angle);
-    		talon1.goVoltage(y+(-angle * 0.03));
-    		talon2.goVoltage(y+(angle * 0.03));
-    		talon3.goVoltage(y+(-angle * 0.03));
-    		talon4.goVoltage(y+(angle * 0.03));
-    	
-	    	//teliopPeriodic
-	    	if (joystick1.getRawButton(1)) {
+    		if (joystick1.getRawButton(1)) {
 	    		imu.reset();
 	    	}
+    		
+    		double angle = (imu.getAngleX()-startAngle)/2;
+    		
+    		SmartDashboard.putString("DB/String 2", ""+y);
+    		double voltageCoeffecient = angle * 0.03;
+    		
+    		if(Math.abs(voltageCoeffecient)<0.05&&Math.abs(angle)>1.0){
+    			if(angle > 0.0)
+    				voltageCoeffecient = 0.05;
+    			else
+    				voltageCoeffecient = -0.05;
+    		}
+    		SmartDashboard.putString("DB/String 1", ""+voltageCoeffecient);
+    		if(Math.abs(y)>0.1 ){
+    			talon1.goVoltage(y);
+	    		talon2.goVoltage(y);
+	    		talon3.goVoltage(y);
+	    		talon4.goVoltage(y);
+    		}
+    		else
+    		{
+	    		talon1.goVoltage(-voltageCoeffecient);
+	    		talon2.goVoltage(voltageCoeffecient);
+	    		talon3.goVoltage(-voltageCoeffecient);
+	    		talon4.goVoltage(voltageCoeffecient);
+    		}
+    	
+	    	//teliopPeriodic
+	    	
     	
     	}
     	

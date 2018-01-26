@@ -16,11 +16,6 @@ public class Robot extends SampleRobot {
 	Joystick joystickR = new Joystick(1);
 	Joystick joystickL = new Joystick(2);
 	
-	SmartTalon talonFR = new SmartTalon(1);
-	SmartTalon talonFL = new SmartTalon(2);
-	SmartTalon talonBR = new SmartTalon(3);
-	SmartTalon talonBL = new SmartTalon(4);
-	
 	PCMHandler PCM;
 
     public Robot() {
@@ -38,27 +33,6 @@ public class Robot extends SampleRobot {
     		r = joystickR.getRawAxis(1);
     		l = joystickL.getRawAxis(1);
     		
-//    		talonFR.goAt(-speedv*r);
-//    		talonFL.goAt(speedv*l);
-//    		talonBR.goAt(-speedv*r);
-//    		talonBL.goAt(speedv*l);
-    		
-//    		talonFR.goDistance(-0.25, 0.4);
-//    		talonFL.goDistance(-0.25, 0.4);
-//    		talonBR.goDistance(-0.25, 0.4);
-//    		talonBL.goDistance(-0.25, 0.4);
-    		
-    		SmartDashboard.putString("DB/String 5", Double.toString(talonFR.getSelectedSensorPosition(0)));
-    		
-    	
-    		//teliopInit
-    	
-    		/*if (joystick1.getRawButton(1)) {
-    			talon1.goDistance(0.25, 0.4);
-    			talon2.goDistance(-0.25, 0.4);
-    			talon3.goDistance(0.25, 0.4);
-    			talon4.goDistance(-0.25, 0.4);
-    		}*/
     		
 	    		//teliopPeriodic
 	    	if (joystickR.getRawButton(8)) {

@@ -49,7 +49,7 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
         configPeakOutputReverse(-maxReverseSpeed, timeout);
         
         velocityGains = new PIDGains(0, 0, 0, 0, 0, 0);
-        distanceGains = new PIDGains(0.01, 0.001, 0, 0, 0, 0);
+        distanceGains = new PIDGains(0, 0, 0, 0, 0, 0);
         mode = initialMode;
 
         if (ControlMode.Current.equals(initialMode))

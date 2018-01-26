@@ -5,4 +5,5 @@ import java.util.ArrayList;
 public class Json {
 
 		public ArrayList<Talon> talons;
+		
 }

@@ -3,6 +3,8 @@
 package org.usfirst.frc.team2342.robot.actions;
 import java.util.ArrayList;
 
+import org.usfirst.frc.team2342.robot.talons.SmartTalon;
+
 public class Action {
 	
 	//0 = not yet running
@@ -44,7 +46,7 @@ public class Action {
 	}
 	
 	//Start action
-	public void start(){
+	public void start(SmartTalon talon1, SmartTalon talon2, SmartTalon talon3, SmartTalon talon4){
 		
 		currentState = 1;
 	}
@@ -56,24 +58,24 @@ public class Action {
 	}
 	
 	//If the dependencies are fulfilled 
-	public void run(ArrayList<Action> actions){
+	public void run(ArrayList<Action> actions, SmartTalon talon1, SmartTalon talon2, SmartTalon talon3, SmartTalon talon4){
 		
 		if(!((currentState == 1) || isCompleted()) && dependenceFufilled(actions)){
 			
-			start();
+			start(talon1, talon2, talon3, talon4);
 		}
 	}
 	
 	//Stop action
-	public void stop(){
+	public void stop(SmartTalon talon1, SmartTalon talon2, SmartTalon talon3, SmartTalon talon4){
 		
 		currentState = 2;
 	}
 	
 	//Reset the action so it can go again
-	public void reset(){
+	public void reset(SmartTalon talon1, SmartTalon talon2, SmartTalon talon3, SmartTalon talon4){
 		
-		stop();
+		stop(talon1, talon2, talon3, talon4);
 		
 		currentState = 0;
 	}

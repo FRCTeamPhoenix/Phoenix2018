@@ -1,6 +1,8 @@
 package org.usfirst.frc.team2342.robot.actions;
 import java.util.ArrayList;
 
+import org.usfirst.frc.team2342.robot.talons.SmartTalon;
+
 public class DriveAction extends Action{
 	
 	private double distance = 0;
@@ -30,21 +32,29 @@ public class DriveAction extends Action{
 	}
 	
 	//Start driving a certain distance
-	public void start(){
+	public void start(SmartTalon talon1, SmartTalon talon2, SmartTalon talon3, SmartTalon talon4){
 		
-		//TODO: Drive train: move certain distance at the given angle
+		talon1.goVoltage(-this.distance);
+    	talon2.goVoltage(this.distance);
+    	talon3.goVoltage(-this.distance);
+    	talon4.goVoltage(this.distance);
+		
 		System.out.println("started");
 		
-		super.start();
+		super.start(talon1, talon2, talon3, talon4);
 		
 	}
 	
 	//Stop driving
-	public void stop(){
+	public void stop(SmartTalon talon1, SmartTalon talon2, SmartTalon talon3, SmartTalon talon4){
 		
-		//TODO: Drive train stop
+		talon1.goVoltage(0);
+    	talon2.goVoltage(0);
+    	talon3.goVoltage(0);
+    	talon4.goVoltage(0);
+		
 		System.out.println("stoped");
 		
-		super.stop();
+		super.stop(talon1, talon2, talon3, talon4);
 	}
 }

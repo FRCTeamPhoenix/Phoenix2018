@@ -2,13 +2,12 @@ package org.usfirst.frc.team2342.robot;
 
 
 import org.usfirst.frc.team2342.robot.talons.SmartTalon;
-
-
-
-import edu.wpi.first.wpilibj.Joystick;
 import org.usfirst.frc.team2342.util.NetworkTableInterface;
 
+import java.util.ArrayList;
 
+import org.usfirst.frc.team2342.robot.actions.*;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -25,6 +24,8 @@ public class Robot extends SampleRobot {
 	SmartTalon talon4 = new SmartTalon(4);
 	
 
+	
+	
 	PCMHandler PCM;
 
     public Robot() {
@@ -79,6 +80,17 @@ public class Robot extends SampleRobot {
     @Override
     public void autonomous() {
     	
+    	ArrayList<Action> action = new ArrayList<Action>();
+    	action.add(new Action("1", null));
+    	action.add(new Action("2", null));
+    	
+    	ActionList actions = new ActionList(action);
+    	
+    	
+    	while(isEnabled() && isAutonomous()) {
+    		
+    		actions.execute(talon1, talon2, talon3, talon4);
+    	}
     }
 
     @Override

@@ -4,6 +4,7 @@ package org.usfirst.frc.team2342.robot;
 import org.usfirst.frc.team2342.robot.talons.SmartTalon;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
@@ -14,18 +15,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * class.
  */
 public class Robot extends SampleRobot {
+	ADIS16448_IMU imu;
 	Joystick joystick1 = new Joystick(1);
 	Joystick joystick2 = new Joystick(2);
 	SmartTalon talon1 = new SmartTalon(1);
-	SmartTalon talon2 = new SmartTalon(2);
+	SmartTalon talon2 = new SmartTalon(2, true, ControlMode.Current);
 	SmartTalon talon3 = new SmartTalon(3);
-	SmartTalon talon4 = new SmartTalon(4);
+	SmartTalon talon4 = new SmartTalon(4, true, ControlMode.Current);
 	
 
 	PCMHandler PCM;
 
     public Robot() {
-    	
+    	imu = new ADIS16448_IMU();
     	PCM = new PCMHandler(5);
     }
 
@@ -33,17 +35,13 @@ public class Robot extends SampleRobot {
     public void operatorControl() {
 
     	double y = joystick1.getY();
-    	double y2 = joystick1.getRawAxis(3);
+    	//double y2 = joystick1.getRawAxis(3);
     	double speedv = 0.5;
+    	double startAngle = imu.getAngleX();
+    	imu.calibrate();
     	while(isEnabled()){
-    		//y = joystick1.getY();
+    		y = joystick1.getY();
     		//y2 = joystick2.getY();
-    		
-    		SmartDashboard.putString("DB/String 0", "t1: " + String.valueOf(talon1.getSelectedSensorPosition(0)));
-    		SmartDashboard.putString("DB/String 1", "t2: " + String.valueOf(talon2.getSelectedSensorPosition(0)));
-    		SmartDashboard.putString("DB/String 2", "t3: " + String.valueOf(talon3.getSelectedSensorPosition(0)));
-    		SmartDashboard.putString("DB/String 3", "t4: " + String.valueOf(talon4.getSelectedSensorPosition(0)));
-
     		
     		//SmartDashboard.putString("DB/String 1", "y2 (24): " + String.valueOf(y2));
     		
@@ -54,12 +52,18 @@ public class Robot extends SampleRobot {
     	
     		//teliopInit
     	
-    		if (joystick1.getRawButton(1)) {
-    			talon1.goDistance(0.25, 0.4);
-    			talon2.goDistance(-0.25, 0.4);
-    			talon3.goDistance(0.25, 0.4);
-    			talon4.goDistance(-0.25, 0.4);
-    		}
+    		//if (joystick1.getRawButton(1)){
+    			//imu.calibrate();
+    			//startAngle = imu.getAngleY();
+    		//}
+    		SmartDashboard.putString("DB/String 0", ""+imu.getAngleX());
+    		
+    		double angle = imu.getAngleX()-startAngle;
+    		SmartDashboard.putString("DB/String 1", ""+angle);
+    		talon1.goVoltage(y+(-angle * 0.03));
+    		talon2.goVoltage(y+(angle * 0.03));
+    		talon3.goVoltage(y+(-angle * 0.03));
+    		talon4.goVoltage(y+(angle * 0.03));
     	
 	    	//teliopPeriodic
 	    	if (joystick1.getRawButton(8)) {

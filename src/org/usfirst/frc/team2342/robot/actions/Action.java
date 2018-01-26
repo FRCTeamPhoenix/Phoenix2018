@@ -30,6 +30,9 @@ public class Action {
 		
 		int ammountFulfilled = 0;
 		
+		if(dependencies.get(0).equals(""))
+			return true;
+		
 		for(Action action : actions){
 			
 			for(String dependency : dependencies){

@@ -5,6 +5,8 @@ import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.talons.SmartTalon;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 
@@ -17,10 +19,10 @@ public class Robot extends RobotBase {
 	Joystick joystickR = new Joystick(1);
 	Joystick joystickL = new Joystick(2);
 	
-	SmartTalon talonFR = new SmartTalon(1);
-	SmartTalon talonFL = new SmartTalon(2);
-	SmartTalon talonBR = new SmartTalon(3);
-	SmartTalon talonBL = new SmartTalon(4);
+	TalonSRX talonFR = new TalonSRX(1);
+	TalonSRX talonFL = new TalonSRX(2);
+	TalonSRX talonBR = new TalonSRX(3);
+	TalonSRX talonBL = new TalonSRX(4);
 	
 	PCMHandler PCM;
 	
@@ -29,10 +31,10 @@ public class Robot extends RobotBase {
 
     public Robot() {
     	PCM = new PCMHandler(11);
-    	SmartTalon talon = new SmartTalon(0);
-    	SmartTalon talon2 = new SmartTalon(1);
-    	boxManipulator = new BoxManipulator(talon);
-    	cascadeElevator = new CascadeElevator(talon2);
+    	TalonSRX talon1 = new TalonSRX(0);
+    	TalonSRX talon2 = new TalonSRX(1);
+    	boxManipulator = new BoxManipulator(talon1, talon2);
+    	cascadeElevator = new CascadeElevator(talon1, talon2);
     }
 
     public void operatorControl() {

@@ -1,29 +1,41 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
 import org.usfirst.frc.team2342.loops.Looper;
-import org.usfirst.frc.team2342.robot.talons.SmartTalon;
+import org.usfirst.frc.team2342.robot.PCMHandler;
+
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class BoxManipulator extends Subsystem {
-	private SmartTalon talon;
+	private TalonSRX talon1;
+	private TalonSRX talon2;
+	private PCMHandler PCM1;
+	private PCMHandler PCM2;
 	
-	public BoxManipulator(SmartTalon talon) {
-		this.talon = talon;
+	private final int PidLoopIndex = 0;
+	private final int PidTimeOutMs = 10;
+	private final boolean SensorPhase = true;
+	private final boolean InvertMotor = false;
+	
+	public BoxManipulator(TalonSRX talon1, TalonSRX talon2) {
+		this.talon1 = talon1;
+		this.talon2 = talon2;
+		this.talon2.follow(talon1);
 	}
 	
 	public void openManipulator() {
-		talon.goVoltage(0);
+		talon1.goVoltage(0);
 	}
 	
 	public void closeManipulat0or() {
-		talon.goVoltage(0);
+		talon1.goVoltage(0);
 	}
 	
 	public void pullBox() {
-		talon.goVoltage(0);
+		talon1.goVoltage(0);
 	}
 	
 	public void pushBox() {
-		talon.goVoltage(0);
+		talon1.goVoltage(0);
 	}
 	
 	@Override

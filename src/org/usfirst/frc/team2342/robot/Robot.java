@@ -53,7 +53,7 @@ public class Robot extends SampleRobot {
     		//teliopInit
     	
     		//if (joystick1.getRawButton(1)){
-    			//imu.calibrate();
+    			//imu.calibrate(); 
     			//startAngle = imu.getAngleY();
     		//}
     		SmartDashboard.putString("DB/String 0", ""+imu.getAngleX());

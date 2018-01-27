@@ -14,6 +14,12 @@ public abstract class Action {
 	public abstract void run();
 	public abstract boolean isCompleted();
 	
+	public Action(String name, ArrayList<String> dependencies) {
+		state = State.NOT_STARTED;
+		this.name = name;
+		this.dependencies = dependencies;
+	}
+	
 	enum State{
 		NOT_STARTED,
 		IN_PROGRESS,

@@ -15,6 +15,7 @@ public class ActionList{
 			}
 			names.add(action.name);
 		}
+		System.out.println(names);
 		
 		for(Action action : actions) {
 			for(String dep : action.dependencies) {
@@ -31,12 +32,13 @@ public class ActionList{
 			
 			for(String dep : action.dependencies) {
 				for(Action potentialDependency : actions) {
-					if(!potentialDependency.name.equals(dep) || potentialDependency.state != Action.State.FINISHED) 
+					if(!(potentialDependency.name.equals(dep) && potentialDependency.state == Action.State.FINISHED)) 
 						dependenciesMet = false;
 					
 				}
 			}
 			
+			System.out.println(action.name + " " + dependenciesMet);
 			if(action.state == Action.State.FINISHED || !dependenciesMet)
 				continue;
 			

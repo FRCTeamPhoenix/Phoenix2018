@@ -1,16 +1,17 @@
 package org.usfirst.frc.team2342.robot;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import org.usfirst.frc.team2342.robot.actions.Action;
+import org.usfirst.frc.team2342.robot.actions.ActionList;
+import org.usfirst.frc.team2342.robot.actions.DependencyException;
+import org.usfirst.frc.team2342.robot.actions.DriveAction;
 import org.usfirst.frc.team2342.robot.talons.SmartTalon;
 
-
-
 import edu.wpi.first.wpilibj.Joystick;
-import org.usfirst.frc.team2342.util.NetworkTableInterface;
-
-
 import edu.wpi.first.wpilibj.SampleRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This is a demo program showing how to use Mecanum control with the RobotDrive
@@ -78,7 +79,20 @@ public class Robot extends SampleRobot {
 
     @Override
     public void autonomous() {
-    	
+    	ArrayList<Action> actions = new ArrayList<Action>();
+    	ArrayList<String> a1 = new ArrayList<String>();
+    	a1.add("drive1");
+    	actions.add(new DriveAction(0.4,3000,new ArrayList<String>(),talon1,talon2,talon3,talon4,"drive1"));
+    	actions.add(new DriveAction(-0.4,3000,a1,talon1,talon2,talon3,talon4,"drive2"));
+    	ActionList actionList = null;
+    	try {
+			actionList = new ActionList(actions);
+		} catch (DependencyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	while(isEnabled())
+    		actionList.execute();
     }
 
     @Override

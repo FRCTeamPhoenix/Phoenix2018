@@ -3,7 +3,7 @@ package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
-import org.usfirst.frc.team2342.robot.talons.SmartTalon;
+import org.usfirst.frc.team2342.util.NetworkTableInterface;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -33,7 +33,7 @@ public class Robot extends RobotBase {
     	PCM = new PCMHandler(11);
     	TalonSRX talon1 = new TalonSRX(0);
     	TalonSRX talon2 = new TalonSRX(1);
-    	boxManipulator = new BoxManipulator(talon1, talon2);
+    	boxManipulator = new BoxManipulator(talon1, talon2, PCM);
     	cascadeElevator = new CascadeElevator(talon1, talon2);
     }
 
@@ -47,13 +47,6 @@ public class Robot extends RobotBase {
     		r = joystickR.getRawAxis(1);
     		l = joystickL.getRawAxis(1);
     		
-    		talonFR.goAt(-speedv*r);
-    		talonFL.goAt(speedv*l);
-    		talonBR.goAt(-speedv*r);
-    		talonBL.goAt(speedv*l);
-    		
-    		
-    	
     		//teliopInit
     	
     		/*if (joystick1.getRawButton(1)) {
@@ -84,18 +77,14 @@ public class Robot extends RobotBase {
 
     public void test() {
     	while(isEnabled()){
-	    	talonFR.goVoltage(-0.4);
-	    	talonFL.goVoltage(0.4);
-	    	talonBR.goVoltage(-0.4);
-	    	talonBL.goVoltage(0.4);
-    	
-
 	    	//NetworkTableInterface.setValue("test", "firstVar", "sup");
 	    	//NetworkTableInterface.setValue("test/nextlevel", "firstVar", 1);
 	    	//NetworkTableInterface.setValue("test/nextlevel/wow", "firstVar", "sup");
 	    	//SmartDashboard.putString("DB/String 1", NetworkTableInterface.getString("test/nextlevel/wow", "firstVar"));
-    	}
 
+	    	NetworkTableInterface.setTalon("talons", 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, "Magic Wizard Googenheimer");
+
+    	}
     }
 
 	@Override

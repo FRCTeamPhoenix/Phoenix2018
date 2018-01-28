@@ -48,7 +48,6 @@ public class BoxManipulator extends Subsystem {
 	@Override
 	public void stop() {
 		talon1.set(ControlMode.Current, 0.0);
-		PCM.set(ControlMode.Current, 0.0);
 	}
 
 	@Override

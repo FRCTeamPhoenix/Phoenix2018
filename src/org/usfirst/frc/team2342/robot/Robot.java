@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.RobotBase;
  * This is a demo program showing how to use Mecanum control with the RobotDrive
  * class.
  */
+
 public class Robot extends RobotBase {
 
 	Joystick joystickR = new Joystick(1);
@@ -42,13 +43,13 @@ public class Robot extends RobotBase {
     	double r = joystickR.getRawAxis(1);
     	double l = joystickL.getRawAxis(1);
     	double speedv = 0.5;
+
     	
     	while(isEnabled()){
     		r = joystickR.getRawAxis(1);
     		l = joystickL.getRawAxis(1);
     		
-    		//teliopInit
-    	
+    		//teliopInity
     		/*if (joystick1.getRawButton(1)) {
     			talon1.goDistance(0.25, 0.4);
     			talon2.goDistance(-0.25, 0.4);
@@ -76,7 +77,14 @@ public class Robot extends RobotBase {
     }
 
     public void test() {
+    	PCM.turnOn();
     	while(isEnabled()){
+    		try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    	//NetworkTableInterface.setValue("test", "firstVar", "sup");
 	    	//NetworkTableInterface.setValue("test/nextlevel", "firstVar", 1);
 	    	//NetworkTableInterface.setValue("test/nextlevel/wow", "firstVar", "sup");

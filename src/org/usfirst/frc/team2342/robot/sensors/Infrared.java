@@ -1,4 +1,6 @@
-package org.usfirst.frc.team2342.robot;
+package org.usfirst.frc.team2342.robot.sensors;
+
+import org.usfirst.frc.team2342.robot.Constants;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 

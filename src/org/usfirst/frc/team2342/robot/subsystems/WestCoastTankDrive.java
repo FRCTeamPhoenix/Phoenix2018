@@ -10,8 +10,6 @@ import org.usfirst.frc.team2342.util.Constants;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.Talon;
-
 public class WestCoastTankDrive extends Subsystem {
     
     private static WestCoastTankDrive mInstance = new WestCoastTankDrive();
@@ -26,8 +24,8 @@ public class WestCoastTankDrive extends Subsystem {
     
     private WestCoastTankDrive() {
         leftMaster = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
-        rightMaster = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
         leftSlave = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
+        rightMaster = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
         rightSlave = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
         
         leftSlave.follow(leftMaster);
@@ -41,36 +39,31 @@ public class WestCoastTankDrive extends Subsystem {
         leftMaster.configAllowableClosedloopError(0, Constants.TALON_DISTANCE_SLOT_IDX, 0);
         rightMaster.configAllowableClosedloopError(0, Constants.TALON_DISTANCE_SLOT_IDX, 0);
         
+        // If the talons run indefinitely, the sensors may be reading in the wrong direction,
+        // in which case the sensor phase should be inverted.
         leftMaster.setSensorPhase(false);
         rightMaster.setSensorPhase(false);
         
+        // Invert the appropriate talons
         leftMaster.setInverted(false);
         rightMaster.setInverted(true);
         
+        // Constrain the speed of all talons to [-max, max]
         leftMaster.configNominalOutputForward(0, 0);
         leftMaster.configNominalOutputReverse(0, 0);
         leftMaster.configPeakOutputForward(Constants.WESTCOAST_MAX_SPEED, 0);
         leftMaster.configPeakOutputReverse(-Constants.WESTCOAST_MAX_SPEED, 0);
-        
         rightMaster.configNominalOutputForward(0, 0);
         rightMaster.configNominalOutputReverse(0, 0);
         rightMaster.configPeakOutputForward(Constants.WESTCOAST_MAX_SPEED, 0);
         rightMaster.configPeakOutputReverse(-Constants.WESTCOAST_MAX_SPEED, 0);
-        
-        /*int absolutePosition = leftMaster.getSensorCollection().getPulseWidthPosition();
-		absolutePosition &= 0xFFF;
-        leftMaster.getSensorCollection().setQuadraturePosition(-absolutePosition, 0);
-        
-        absolutePosition = rightMaster.getSensorCollection().getPulseWidthPosition();
-		absolutePosition &= 0xFFF;
-        rightMaster.getSensorCollection().setQuadraturePosition(absolutePosition, 0);*/
         
         // TODO Temporary! Once JsonHelper works, we should use that.
         PIDGains fakeGains = new PIDGains();
         fakeGains.p = 0.13333;
         fakeGains.i = 0;
         fakeGains.d = 0.05;
-        fakeGains.ff = 0.0;
+        fakeGains.ff = 0.0; // Note: only velocity mode do we need ff
         fakeGains.izone = 0;
         
         // TODO are these the right indices of the talons?
@@ -78,6 +71,7 @@ public class WestCoastTankDrive extends Subsystem {
         PIDGains leftDistanceGains = fakeGains;//config.talons.get(0).distanceGains;
         PIDGains rightVelocityGains = fakeGains;//config.talons.get(1).velocityGains;
         PIDGains rightDistanceGains = fakeGains;//config.talons.get(1).distanceGains;
+        
         
         WestCoastTankDrive.loadGains(leftMaster, Constants.TALON_VELOCITY_SLOT_IDX, leftVelocityGains);
         WestCoastTankDrive.loadGains(leftMaster, Constants.TALON_DISTANCE_SLOT_IDX, leftDistanceGains);
@@ -137,15 +131,18 @@ public class WestCoastTankDrive extends Subsystem {
     public void setHighGear() {
         PCM.setHighGear(true);
         PCM.setLowGear(false);
+        PCM.compressorRegulate();
     }
     
     public void setLowGear() {
         PCM.setHighGear(false);
         PCM.setLowGear(true);
+        PCM.compressorRegulate();
     }
     
-    public void regulateCompressor() {
-    	System.out.println("left: " + leftMaster.getSelectedSensorPosition(0) + ", right: " + rightMaster.getSelectedSensorPosition(0));
+    public void setNoGear() {
+    	PCM.setHighGear(false);
+    	PCM.setLowGear(false);
     	PCM.compressorRegulate();
     }
     

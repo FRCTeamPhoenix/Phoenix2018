@@ -43,6 +43,24 @@ public class NetworkTableInterface {
 	}
 	
 	@SuppressWarnings("deprecation")
+	public static void setValue(String subtablePath, String varName, boolean value){
+		String[] tables = splitString(subtablePath);
+		NetworkTable table = NetworkTable.getTable(tables[0]);
+		ITable subtable = null;
+		if(tables.length > 1)
+			subtable = table.getSubTable(tables[1]);
+		for(int i = 2; i < tables.length; i++){
+			subtable = subtable.getSubTable(tables[i]);
+		}
+		if(tables.length == 1){
+			table.putBoolean(varName, value);
+		}else{
+			subtable.putBoolean(varName, value);
+		}
+	}
+	
+	
+	@SuppressWarnings("deprecation")
 	public static double getDouble(String subtablePath, String varName){
 		String[] tables = splitString(subtablePath);
 		NetworkTable table = NetworkTable.getTable(tables[0]);
@@ -74,6 +92,37 @@ public class NetworkTableInterface {
 		}else{
 			return subtable.getString(varName, "NULL");
 		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static boolean getBool(String subtablePath, String varName){
+		String[] tables = splitString(subtablePath);
+		NetworkTable table = NetworkTable.getTable(tables[0]);
+		ITable subtable = null;
+		if(tables.length > 1)
+			subtable = table.getSubTable(tables[1]);
+		for(int i = 2; i < tables.length; i++){
+			subtable = subtable.getSubTable(tables[i]);
+		}
+		if(tables.length == 1){
+			return table.getBoolean(varName, false);
+		}else{
+			return subtable.getBoolean(varName, false);
+		}
+	}
+	
+	public static void setTalon(String talonTableLocation, int id, double p, double i, double d, double maxSpeed, double ff, double rr, boolean inverted, String desc){
+		String talonLocation = talonTableLocation+"/talon["+id+"]";
+		NetworkTableInterface.setValue(talonLocation, "p", p);
+		NetworkTableInterface.setValue(talonLocation, "i", i);
+		NetworkTableInterface.setValue(talonLocation, "d", d);
+		NetworkTableInterface.setValue(talonLocation, "maxSpeed", maxSpeed);
+		NetworkTableInterface.setValue(talonLocation, "ff", ff);
+		NetworkTableInterface.setValue(talonLocation, "rr", rr);
+		
+		NetworkTableInterface.setValue(talonLocation, "inverted", inverted);
+		
+		NetworkTableInterface.setValue(talonLocation, "Desc", desc);
 	}
 	
 	private static String[] splitString(String target){

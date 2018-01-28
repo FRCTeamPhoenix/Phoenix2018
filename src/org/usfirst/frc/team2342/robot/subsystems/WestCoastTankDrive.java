@@ -34,27 +34,43 @@ public class WestCoastTankDrive extends Subsystem {
         rightSlave.follow(rightMaster);
         
         leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
-        leftMaster.setSensorPhase(true);
         rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
-        rightMaster.setSensorPhase(true);
+        leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_DISTANCE_SLOT_IDX, 0);
+        rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_DISTANCE_SLOT_IDX, 0);
+        
+        leftMaster.configAllowableClosedloopError(0, Constants.TALON_DISTANCE_SLOT_IDX, 0);
+        rightMaster.configAllowableClosedloopError(0, Constants.TALON_DISTANCE_SLOT_IDX, 0);
+        
+        leftMaster.setSensorPhase(false);
+        rightMaster.setSensorPhase(false);
+        
+        leftMaster.setInverted(false);
+        rightMaster.setInverted(true);
         
         leftMaster.configNominalOutputForward(0, 0);
         leftMaster.configNominalOutputReverse(0, 0);
-        leftMaster.configPeakOutputForward(1, 0);
-        leftMaster.configPeakOutputReverse(-1, 0);
+        leftMaster.configPeakOutputForward(Constants.WESTCOAST_MAX_SPEED, 0);
+        leftMaster.configPeakOutputReverse(-Constants.WESTCOAST_MAX_SPEED, 0);
         
         rightMaster.configNominalOutputForward(0, 0);
         rightMaster.configNominalOutputReverse(0, 0);
-        rightMaster.configPeakOutputForward(1, 0);
-        rightMaster.configPeakOutputReverse(-1, 0);
+        rightMaster.configPeakOutputForward(Constants.WESTCOAST_MAX_SPEED, 0);
+        rightMaster.configPeakOutputReverse(-Constants.WESTCOAST_MAX_SPEED, 0);
+        
+        /*int absolutePosition = leftMaster.getSensorCollection().getPulseWidthPosition();
+		absolutePosition &= 0xFFF;
+        leftMaster.getSensorCollection().setQuadraturePosition(-absolutePosition, 0);
+        
+        absolutePosition = rightMaster.getSensorCollection().getPulseWidthPosition();
+		absolutePosition &= 0xFFF;
+        rightMaster.getSensorCollection().setQuadraturePosition(absolutePosition, 0);*/
         
         // TODO Temporary! Once JsonHelper works, we should use that.
-        
         PIDGains fakeGains = new PIDGains();
-        fakeGains.p = 0.113333;
+        fakeGains.p = 0.13333;
         fakeGains.i = 0;
-        fakeGains.d = 0.0;
-        fakeGains.ff = 0.1097;
+        fakeGains.d = 0.05;
+        fakeGains.ff = 0.0;
         fakeGains.izone = 0;
         
         // TODO are these the right indices of the talons?
@@ -75,12 +91,6 @@ public class WestCoastTankDrive extends Subsystem {
     }
     
     public void setOpenLoop(double left, double right) {
-        if (!leftMaster.getControlMode().equals(ControlMode.PercentOutput)) {
-            //leftMaster.configNominalOutputForward(0, 0);
-            //rightMaster.configNominalOutputForward(0, 0);
-            //leftMaster.configNominalOutputReverse(0, 0);
-            //rightMaster.configNominalOutputReverse(0, 0);
-        }
         leftMaster.set(ControlMode.PercentOutput, left);
         rightMaster.set(ControlMode.PercentOutput, right);
     }
@@ -97,8 +107,8 @@ public class WestCoastTankDrive extends Subsystem {
        if (!leftMaster.getControlMode().equals(ControlMode.Position)) {
            leftMaster.selectProfileSlot(Constants.TALON_DISTANCE_SLOT_IDX, 0);
        }
-       leftMaster.set(ControlMode.Position, left);
-       rightMaster.set(ControlMode.Position, right);
+       leftMaster.set(ControlMode.Position, left * Constants.TALON_TICKS_PER_REV);
+       rightMaster.set(ControlMode.Position, right * Constants.TALON_TICKS_PER_REV);
     }
     
     @Override
@@ -135,6 +145,7 @@ public class WestCoastTankDrive extends Subsystem {
     }
     
     public void regulateCompressor() {
+    	System.out.println("left: " + leftMaster.getSelectedSensorPosition(0) + ", right: " + rightMaster.getSelectedSensorPosition(0));
     	PCM.compressorRegulate();
     }
     

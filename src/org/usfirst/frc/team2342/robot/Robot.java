@@ -20,9 +20,18 @@ public class Robot extends SampleRobot {
 
     @Override
     public void operatorControl() {
+    	westCoast.setDistance(5.0, 5.0);
     	while(isEnabled()){
-    		westCoast.setVelocity(joystickL.getRawAxis(1), joystickR.getRawAxis(1));
+    		//if (joystickR.getRawButton(1)) { 
+    			//System.out.println("Setting for 8000 ticks");
+    			//westCoast.setVelocity(joystickL.getRawAxis(1), joystickR.getRawAxis(1));
+    		//}
     		westCoast.regulateCompressor();
+    		try {
+    		    Thread.sleep(10);
+    		} catch(InterruptedException ex) {
+    		    Thread.currentThread().interrupt();
+    		}
     	}
     }
 

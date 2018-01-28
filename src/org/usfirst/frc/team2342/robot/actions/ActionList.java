@@ -1,58 +1,66 @@
 package org.usfirst.frc.team2342.robot.actions;
+import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
+import org.usfirst.frc.team2342.robot.talons.SmartTalon;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.ArrayList;
 import java.util.Scanner;
-
-import org.usfirst.frc.team2342.robot.talons.SmartTalon;
 
 public class ActionList{
 	
 	private ArrayList<Action> actions;
+	private ArrayList<String> names;
 	
-	private boolean emergancyStop = false;
-	
-	//Might be used for testing later
-	private Scanner console;
-	
-	
-	
-	public ActionList(ArrayList<Action> actions){
-		
+	public ActionList(ArrayList<Action> actions) throws DependencyException {
 		this.actions = actions;
+		names = new ArrayList<String>();
+		for(Action action: actions){
+			if(names.contains(action.name)) {
+				throw new DependencyException();
+			}
+			names.add(action.name);
+		}
+		System.out.println(names);
 		
+		for(Action action : actions) {
+			for(String dep : action.dependencies) {
+				if(!names.contains(dep))
+					throw new DependencyException();
+			}
+		}
 	}
-	
-	/*
-	//Testing constructor
-	public ActionList(){
-		
-		this.actions = ;
-		
-	}*/
 	
 	//Execute all actions who's conditions have been satisfied
-	public void execute(SmartTalon talon1, SmartTalon talon2, SmartTalon talon3, SmartTalon talon4){
-		
-		for(Action action: actions){
+	public void execute() {
+		int index = 0;
+		for(Action action : actions) {
+			boolean dependenciesMet = true;
 			
-			if(!emergancyStop)
-				action.run(actions, talon1, talon2, talon3, talon4);
+			for(String dep : action.dependencies) {
+				for(Action potentialDependency : actions) {
+					if(!(potentialDependency.name.equals(dep) && potentialDependency.state == Action.State.FINISHED)) 
+						dependenciesMet = false;
+				}
+			}
 			
-			else
-				action.stop(talon1, talon2, talon3, talon4);
+			System.out.println(action.name + " " + dependenciesMet);
+			if(action.state == Action.State.FINISHED || !dependenciesMet)
+				continue;
+			
+			if(action.state == Action.State.NOT_STARTED) {
+				action.start();
+				action.state = Action.State.IN_PROGRESS;
+			}
+			
+			if(action.state == Action.State.IN_PROGRESS)
+				action.run();
+			
+			if(action.isCompleted()) {
+				action.stop();
+				action.state = Action.State.FINISHED;
+				continue;
+			}
 		}
-		
-		
-	}
-	
-	public void stop(){
-		
-		emergancyStop = true;
-	}
-	
-	public void start(){
-		
-		emergancyStop = false;
-	}
-	
-	
+	}	
 }

@@ -1,91 +1,33 @@
 /*Base Action Class, not to be mistaken for usefull Action classes*/
 
 package org.usfirst.frc.team2342.robot.actions;
+import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.ArrayList;
 
-import org.usfirst.frc.team2342.robot.talons.SmartTalon;
+public abstract class Action {
+	public State state;
 
-public class Action {
+	public String name = "";
 	
-	//0 = not yet running
-	//1 = in progress
-	//2 = completed
-	private static int currentState;
-
-	//Tag associated with the action for dependency detection
-	private static String tag = "";
+	public ArrayList<String> dependencies;
 	
-	private static ArrayList<String> dependencies = new ArrayList<String>();
+	public abstract void start();
+	public abstract void stop();
+	public abstract void run();
+	public abstract boolean isCompleted();
 	
-	public Action(String tag, ArrayList<String> dependencies){
-		this.tag = tag;
-
-		this.dependencies.addAll(dependencies);
-		
-		currentState = 0;
-	}
-
-	//Are the dependencies fulfilled?
-	public boolean dependenceFufilled(ArrayList<Action> actions){
-		
-		int ammountFulfilled = 0;
-		
-		if(dependencies.get(0).equals(""))
-			return true;
-		
-		for(Action action : actions){
-			
-			for(String dependency : dependencies){
-			
-				if(action.gettag().equals(dependency)){
-					
-					ammountFulfilled++;
-					
-				}
-			}
-		}
-		
-		return (ammountFulfilled == dependencies.size());
+	public Action(String name, ArrayList<String> dependencies) {
+		state = State.NOT_STARTED;
+		this.name = name;
+		this.dependencies = dependencies;
 	}
 	
-	//Start action
-	public void start(SmartTalon talon1, SmartTalon talon2, SmartTalon talon3, SmartTalon talon4){
-		
-		currentState = 1;
-	}
-	
-	//See if action is done
-	public boolean isCompleted()
-	{
-		return (currentState == 2);
-	}
-	
-	//If the dependencies are fulfilled 
-	public void run(ArrayList<Action> actions, SmartTalon talon1, SmartTalon talon2, SmartTalon talon3, SmartTalon talon4){
-		
-		if(!((currentState == 1) || isCompleted()) && dependenceFufilled(actions)){
-			
-			start(talon1, talon2, talon3, talon4);
-		}
-	}
-	
-	//Stop action
-	public void stop(SmartTalon talon1, SmartTalon talon2, SmartTalon talon3, SmartTalon talon4){
-		
-		currentState = 2;
-	}
-	
-	//Reset the action so it can go again
-	public void reset(SmartTalon talon1, SmartTalon talon2, SmartTalon talon3, SmartTalon talon4){
-		
-		stop(talon1, talon2, talon3, talon4);
-		
-		currentState = 0;
-	}
-	
-	//Get the action tag
-	public String gettag(){
-		
-		return tag;
+	enum State{
+		NOT_STARTED,
+		IN_PROGRESS,
+		FINISHED
 	}
 }

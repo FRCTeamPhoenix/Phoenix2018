@@ -13,6 +13,15 @@ public class PCMHandler {
 		compressor = new Compressor(port);
 		compressor.setClosedLoopControl(true);
 	}
+	
+	public void turnOn(){
+		compressor.setClosedLoopControl(true);
+	}
+	
+	public void turnOff(){
+		compressor.setClosedLoopControl(false);
+	}
+	
 	public void setLowGear(boolean value) {
 		lowgearSol.set(value);
 		
@@ -24,9 +33,14 @@ public class PCMHandler {
 	
 	public double getPressure (){
 		return compressor.getCompressorCurrent();
-		
-
+	}
 	
+	public void compressorRegulate () {
+		if (compressor.getPressureSwitchValue()) {
+			compressor.start();
+		} else {
+			compressor.stop();
+		}
 	}
 	
 }

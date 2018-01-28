@@ -7,7 +7,7 @@ import org.usfirst.frc.team2342.loops.Looper;
 import org.usfirst.frc.team2342.robot.PCMHandler;
 import org.usfirst.frc.team2342.util.Constants;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Talon;
@@ -18,7 +18,7 @@ public class WestCoastTankDrive extends Subsystem {
     private WPI_TalonSRX leftMaster, rightMaster, leftSlave, rightSlave;
     private PCMHandler PCM;
     
-    Json config = JsonHelper.getConfig();
+    //Json config = JsonHelper.getConfig();
     
     public static WestCoastTankDrive getInstance() {
         return mInstance;
@@ -33,16 +33,35 @@ public class WestCoastTankDrive extends Subsystem {
         leftSlave.follow(leftMaster);
         rightSlave.follow(rightMaster);
         
+        leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
+        leftMaster.setSensorPhase(true);
+        rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
+        rightMaster.setSensorPhase(true);
+        
         leftMaster.configNominalOutputForward(0, 0);
         leftMaster.configNominalOutputReverse(0, 0);
+        leftMaster.configPeakOutputForward(1, 0);
+        leftMaster.configPeakOutputReverse(-1, 0);
+        
+        rightMaster.configNominalOutputForward(0, 0);
+        rightMaster.configNominalOutputReverse(0, 0);
         rightMaster.configPeakOutputForward(1, 0);
         rightMaster.configPeakOutputReverse(-1, 0);
         
+        // TODO Temporary! Once JsonHelper works, we should use that.
+        
+        PIDGains fakeGains = new PIDGains();
+        fakeGains.p = 0.113333;
+        fakeGains.i = 0;
+        fakeGains.d = 0.0;
+        fakeGains.ff = 0.1097;
+        fakeGains.izone = 0;
+        
         // TODO are these the right indices of the talons?
-        PIDGains leftVelocityGains = config.talons.get(0).velocityGains;
-        PIDGains leftDistanceGains = config.talons.get(0).distanceGains;
-        PIDGains rightVelocityGains = config.talons.get(1).velocityGains;
-        PIDGains rightDistanceGains = config.talons.get(1).distanceGains;
+        PIDGains leftVelocityGains = fakeGains;//config.talons.get(0).velocityGains;
+        PIDGains leftDistanceGains = fakeGains;//config.talons.get(0).distanceGains;
+        PIDGains rightVelocityGains = fakeGains;//config.talons.get(1).velocityGains;
+        PIDGains rightDistanceGains = fakeGains;//config.talons.get(1).distanceGains;
         
         WestCoastTankDrive.loadGains(leftMaster, Constants.TALON_VELOCITY_SLOT_IDX, leftVelocityGains);
         WestCoastTankDrive.loadGains(leftMaster, Constants.TALON_DISTANCE_SLOT_IDX, leftDistanceGains);
@@ -57,10 +76,10 @@ public class WestCoastTankDrive extends Subsystem {
     
     public void setOpenLoop(double left, double right) {
         if (!leftMaster.getControlMode().equals(ControlMode.PercentOutput)) {
-            leftMaster.configNominalOutputForward(0, 0);
-            rightMaster.configNominalOutputForward(0, 0);
-            leftMaster.configNominalOutputReverse(0, 0);
-            rightMaster.configNominalOutputReverse(0, 0);
+            //leftMaster.configNominalOutputForward(0, 0);
+            //rightMaster.configNominalOutputForward(0, 0);
+            //leftMaster.configNominalOutputReverse(0, 0);
+            //rightMaster.configNominalOutputReverse(0, 0);
         }
         leftMaster.set(ControlMode.PercentOutput, left);
         rightMaster.set(ControlMode.PercentOutput, right);
@@ -70,8 +89,8 @@ public class WestCoastTankDrive extends Subsystem {
         if (!leftMaster.getControlMode().equals(ControlMode.Velocity)) {
             leftMaster.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
         }
-        leftMaster.set(ControlMode.Velocity, left);
-        rightMaster.set(ControlMode.Velocity, right);
+        leftMaster.set(ControlMode.Velocity, left * Constants.TALON_RPM_TO_VELOCITY * Constants.WESTCOAST_VELOCITY_RPM_SCALE);
+        rightMaster.set(ControlMode.Velocity, right * Constants.TALON_RPM_TO_VELOCITY * Constants.WESTCOAST_VELOCITY_RPM_SCALE);
     }
     
     public void setDistance(double left, double right) {
@@ -113,6 +132,10 @@ public class WestCoastTankDrive extends Subsystem {
     public void setLowGear() {
         PCM.setHighGear(false);
         PCM.setLowGear(true);
+    }
+    
+    public void regulateCompressor() {
+    	PCM.compressorRegulate();
     }
     
     private static void zeroEncoders(WPI_TalonSRX talon) {

@@ -3,19 +3,21 @@ package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
+import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.NetworkTableInterface;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotBase;
 
 /**
  * This is a demo program showing how to use Mecanum control with the RobotDrive
  * class.
  */
-public class Robot extends RobotBase {
-
+public class Robot extends IterativeRobot {
+	public static final WestCoastTankDrive kDriveTrain = new WestCoastTankDrive();
+	
 	Joystick joystickR = new Joystick(1);
 	Joystick joystickL = new Joystick(2);
 	
@@ -37,6 +39,64 @@ public class Robot extends RobotBase {
     	cascadeElevator = new CascadeElevator(talon1, talon2);
     }
 
+    public void autonomousInit() {
+    	
+    }
+    
+    public void autonomousPeriodic() {
+    	//NetworkTableInterface.setValue("test", "firstVar", "sup");
+    	//NetworkTableInterface.setValue("test/nextlevel", "firstVar", 1);
+    	//NetworkTableInterface.setValue("test/nextlevel/wow", "firstVar", "sup");
+    	//SmartDashboard.putString("DB/String 1", NetworkTableInterface.getString("test/nextlevel/wow", "firstVar"));
+
+    	NetworkTableInterface.setTalon("talons", 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, "Magic Wizard Googenheimer");
+    }
+    
+    public void disabledInit() {
+    	
+    }
+    
+    public void disabledPeriodic() {
+    	
+    }
+    
+    public void teleopInit() {
+    	
+    }
+    
+    public void teleopPeriodic() {
+    	double r = joystickR.getRawAxis(1);
+		double l = joystickL.getRawAxis(1);
+		
+		//teliopInit
+	
+		/*if (joystick1.getRawButton(1)) {
+			talon1.goDistance(0.25, 0.4);
+			talon2.goDistance(-0.25, 0.4);
+			talon3.goDistance(0.25, 0.4);
+			talon4.goDistance(-0.25, 0.4);
+		}*/
+		
+    		//teliopPeriodic
+    	if (joystickR.getRawButton(8)) {
+    		PCM.setHighGear(true);
+    		PCM.setLowGear(false);
+    	} else {
+    		PCM.setHighGear(false);
+    		PCM.setLowGear(true);
+    	}
+	
+    	PCM.compressorRegulate();
+    }
+    
+    public void testInit() {
+    	
+    }
+    
+    public void testPeriodic() {
+    	
+    }
+    
     public void operatorControl() {
 
     	double r = joystickR.getRawAxis(1);

@@ -13,7 +13,7 @@ import org.usfirst.frc.team2342.loops.Looper;
  * initializing all member components at the start of the match.
  */
 
-public abstract class Subsystem {
+public abstract class SubsystemOld {
     public void writeToLog() {
     };
 

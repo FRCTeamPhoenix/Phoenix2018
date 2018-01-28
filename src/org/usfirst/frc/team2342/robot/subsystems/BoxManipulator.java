@@ -6,6 +6,8 @@ import org.usfirst.frc.team2342.robot.PCMHandler;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.command.Subsystem;
+
 public class BoxManipulator extends Subsystem {
 	private TalonSRX talon1;
 	private TalonSRX talon2;
@@ -39,25 +41,17 @@ public class BoxManipulator extends Subsystem {
 		
 	}
 	
-	@Override
 	public void outputToSmartDashboard() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void stop() {
 		talon1.set(ControlMode.Current, 0.0);
 	}
 
-	@Override
-	public void zeroSensors() {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void registerEnabledLoops(Looper enabledLooper) {
+	protected void initDefaultCommand() {
 		// TODO Auto-generated method stub
 		
 	}

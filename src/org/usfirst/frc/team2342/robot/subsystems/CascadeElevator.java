@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CascadeElevator extends Subsystem{
@@ -70,27 +71,28 @@ public class CascadeElevator extends Subsystem{
 		goToPosition(TOP);
 	}
 	
-	@Override
 	public void outputToSmartDashboard() {
 		SmartDashboard.putString("DB/String 0", "Motor Output: " + (talon1.getMotorOutputPercent()*100) + "%");
 		SmartDashboard.putString("DB/String 1", "Position: " + talon1.getSelectedSensorPosition(0));
 	}
 
-	@Override
 	public void stop() {
 		talon1.set(ControlMode.Current, 0.0);
 	}
 
-	@Override
 	public void zeroSensors() {
 		talon1.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 		talon2.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 	}
 
-	@Override
 	public void registerEnabledLoops(Looper enabledLooper) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void initDefaultCommand() {
+		// Set the default command for a subsystem here.
+		// setDefaultCommand(new MySpecialCommand());
 	}
 	
 }

@@ -2,7 +2,6 @@ package org.usfirst.frc.team2342.robot;
 
 
 import org.usfirst.frc.team2342.robot.sensors.Gyro;
-import org.usfirst.frc.team2342.robot.talons.SmartTalon;
 import org.usfirst.frc.team2342.util.NetworkTableInterface;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -18,10 +17,6 @@ public class Robot extends SampleRobot {
 	
 	Joystick joystick1 = new Joystick(1);
 	Joystick joystick2 = new Joystick(2);
-	SmartTalon talon1 = new SmartTalon(1);
-	SmartTalon talon2 = new SmartTalon(2, true, ControlMode.Current);
-	SmartTalon talon3 = new SmartTalon(3);
-	SmartTalon talon4 = new SmartTalon(4, true, ControlMode.Current);
 	Gyro imu;
 
 	PCMHandler PCM;

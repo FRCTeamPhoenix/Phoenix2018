@@ -1,83 +1,103 @@
 package org.usfirst.frc.team2342.robot;
 
 
-import org.usfirst.frc.team2342.robot.sensors.Gyro;
+import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
+import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.util.NetworkTableInterface;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.RobotBase;
 
 /**
  * This is a demo program showing how to use Mecanum control with the RobotDrive
  * class.
  */
-public class Robot extends SampleRobot {
-	
-	Joystick joystick1 = new Joystick(1);
-	Joystick joystick2 = new Joystick(2);
-	Gyro imu;
 
+public class Robot extends RobotBase {
+
+	Joystick joystickR = new Joystick(1);
+	Joystick joystickL = new Joystick(2);
+	
+	TalonSRX talonFR = new TalonSRX(1);
+	TalonSRX talonFL = new TalonSRX(2);
+	TalonSRX talonBR = new TalonSRX(3);
+	TalonSRX talonBL = new TalonSRX(4);
+	
 	PCMHandler PCM;
+	
+	private static BoxManipulator boxManipulator;
+	private static CascadeElevator cascadeElevator;
 
     public Robot() {
-    	imu = new Gyro();
-    	imu.init();
-    	PCM = new PCMHandler(5);
-    	PCM.turnOn();
+    	PCM = new PCMHandler(11);
+    	TalonSRX talon1 = new TalonSRX(0);
+    	TalonSRX talon2 = new TalonSRX(1);
+    	boxManipulator = new BoxManipulator(talon1, talon2, PCM);
+    	cascadeElevator = new CascadeElevator(talon1, talon2);
     }
 
-    @Override
     public void operatorControl() {
 
-    	double y = joystick1.getY();
-    	//double y2 = joystick1.getRawAxis(3);
+    	double r = joystickR.getRawAxis(1);
+    	double l = joystickL.getRawAxis(1);
     	double speedv = 0.5;
-    	PCM.turnOn(); 
+
+    	
     	while(isEnabled()){
-    		y = joystick1.getY();
-    		//y2 = joystick2.getY();
+    		r = joystickR.getRawAxis(1);
+    		l = joystickL.getRawAxis(1);
     		
-    		//SmartDashboard.putString("DB/String 1", "y2 (24): " + String.valueOf(y2));
+    		//teliopInity
+    		/*if (joystick1.getRawButton(1)) {
+    			talon1.goDistance(0.25, 0.4);
+    			talon2.goDistance(-0.25, 0.4);
+    			talon3.goDistance(0.25, 0.4);
+    			talon4.goDistance(-0.25, 0.4);
+    		}*/
     		
-    		//talon1.goAt(speedv*y);
-    		//talon2.goAt(-speedv*y2);    		
-    		//talon3.goAt(speedv*y);
-    		//talon4.goAt(-speedv*y2);
+	    		//teliopPeriodic
+	    	if (joystickR.getRawButton(8)) {
+	    		PCM.setHighGear(true);
+	    		PCM.setLowGear(false);
+	    	} else {
+	    		PCM.setHighGear(false);
+	    		PCM.setLowGear(true);
+	    	}
     	
-    		//teliopInit
-    	
-    		//if (joystick1.getRawButton(1)){
-    			//imu.calibrate(); 
-    			//startAngle = imu.getAngleY();
-    		//}
-	    	//teliopPeriodic
+	    	PCM.compressorRegulate();
 	    	
-    	
     	}
     	
     }
 
-    @Override
     public void autonomous() {
     	
     }
 
-    @Override
     public void test() {
     	PCM.turnOn();
-    	imu.reset();
-    	imu.setGoal();
     	while(isEnabled()){
-    		NetworkTableInterface.setValue("Sensors/Gyro", "distanceFromGoal", imu.angleFromGoal());
     		try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    	}
+	    	//NetworkTableInterface.setValue("test", "firstVar", "sup");
+	    	//NetworkTableInterface.setValue("test/nextlevel", "firstVar", 1);
+	    	//NetworkTableInterface.setValue("test/nextlevel/wow", "firstVar", "sup");
+	    	//SmartDashboard.putString("DB/String 1", NetworkTableInterface.getString("test/nextlevel/wow", "firstVar"));
 
+	    	NetworkTableInterface.setTalon("talons", 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, "Magic Wizard Googenheimer");
+
+    	}
     }
+
+	@Override
+	public void startCompetition() {
+		// TODO Auto-generated method stub
+		
+	}
 }

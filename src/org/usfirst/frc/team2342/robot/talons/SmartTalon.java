@@ -1,19 +1,6 @@
-package org.usfirst.frc.team2342.robot.talons;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
-<<<<<<< HEAD
-import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.PIDSourceType;
-
-
-public class SmartTalon extends WPI_TalonSRX implements PIDSource {
-=======
 public class SmartTalon extends WPI_TalonSRX {
     
->>>>>>> refs/remotes/origin/develop
     // put a minus sign in front of all setpoints,
     // used for reversed-polarity talons and devices
     private boolean inverted;
@@ -21,10 +8,6 @@ public class SmartTalon extends WPI_TalonSRX {
     // maximum forward and reverse speeds
     private double maxForwardSpeed;
     private double maxReverseSpeed;
-<<<<<<< HEAD
-    private PIDSourceType pidSource;
-=======
->>>>>>> refs/remotes/origin/develop
     
     // current mode
     private ControlMode mode;
@@ -38,11 +21,7 @@ public class SmartTalon extends WPI_TalonSRX {
     }
     
     public SmartTalon(int deviceNumber, boolean inverted, ControlMode initialMode) {
-<<<<<<< HEAD
-        this(deviceNumber, inverted, initialMode, FeedbackDevice.CTRE_MagEncoder_Relative);
-=======
         this(deviceNumber, inverted, initialMode, FeedbackDevice.QuadEncoder);
->>>>>>> refs/remotes/origin/develop
     }
     
     public SmartTalon(int deviceNumber, boolean inverted, ControlMode initialMode, FeedbackDevice device) {
@@ -53,11 +32,7 @@ public class SmartTalon extends WPI_TalonSRX {
         maxReverseSpeed = 1.0;
 
         velocityGains = new PIDGains(0, 0, 0, 0, 0, 0);
-<<<<<<< HEAD
-        distanceGains = new PIDGains(0.02, 0.002, 0, 0, 0, 0);
-=======
         distanceGains = new PIDGains(0, 0, 0, 0, 0, 0);
->>>>>>> refs/remotes/origin/develop
         mode = initialMode;
 
         if (ControlMode.Current.equals(initialMode))
@@ -78,10 +53,6 @@ public class SmartTalon extends WPI_TalonSRX {
         config_IntegralZone(0, velocityGains.getIzone(), 0);
         config_kF(0, velocityGains.getFf(), 0);
         configOpenloopRamp(velocityGains.getRr(), 0);
-<<<<<<< HEAD
-        setPIDSourceType(PIDSourceType.kRate);
-=======
->>>>>>> refs/remotes/origin/develop
     }
 
     private void setToDistance() {
@@ -91,10 +62,6 @@ public class SmartTalon extends WPI_TalonSRX {
         config_IntegralZone(0, distanceGains.getIzone(), 0);
         config_kF(0, distanceGains.getFf(), 0);
         configOpenloopRamp(distanceGains.getRr(), 0);
-<<<<<<< HEAD
-        setPIDSourceType(PIDSourceType.kDisplacement);
-=======
->>>>>>> refs/remotes/origin/develop
     }
 
     
@@ -141,14 +108,10 @@ public class SmartTalon extends WPI_TalonSRX {
         
     }
 
-<<<<<<< HEAD
-    //Go a specific distance, using distance PID gains
-     
-=======
+
     /*
      * Go a specific distance, using distance PID gains
      */
->>>>>>> refs/remotes/origin/develop
     public void goDistance(double distance, double speed) {
         
     	speed = (speed > 1) ? 1 : speed;

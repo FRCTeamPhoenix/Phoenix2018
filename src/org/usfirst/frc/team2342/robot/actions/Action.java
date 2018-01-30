@@ -20,7 +20,11 @@ public class Action {
 	public Action(String tag, ArrayList<String> dependencies){
 		this.tag = tag;
 
-		this.dependencies.addAll(dependencies);
+		if(dependencies == null)
+			this.dependencies.add("");
+		
+		else
+			this.dependencies.addAll(dependencies);
 		
 		currentState = 0;
 	}

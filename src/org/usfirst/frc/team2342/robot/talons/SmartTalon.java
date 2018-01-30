@@ -1,5 +1,14 @@
+package org.usfirst.frc.team2342.robot.talons;
 
-public class SmartTalon extends WPI_TalonSRX {
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
+
+
+public class SmartTalon extends WPI_TalonSRX implements PIDSource {
     
     // put a minus sign in front of all setpoints,
     // used for reversed-polarity talons and devices
@@ -15,6 +24,8 @@ public class SmartTalon extends WPI_TalonSRX {
     // PID gains for velocity and distance
     private PIDGains velocityGains;
     private PIDGains distanceGains;
+
+	private PIDSourceType pidSource;
     
     public SmartTalon(int deviceNumber) {
         this(deviceNumber, false, ControlMode.Current);

@@ -17,7 +17,7 @@ public class DriveAction extends Action {
 	
 	//Tag associated with the action for dependency detection	
 	//Constructor with a tag taken in for naming
-	public DriveAction(double distance, double angle, int time, String tag, ArrayList<String> dep) {
+	public DriveAction(double distance, double angle, int time, String tag, String dep) {
 		super(tag, dep);
 		this.distance = distance;
 		this.angle = angle;

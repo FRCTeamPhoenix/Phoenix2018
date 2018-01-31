@@ -47,24 +47,32 @@ public class Robot extends SampleRobot {
     public void autonomous() {
     	boolean isEnabled = isEnabled();
     	ArrayList<Action> actions = new ArrayList<Action>();
-    	ArrayList<String> dep1 = new ArrayList<String>();
-    	dep1.add("GO");
     	
-    	actions.add(new DriveAction(-1.0d, 0.0d, 3000, "1", new ArrayList<String>()));
-    	actions.add(new DriveAction(1.0d, 0.0d, 3000, "2", dep1));
+    	actions.add(new DriveAction(0.5d, 0.0d, 3000, "1", "Foward"));
+    	actions.add(new DriveAction(0.0d, 0.0d, 3000, "2", "Stop"));
+    	actions.add(new DriveAction(-0.3d, 0.0d, 2000, "3", "Backward"));
+    	actions.add(new DriveAction(0.0d, 0.0d, 3000, "4", "Stop"));
+    	actions.add(new DriveAction(-0.3d, 0.0d, 1000, "5", "Backward"));
     	
     	ActionList actionsL = null;
 		try {
-			actionsL = new ActionList(actions);
+			actionsL = new ActionList(actions, joystick1);
 		} catch (DependencyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			isEnabled = false;
 		}
 		
+		actionsL.setButton(1);
     	while(isEnabled && isAutonomous()) {
     		actionsL.execute();
-    		isEnabled = isEnabled();
+    		SmartDashboard.putString("DB/String 1", "EMS: " + actionsL.getEMS());
+    		if (actionsL.getEMS() == true) {
+    			actionsL.stopAll();
+    			break;
+    		}
+    		else
+    			isEnabled = isEnabled();
     	}
     }
 

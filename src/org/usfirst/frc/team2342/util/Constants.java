@@ -15,7 +15,7 @@ public class Constants {
 	
 	// Scales the speed of velocity mode
 	public static final double WESTCOAST_VELOCITY_RPM_SCALE = 500.0;
-	public static final double WESTCOAST_MAX_SPEED = 0.4;
+	public static final double WESTCOAST_MAX_SPEED = 1.0;
     
     public static final int PCM_PORT = 11;
     

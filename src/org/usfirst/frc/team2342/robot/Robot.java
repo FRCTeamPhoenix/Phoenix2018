@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends SampleRobot {
 
-	Joystick joystickR = new Joystick(1);
-	Joystick joystickL = new Joystick(2);
 	Joystick gamepad = new Joystick(0);
 	
 	WestCoastTankDrive westCoast = WestCoastTankDrive.getInstance();
@@ -23,12 +21,12 @@ public class Robot extends SampleRobot {
     public void operatorControl() {
     	while(isEnabled()){
     		//Drive with joystick control in velocity mode
-    		westCoast.setOpenLoop(joystickL.getRawAxis(1) + gamepad.getRawAxis(1), joystickR.getRawAxis(1) + gamepad.getRawAxis(3));
+    		westCoast.setOpenLoop(gamepad.getRawAxis(1), gamepad.getRawAxis(3));
     		
     		//Buttons 8 & 9 or (gamepad) 5 & 6 are Low & High gear, respectively
-    		if (joystickL.getRawButton(8) || gamepad.getRawButton(5)) 		westCoast.setLowGear();
-    		else if (joystickL.getRawButton(9) || gamepad.getRawButton(6))	westCoast.setHighGear();
-    		else 															westCoast.setNoGear();
+    		if (gamepad.getRawButton(5)) 		westCoast.setLowGear();
+    		else if (gamepad.getRawButton(6))	westCoast.setHighGear();
+    		else 								westCoast.setNoGear();
     		
     		//Sleep for 0.01s
     		try {

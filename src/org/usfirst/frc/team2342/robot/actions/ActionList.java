@@ -6,6 +6,7 @@ import org.usfirst.frc.team2342.robot.talons.SmartTalon;
 
 public class ActionList{
 	
+	//
 	private ArrayList<Action> actions = new ArrayList<Action>();
 	
 	private boolean emergancyStop = false;

@@ -20,9 +20,8 @@ public class Action {
 	public Action(String tag, ArrayList<String> dependencies){
 		this.tag = tag;
 
-		if(dependencies == null)
+		if(dependencies == null || dependencies.isEmpty() || (dependencies.size() == 0))		
 			this.dependencies.add("");
-		
 		else
 			this.dependencies.addAll(dependencies);
 		
@@ -34,14 +33,14 @@ public class Action {
 		
 		int ammountFulfilled = 0;
 		
-		if(dependencies.get(0).equals(""))
+		if(dependencies == null || !dependencies.isEmpty() || dependencies.get(0).equals(""))
 			return true;
 		
 		for(Action action : actions){
 			
 			for(String dependency : dependencies){
 			
-				if(action.gettag().equals(dependency)){
+				if(action.gettag().equals(dependency) && action.isCompleted()){
 					
 					ammountFulfilled++;
 					

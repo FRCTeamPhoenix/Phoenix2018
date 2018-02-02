@@ -30,6 +30,7 @@ public class Robot extends SampleRobot {
 
     public Robot() {
     	PCM = new PCMHandler(11);
+    	PCM.turnOff();
     }
 
     @Override
@@ -80,9 +81,16 @@ public class Robot extends SampleRobot {
     @Override
     public void autonomous() {
     	
+    	PCM.turnOff();
+    	
+    	ArrayList<String> s = new ArrayList<String>();
+    	s.add("stop");
+    	ArrayList<String> s2 = new ArrayList<String>();
+    	s2.add("");
+    	
     	ArrayList<Action> action = new ArrayList<Action>();
-    	action.add(new Action("1", null));
-    	action.add(new Action("2", null));
+    	action.add(new StopAction("stop", null));
+    	action.add(new DriveAction(0.4, 0, 1, s));
     	
     	ActionList actions = new ActionList(action);
     	
@@ -90,6 +98,8 @@ public class Robot extends SampleRobot {
     	while(isEnabled() && isAutonomous()) {
     		
     		actions.execute(talon1, talon2, talon3, talon4);
+
+    		
     	}
     }
 

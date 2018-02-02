@@ -6,7 +6,7 @@ import org.usfirst.frc.team2342.robot.talons.SmartTalon;
 
 public class ActionList{
 	
-	private ArrayList<Action> actions;
+	private ArrayList<Action> actions = new ArrayList<Action>();
 	
 	private boolean emergancyStop = false;
 	
@@ -39,6 +39,15 @@ public class ActionList{
 			
 			else
 				action.stop(talon1, talon2, talon3, talon4);
+			
+			//DEBUGGING
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 		
 		

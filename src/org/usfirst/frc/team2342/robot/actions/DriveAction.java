@@ -29,12 +29,13 @@ public class DriveAction extends Action {
 	}
 	
 	public void start() {
-		westCoast.setOpenLoop(this.distance, this.distance);
+		westCoast.zeroSensors();
+		westCoast.setDistance(this.distance, this.distance);
 		this.startTime = System.currentTimeMillis();
 	}
 	
 	public void stop() {
-		westCoast.setOpenLoop(0.0d, 0.0d);
+		westCoast.setDistance(0.0d, 0.0d);
 	}
 	
 	public void run() {

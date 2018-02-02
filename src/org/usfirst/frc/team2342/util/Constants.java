@@ -11,6 +11,8 @@ public class Constants {
     
     
     public static final double TALON_TICKS_PER_REV = 4096.0;
+    public static final double TALON_REVS_PER_INCH = 19.6;
+    public static final double TALON_CONVERSION_TO_FEET = (TALON_TICKS_PER_REV * 12) / TALON_REVS_PER_INCH;
 	public static final double TALON_RPM_TO_VELOCITY = TALON_TICKS_PER_REV / 600.0;
 	
 	// Scales the speed of velocity mode

@@ -84,6 +84,14 @@ public class WestCoastTankDrive extends Subsystem {
         
     }
     
+    public int getLeftTicks() {
+    	return this.leftMaster.getActiveTrajectoryPosition();    	
+    }
+    
+    public int getRightTicks() {
+    	return this.rightMaster.getActiveTrajectoryPosition();    	
+    }
+    
     public void setOpenLoop(double left, double right) {
         leftMaster.set(ControlMode.PercentOutput, left);
         rightMaster.set(ControlMode.PercentOutput, right);
@@ -101,8 +109,8 @@ public class WestCoastTankDrive extends Subsystem {
        if (!leftMaster.getControlMode().equals(ControlMode.Position)) {
            leftMaster.selectProfileSlot(Constants.TALON_DISTANCE_SLOT_IDX, 0);
        }
-       leftMaster.set(ControlMode.Position, left * Constants.TALON_TICKS_PER_REV);
-       rightMaster.set(ControlMode.Position, right * Constants.TALON_TICKS_PER_REV);
+       leftMaster.set(ControlMode.Position, -left * Constants.TALON_CONVERSION_TO_FEET);
+       rightMaster.set(ControlMode.Position, -right * Constants.TALON_CONVERSION_TO_FEET);
     }
     
     @Override

@@ -5,6 +5,6 @@ import java.util.ArrayList;
 public class Action {
 	public String Name = "";
 	public String Type = "";
-	public ArrayList<String> dependencies = new ArrayList<String>();
+	public String dependencies = "";
 	public ArrayList<Parameter> Parameters = new ArrayList<Parameter>();
 }

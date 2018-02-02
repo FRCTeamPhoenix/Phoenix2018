@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * class.
  */
 public class Robot extends SampleRobot {
-	Joystick joystick1 = new Joystick(1);
-	Joystick joystick2 = new Joystick(2);
+	Joystick joystick1 = new Joystick(0);
+	Joystick joystick2 = new Joystick(1);
 	WestCoastTankDrive westCoast = WestCoastTankDrive.getInstance();
 
     @Override
@@ -31,14 +31,25 @@ public class Robot extends SampleRobot {
     		y = joystick1.getY();
     		y2 = joystick2.getY();
     		
-    		//SmartDashboard.putString("DB/String 0", "t1: " + String.valueOf(talon1.getSelectedSensorPosition(0)));
-    		//SmartDashboard.putString("DB/String 1", "t2: " + String.valueOf(talon2.getSelectedSensorPosition(0)));
-    		//SmartDashboard.putString("DB/String 2", "t3: " + String.valueOf(talon3.getSelectedSensorPosition(0)));
-    		//SmartDashboard.putString("DB/String 3", "t4: " + String.valueOf(talon4.getSelectedSensorPosition(0)));
-
+    		// high gear
+    		if (joystick1.getRawButton(8))
+    			westCoast.setHighGear();
     		
-    		//SmartDashboard.putString("DB/String 1", "y2 (24): " + String.valueOf(y2));
+    		// low gear
+    		if (joystick1.getRawButton(9))
+    			westCoast.setLowGear();
+    		
+    		// no gear
+    		if (joystick1.getRawButton(10))
+    			westCoast.setNoGear();
+    		
+//    		SmartDashboard.putString("DB/String 3", "Left Encoder: " + westCoast.getLeftTicks());
+//    		SmartDashboard.putString("DB/String 4", "Right Encoder: " + westCoast.getRightTicks());
+    		SmartDashboard.putString("DB/String 5", "y: " + String.valueOf(y));
+    		SmartDashboard.putString("DB/String 6", "y2: " + String.valueOf(y2));
 	    	//teliopPeriodic    	
+    		westCoast.setOpenLoop(0.5 * y, 0.5 * y2);
+    		
     	}
     	
     }
@@ -48,32 +59,41 @@ public class Robot extends SampleRobot {
     	boolean isEnabled = isEnabled();
     	ArrayList<Action> actions = new ArrayList<Action>();
     	
-    	actions.add(new DriveAction(0.5d, 0.0d, 3000, "1", "Foward"));
-    	actions.add(new DriveAction(0.0d, 0.0d, 3000, "2", "Stop"));
-    	actions.add(new DriveAction(-0.3d, 0.0d, 2000, "3", "Backward"));
-    	actions.add(new DriveAction(0.0d, 0.0d, 3000, "4", "Stop"));
-    	actions.add(new DriveAction(-0.3d, 0.0d, 1000, "5", "Backward"));
+    	actions.add(new DriveAction(7.0d, 0.0d, 3000, "1", "Foward"));
+    	actions.add(new DriveAction(0.0d, 0.0d, 1000, "2", "Stop"));
     	
     	ActionList actionsL = null;
 		try {
-			actionsL = new ActionList(actions, joystick1);
+			actionsL = new ActionList(actions);
 		} catch (DependencyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			isEnabled = false;
 		}
 		
-		actionsL.setButton(1);
     	while(isEnabled && isAutonomous()) {
     		actionsL.execute();
-    		SmartDashboard.putString("DB/String 1", "EMS: " + actionsL.getEMS());
-    		if (actionsL.getEMS() == true) {
+    		SmartDashboard.putString("DB/String 1", "EMS: " + joystick1.getRawButton(1));
+    		SmartDashboard.putString("DB/String 0", "Current ACTION: " + actionsL.getAction());
+    		SmartDashboard.putString("DB/String 2", "IS DONE: " + !isEnabled);
+    		
+    		if (joystick1.getRawButton(1)) {
+    			SmartDashboard.putString("DB/String 1", "EMS: " + joystick1.getRawButton(1));
+    			System.out.println("Stopping all actions");
     			actionsL.stopAll();
-    			break;
+    			isEnabled = false;
     		}
+    		
+    		else if (actionsL.isDone()) {
+    			System.out.println("Stopping all actions");
+    			actionsL.stopAll();
+    			isEnabled = false;
+    		}
+    		
     		else
     			isEnabled = isEnabled();
     	}
+    	SmartDashboard.putString("DB/String 2", "IS DONE: " + !isEnabled);
     }
 
     @Override
@@ -83,8 +103,8 @@ public class Robot extends SampleRobot {
 	    	//NetworkTableInterface.setValue("test/nextlevel", "firstVar", 1);
 	    	//NetworkTableInterface.setValue("test/nextlevel/wow", "firstVar", "sup");
 	    	//SmartDashboard.putString("DB/String 1", NetworkTableInterface.getString("test/nextlevel/wow", "firstVar"));
-    		westCoast.setOpenLoop(1.0d, 1.0d);
+    		westCoast.setDistance(1.0d, 1.0d);
     	}
-		westCoast.setOpenLoop(0.0d, 0.0d);
+		westCoast.setDistance(0.0d, 0.0d);
     }
 }

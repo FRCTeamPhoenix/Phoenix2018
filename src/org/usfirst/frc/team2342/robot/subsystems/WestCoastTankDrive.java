@@ -3,6 +3,7 @@ package org.usfirst.frc.team2342.robot.subsystems;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.loops.Looper;
 import org.usfirst.frc.team2342.robot.PCMHandler;
+import org.usfirst.frc.team2342.robot.TalonNWT;
 import org.usfirst.frc.team2342.util.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -127,7 +128,6 @@ public class WestCoastTankDrive extends Subsystem {
     
     @Override
     public void outputToSmartDashboard() {
-        // TODO Auto-generated method stub
     }
 
     @Override

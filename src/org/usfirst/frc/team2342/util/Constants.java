@@ -7,7 +7,7 @@ public class Constants {
     public static final int RIGHT_SLAVE_TALON_ID = 4;
     
     public static final int TALON_VELOCITY_SLOT_IDX = 0;
-    public static final int TALON_DISTANCE_SLOT_IDX = 0;
+    public static final int TALON_DISTANCE_SLOT_IDX = 1;
     
     
     public static final double TALON_TICKS_PER_REV = 4096.0;
@@ -18,5 +18,8 @@ public class Constants {
 	public static final double WESTCOAST_MAX_SPEED = 1.0;
     
     public static final int PCM_PORT = 11;
+    
+    //wher on the smartdashboard talons go
+    public static final String TALON_TABLE_LOCATION = "Talons";
     
 }

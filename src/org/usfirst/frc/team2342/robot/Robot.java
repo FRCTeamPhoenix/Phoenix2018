@@ -23,7 +23,7 @@ public class Robot extends SampleRobot {
     public void operatorControl() {
     	while(isEnabled()){
     		//Drive with joystick control in velocity mode
-    		westCoast.setVelocity(300, 300);
+    		westCoast.setVelocity(100, 100);
     		westCoast.outputToSmartDashboard();
     		//Buttons 8 & 9 or (gamepad) 5 & 6 are Low & High gear, respectively
     		if (gamepad.getRawButton(5))
@@ -35,7 +35,7 @@ public class Robot extends SampleRobot {
     		
     		//Sleep for 0.01s
     		try {
-    		    Thread.sleep(10);
+    		    Thread.sleep(100);
     		} catch(InterruptedException ex) {
     		    Thread.currentThread().interrupt();
     		}

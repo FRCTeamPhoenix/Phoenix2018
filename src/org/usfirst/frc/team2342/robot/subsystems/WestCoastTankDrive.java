@@ -1,5 +1,7 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
+import org.usfirst.frc.team2342.json.Json;
+import org.usfirst.frc.team2342.json.JsonHelper;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.loops.Looper;
 import org.usfirst.frc.team2342.robot.PCMHandler;
@@ -16,17 +18,17 @@ public class WestCoastTankDrive extends Subsystem {
     private WPI_TalonSRX leftA, rightA, leftB, rightB;
     private PCMHandler PCM;
     
-    //Json config = JsonHelper.getConfig();
-    
+  
     public static WestCoastTankDrive getInstance() {
         return mInstance;
     }
     
     private WestCoastTankDrive() {
+        /*Json config = JsonHelper.getConfig();*/
         leftA = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
         rightA = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
-        leftB = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
-        rightB = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
+        leftB = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
+        rightB = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
         
         leftA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
         rightA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
@@ -42,6 +44,8 @@ public class WestCoastTankDrive extends Subsystem {
         // Invert the appropriate talons
         leftA.setInverted(false);
         rightA.setInverted(true);
+        leftB.setInverted(false);
+        rightB.setInverted(true);
         
         // Constrain the speed of all talons to [-max, max]
         leftA.configNominalOutputForward(0, 0);
@@ -66,10 +70,10 @@ public class WestCoastTankDrive extends Subsystem {
         fakeGains.izone = 0;
         
         // TODO are these the right indices of the talons?
-        PIDGains leftVelocityGains = fakeGains;//config.talons.get(0).velocityGains;
-        PIDGains leftDistanceGains = fakeGains;//config.talons.get(0).distanceGains;
-        PIDGains rightVelocityGains = fakeGains;//config.talons.get(1).velocityGains;
-        PIDGains rightDistanceGains = fakeGains;//config.talons.get(1).distanceGains;
+/*        PIDGains leftVelocityGains = //config.talons.get(0).velocityGains;
+        PIDGains leftDistanceGains = //config.talons.get(0).distanceGains;
+        PIDGains rightVelocityGains = //config.talons.get(1).velocityGains;
+        PIDGains rightDistanceGains = //config.talons.get(1).distanceGains;
         
         
         WestCoastTankDrive.loadGains(leftA, Constants.TALON_VELOCITY_SLOT_IDX, leftVelocityGains);
@@ -79,7 +83,7 @@ public class WestCoastTankDrive extends Subsystem {
         WestCoastTankDrive.loadGains(leftB, Constants.TALON_VELOCITY_SLOT_IDX, leftVelocityGains);
         WestCoastTankDrive.loadGains(leftB, Constants.TALON_DISTANCE_SLOT_IDX, leftDistanceGains);
         WestCoastTankDrive.loadGains(rightB, Constants.TALON_VELOCITY_SLOT_IDX, rightVelocityGains);
-        WestCoastTankDrive.loadGains(rightB, Constants.TALON_DISTANCE_SLOT_IDX, rightDistanceGains);
+        WestCoastTankDrive.loadGains(rightB, Constants.TALON_DISTANCE_SLOT_IDX, rightDistanceGains);*/
         
         PCM = new PCMHandler(Constants.PCM_PORT);
         
@@ -156,7 +160,6 @@ public class WestCoastTankDrive extends Subsystem {
     
     private static void zeroEncoders(WPI_TalonSRX talon) {
         talon.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 0);
-        talon.setSelectedSensorPosition(0, Constants.TALON_DISTANCE_SLOT_IDX, 0);
     }
     
     private static void loadGains(WPI_TalonSRX talon, int slotIdx, PIDGains gains) {
@@ -165,7 +168,7 @@ public class WestCoastTankDrive extends Subsystem {
         talon.config_kD(slotIdx, gains.d, 0);
         talon.config_kF(slotIdx, gains.ff, 0);
         talon.config_IntegralZone(slotIdx, gains.izone, 0);
-        TalonNWT.setPIDValues(gains, slotIdx, talon.getDeviceID());
+        TalonNWT.setPIDValues(slotIdx, talon);
     }
 
 }

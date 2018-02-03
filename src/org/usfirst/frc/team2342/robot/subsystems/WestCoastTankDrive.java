@@ -128,6 +128,10 @@ public class WestCoastTankDrive extends Subsystem {
     
     @Override
     public void outputToSmartDashboard() {
+    	TalonNWT.updateTalon(leftA);
+    	TalonNWT.updateTalon(leftB);
+    	TalonNWT.updateTalon(rightA);
+    	TalonNWT.updateTalon(rightB);
     }
 
     @Override
@@ -177,6 +181,7 @@ public class WestCoastTankDrive extends Subsystem {
         talon.config_kD(slotIdx, gains.d, 0);
         talon.config_kF(slotIdx, gains.ff, 0);
         talon.config_IntegralZone(slotIdx, gains.izone, 0);
+        TalonNWT.setPIDValues(gains, slotIdx, talon.getDeviceID());
     }
 
 }

@@ -38,6 +38,10 @@ public class TalonNWT {
 		NetworkTableInterface.setValue(talonTable, "Closed Loop Error", talon.getClosedLoopError(0));
 		NetworkTableInterface.setValue(talonTable, "Error Derivative", talon.getErrorDerivative(0));
 		NetworkTableInterface.setValue(talonTable, "Integral Acummulator", talon.getIntegralAccumulator(0));
+		NetworkTableInterface.setValue(talonTable, "Quadrature Position", talon.getSensorCollection().getQuadraturePosition());
+		NetworkTableInterface.setValue(talonTable, "Quadrature Velocity", talon.getSensorCollection().getQuadratureVelocity());
+		NetworkTableInterface.setValue(talonTable, "Analog Position", talon.getSensorCollection().getAnalogIn());
+		NetworkTableInterface.setValue(talonTable, "Analog Velocity", talon.getSensorCollection().getAnalogInVel());
 		//NetworkTableInterface.setValue(talonTable, "Forward Limit Closed", talon.);
 		//NetworkTableInterface.setValue(talonTable, "Reverse Limit Closed", talon.);
 		//NetworkTableInterface.setValue(talonTable, "inverted", talon);

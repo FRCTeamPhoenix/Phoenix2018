@@ -23,7 +23,7 @@ public class Robot extends SampleRobot {
     public void operatorControl() {
     	while(isEnabled()){
     		//Drive with joystick control in velocity mode
-    		westCoast.setOpenLoop(gamepad.getRawAxis(1), gamepad.getRawAxis(1));
+    		westCoast.setVelocity(300, 300);
     		westCoast.outputToSmartDashboard();
     		//Buttons 8 & 9 or (gamepad) 5 & 6 are Low & High gear, respectively
     		if (gamepad.getRawButton(5))

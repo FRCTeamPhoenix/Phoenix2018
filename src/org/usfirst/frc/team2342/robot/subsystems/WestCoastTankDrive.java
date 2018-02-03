@@ -3,7 +3,6 @@ package org.usfirst.frc.team2342.robot.subsystems;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.loops.Looper;
 import org.usfirst.frc.team2342.robot.PCMHandler;
-import org.usfirst.frc.team2342.robot.TalonNWT;
 import org.usfirst.frc.team2342.util.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -24,36 +23,24 @@ public class WestCoastTankDrive extends Subsystem {
     
     private WestCoastTankDrive() {
         leftA = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
-        leftB = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
         rightA = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
-        rightB = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
+        leftB = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
+        rightB = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
         
         leftA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
         rightA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
-        leftA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_DISTANCE_SLOT_IDX, 0);
-        rightA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_DISTANCE_SLOT_IDX, 0);
-        leftB.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
-        rightB.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
-        leftB.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_DISTANCE_SLOT_IDX, 0);
-        rightB.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_DISTANCE_SLOT_IDX, 0);
         
         leftA.configAllowableClosedloopError(0, Constants.TALON_DISTANCE_SLOT_IDX, 0);
         rightA.configAllowableClosedloopError(0, Constants.TALON_DISTANCE_SLOT_IDX, 0);
-        leftB.configAllowableClosedloopError(0, Constants.TALON_DISTANCE_SLOT_IDX, 0);
-        rightB.configAllowableClosedloopError(0, Constants.TALON_DISTANCE_SLOT_IDX, 0);
         
         // If the talons run indefinitely, the sensors may be reading in the wrong direction,
         // in which case the sensor phase should be inverted.
         leftA.setSensorPhase(false);
         rightA.setSensorPhase(false);
-        leftB.setSensorPhase(false);
-        rightB.setSensorPhase(false);
         
         // Invert the appropriate talons
         leftA.setInverted(false);
-        leftB.setInverted(false);
         rightA.setInverted(true);
-        rightB.setInverted(true);
         
         // Constrain the speed of all talons to [-max, max]
         leftA.configNominalOutputForward(0, 0);
@@ -64,14 +51,10 @@ public class WestCoastTankDrive extends Subsystem {
         rightA.configNominalOutputReverse(0, 0);
         rightA.configPeakOutputForward(Constants.WESTCOAST_MAX_SPEED, 0);
         rightA.configPeakOutputReverse(-Constants.WESTCOAST_MAX_SPEED, 0);
-        leftB.configNominalOutputForward(0, 0);
-        leftB.configNominalOutputReverse(0, 0);
-        leftB.configPeakOutputForward(Constants.WESTCOAST_MAX_SPEED, 0);
-        leftB.configPeakOutputReverse(-Constants.WESTCOAST_MAX_SPEED, 0);
-        rightB.configNominalOutputForward(0, 0);
-        rightB.configNominalOutputReverse(0, 0);
-        rightB.configPeakOutputForward(Constants.WESTCOAST_MAX_SPEED, 0);
-        rightB.configPeakOutputReverse(-Constants.WESTCOAST_MAX_SPEED, 0);
+        
+        
+        leftB.follow(leftA);
+        rightB.follow(rightA);
         
         // TODO Temporary! Once JsonHelper works, we should use that.
         PIDGains fakeGains = new PIDGains();
@@ -128,6 +111,7 @@ public class WestCoastTankDrive extends Subsystem {
     
     @Override
     public void outputToSmartDashboard() {
+        // TODO Auto-generated method stub
     }
 
     @Override

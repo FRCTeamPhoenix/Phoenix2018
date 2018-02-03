@@ -9,7 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class CascadeElevator extends Subsystem{
+public class CascadeElevator extends Subsystem {
 	private TalonSRX talon1;
 	private TalonSRX talon2;
 	
@@ -50,6 +50,7 @@ public class CascadeElevator extends Subsystem{
 		this.talon1 = new TalonSRX(0);
 		this.talon2 = new TalonSRX(1);
 	}
+	
 	public void goToPosition(double position) {
 		talon1.set(ControlMode.Position, position);
 		talon2.follow(talon1);

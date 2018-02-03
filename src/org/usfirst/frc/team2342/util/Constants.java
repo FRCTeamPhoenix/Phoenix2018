@@ -9,6 +9,9 @@ public class Constants {
     public static final int TALON_VELOCITY_SLOT_IDX = 0;
     public static final int TALON_DISTANCE_SLOT_IDX = 0;
     
+    public static final int SOLNEOID_BOXMANIPULATOR_LEFT = 4;
+    public static final int SOLNEOID_BOXMANIPULATOR_RIGHT = 3;
+    
     /* 
 	 * Convert RPM to units/100ms.
 	 * 4096 Units/Rev * RPM / 600 100ms/min in either direction:

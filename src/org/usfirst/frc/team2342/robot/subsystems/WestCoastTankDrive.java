@@ -84,6 +84,14 @@ public class WestCoastTankDrive extends Subsystem {
         
     }
     
+    public int getLeftTicks() {
+    	return this.leftMaster.getActiveTrajectoryPosition();    	
+    }
+    
+    public int getRightTicks() {
+    	return this.rightMaster.getActiveTrajectoryPosition();    	
+    }
+    
     public void setOpenLoop(double left, double right) {
         leftMaster.set(ControlMode.PercentOutput, left);
         rightMaster.set(ControlMode.PercentOutput, right);
@@ -158,12 +166,5 @@ public class WestCoastTankDrive extends Subsystem {
         talon.config_kF(slotIdx, gains.ff, 0);
         talon.config_IntegralZone(slotIdx, gains.izone, 0);
     }
-    
-    public int getLeftEncoderVal() {
-    	return leftMaster.getSelectedSensorPosition(0);
-    }
-    
-    public int getRightEncoderVal() {
-    	return rightMaster.getSelectedSensorPosition(0);
-    } 
+
 }

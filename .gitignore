@@ -27,3 +27,4 @@ build.*
 hs_err_pid*
 /bin/
 /target/
+*.prefs

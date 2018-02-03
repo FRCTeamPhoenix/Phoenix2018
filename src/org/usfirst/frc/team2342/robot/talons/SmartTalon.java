@@ -7,9 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
-
 public class SmartTalon extends WPI_TalonSRX implements PIDSource {
-    
     // put a minus sign in front of all setpoints,
     // used for reversed-polarity talons and devices
     private boolean inverted;
@@ -17,6 +15,10 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
     // maximum forward and reverse speeds
     private double maxForwardSpeed;
     private double maxReverseSpeed;
+
+
+    private PIDSourceType pidSource;
+
     
     // current mode
     private ControlMode mode;
@@ -24,8 +26,6 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
     // PID gains for velocity and distance
     private PIDGains velocityGains;
     private PIDGains distanceGains;
-
-	private PIDSourceType pidSource;
     
     public SmartTalon(int deviceNumber) {
         this(deviceNumber, false, ControlMode.Current);
@@ -43,7 +43,11 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
         maxReverseSpeed = 1.0;
 
         velocityGains = new PIDGains(0, 0, 0, 0, 0, 0);
+
         distanceGains = new PIDGains(0, 0, 0, 0, 0, 0);
+
+
+
         mode = initialMode;
 
         if (ControlMode.Current.equals(initialMode))
@@ -64,6 +68,10 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
         config_IntegralZone(0, velocityGains.getIzone(), 0);
         config_kF(0, velocityGains.getFf(), 0);
         configOpenloopRamp(velocityGains.getRr(), 0);
+
+
+        setPIDSourceType(PIDSourceType.kRate);
+
     }
 
     private void setToDistance() {
@@ -73,11 +81,15 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
         config_IntegralZone(0, distanceGains.getIzone(), 0);
         config_kF(0, distanceGains.getFf(), 0);
         configOpenloopRamp(distanceGains.getRr(), 0);
+
+
+        setPIDSourceType(PIDSourceType.kDisplacement);
+
     }
 
-    
-    //Go at a speed using velocity gains
-     
+    /*
+     * Go at a speed using velocity gains
+     */
     public void goAt(double speed) {
         speed = (speed > 1) ? 1 : speed;
         speed = (speed < -1) ? -1 : speed;
@@ -99,8 +111,9 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
             set(-speed);
     }
 
-    // Go at a specific voltage, independent of all PID gains
-     
+    /*
+     * Go at a specific voltage, independent of all PID gains
+     */
     public void goVoltage(double speed) {
         speed = (speed > 1) ? 1 : speed;
         speed = (speed < -1) ? -1 : speed;
@@ -118,7 +131,6 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
         configPeakOutputReverse(speed, 0);
         
     }
-
 
     /*
      * Go a specific distance, using distance PID gains
@@ -144,7 +156,8 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
        
         configPeakOutputForward(speed, 0);
         configPeakOutputReverse(speed, 0);
-        
+
+
     }
     
     public boolean isInverted() {
@@ -187,17 +200,14 @@ public class SmartTalon extends WPI_TalonSRX implements PIDSource {
         this.distanceGains = distanceGains;
     }
 
-	@Override
 	public void setPIDSourceType(PIDSourceType pidSource) {
 		this.pidSource = pidSource;
 	}
 
-	@Override
 	public PIDSourceType getPIDSourceType() {
 		return pidSource;
 	}
 
-	@Override
 	public double pidGet() {
 		if (getPIDSourceType() == PIDSourceType.kDisplacement) {
 			getSelectedSensorPosition(0);

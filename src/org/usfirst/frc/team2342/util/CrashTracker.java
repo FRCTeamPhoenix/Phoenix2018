@@ -42,7 +42,7 @@ public class CrashTracker {
         logMarker("Exception", throwable);
     }
 
-    public static void logMarker(String mark) {
+    private static void logMarker(String mark) {
         logMarker(mark, null);
     }
 

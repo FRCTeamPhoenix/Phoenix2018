@@ -5,6 +5,7 @@ import org.usfirst.frc.team2342.util.NetworkTableInterface;
 
 import java.util.ArrayList;
 
+import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
 import org.usfirst.frc.team2342.robot.actions.*;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 
@@ -25,7 +26,7 @@ public class Robot extends SampleRobot {
     public void operatorControl() {
 
     	double y = joystick1.getY();
-    	double y2 = joystick1.getRawAxis(3);
+    	double y2 = joystick1.getY();
     	double speedv = 0.5;
     	while(isEnabled()){
     		y = joystick1.getY();
@@ -98,13 +99,18 @@ public class Robot extends SampleRobot {
 
     @Override
     public void test() {
+    	GyroPIDController pidc = new GyroPIDController(1.0d, 0.0d);
     	while(isEnabled()){
-    		//NetworkTableInterface.setValue("test", "firstVar", "sup");
-	    	//NetworkTableInterface.setValue("test/nextlevel", "firstVar", 1);
-	    	//NetworkTableInterface.setValue("test/nextlevel/wow", "firstVar", "sup");
-	    	//SmartDashboard.putString("DB/String 1", NetworkTableInterface.getString("test/nextlevel/wow", "firstVar"));
-    		westCoast.setDistance(1.0d, 1.0d);
+    		System.out.println("Current Angle: " + String.valueOf(pidc.getCurAngle()) + "   Target Angle: " + String.valueOf(pidc.getTargetAngle()) + "    Calculation: " + String.valueOf(pidc.calculate()));
+    		System.out.println("Left Motor: " + String.valueOf(westCoast.getLeftEncoderVal()));
+    		System.out.println("Right Motor: " + String.valueOf(westCoast.getRightEncoderVal()));
+    		try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				break;
+			}
     	}
-		westCoast.setDistance(0.0d, 0.0d);
     }
 }

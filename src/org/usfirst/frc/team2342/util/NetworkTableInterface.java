@@ -1,14 +1,13 @@
 package org.usfirst.frc.team2342.util;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.tables.ITable;
 
+@SuppressWarnings("deprecation")
 public class NetworkTableInterface {
 	
 	//use slashes to seperate subtables sort of like a file system
 	
-	@SuppressWarnings("deprecation")
 	public static void setValue(String subtablePath, String varName, double value){
 		String[] tables = splitString(subtablePath);
 		NetworkTable table = NetworkTable.getTable(tables[0]);
@@ -25,7 +24,6 @@ public class NetworkTableInterface {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static void setValue(String subtablePath, String varName, String value){
 		String[] tables = splitString(subtablePath);
 		NetworkTable table = NetworkTable.getTable(tables[0]);
@@ -42,8 +40,7 @@ public class NetworkTableInterface {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
-	public static void setValue(String subtablePath, String varName, boolean value){
+	public static void setValue(String subtablePath, String varName, Boolean value){
 		String[] tables = splitString(subtablePath);
 		NetworkTable table = NetworkTable.getTable(tables[0]);
 		ITable subtable = null;
@@ -59,8 +56,7 @@ public class NetworkTableInterface {
 		}
 	}
 	
-	
-	@SuppressWarnings("deprecation")
+
 	public static double getDouble(String subtablePath, String varName){
 		String[] tables = splitString(subtablePath);
 		NetworkTable table = NetworkTable.getTable(tables[0]);
@@ -77,7 +73,6 @@ public class NetworkTableInterface {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static String getString(String subtablePath, String varName){
 		String[] tables = splitString(subtablePath);
 		NetworkTable table = NetworkTable.getTable(tables[0]);
@@ -94,8 +89,7 @@ public class NetworkTableInterface {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
-	public static boolean getBool(String subtablePath, String varName){
+	public static Boolean getBoolean(String subtablePath, String varName){
 		String[] tables = splitString(subtablePath);
 		NetworkTable table = NetworkTable.getTable(tables[0]);
 		ITable subtable = null;
@@ -109,20 +103,7 @@ public class NetworkTableInterface {
 		}else{
 			return subtable.getBoolean(varName, false);
 		}
-	}
-	
-	public static void setTalon(String talonTableLocation, int id, double p, double i, double d, double maxSpeed, double ff, double rr, boolean inverted, String desc){
-		String talonLocation = talonTableLocation+"/talon["+id+"]";
-		NetworkTableInterface.setValue(talonLocation, "p", p);
-		NetworkTableInterface.setValue(talonLocation, "i", i);
-		NetworkTableInterface.setValue(talonLocation, "d", d);
-		NetworkTableInterface.setValue(talonLocation, "maxSpeed", maxSpeed);
-		NetworkTableInterface.setValue(talonLocation, "ff", ff);
-		NetworkTableInterface.setValue(talonLocation, "rr", rr);
-		
-		NetworkTableInterface.setValue(talonLocation, "inverted", inverted);
-		
-		NetworkTableInterface.setValue(talonLocation, "Desc", desc);
+
 	}
 	
 	private static String[] splitString(String target){

@@ -3,6 +3,7 @@ package org.usfirst.frc.team2342.robot.subsystems;
 import org.usfirst.frc.team2342.robot.PCMHandler;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Solenoid;
@@ -25,7 +26,25 @@ public class BoxManipulator extends Subsystem {
 	public BoxManipulator(TalonSRX talon1, TalonSRX talon2, PCMHandler PCM) {
 		this.talon1 = talon1;
 		this.talon2 = talon2;
-		this.talon2.follow(talon1);
+		
+		talon1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PidLoopIndex, PidTimeOutMs);
+		talon1.setSensorPhase(SensorPhase);
+		talon1.setInverted(InvertMotor);
+		talon1.configNominalOutputForward(0, PidTimeOutMs);
+		talon1.configNominalOutputReverse(0, PidTimeOutMs);
+		talon1.configPeakOutputForward(1, PidTimeOutMs);
+		talon1.configPeakOutputReverse(-1, PidTimeOutMs);
+		talon1.configAllowableClosedloopError(0, PidLoopIndex, PidTimeOutMs);
+		
+		talon1.config_kF(PidLoopIndex, 0.0, PidTimeOutMs);
+		talon1.config_kP(PidLoopIndex, 0.1, PidTimeOutMs);
+		talon1.config_kI(PidLoopIndex, 0.0, PidTimeOutMs);
+		talon1.config_kD(PidLoopIndex, 0.0, PidTimeOutMs);
+		
+		talon1.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
+		talon2.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
+		this.talon2.follow(this.talon1);
+		
 		this.solenoid1 = solenoid1;
 		this.solenoid2 = solenoid2;
 	}

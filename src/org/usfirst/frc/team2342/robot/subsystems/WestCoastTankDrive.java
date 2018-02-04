@@ -16,6 +16,8 @@ public class WestCoastTankDrive extends Subsystem {
     
     private TalonSRX leftA, rightA, leftB, rightB;
     private PCMHandler PCM;
+    private GyroController gyroController;
+    private boolean gyroControlled;
     
     public WestCoastTankDrive(PCMHandler PCM, TalonSRX leftFR, TalonSRX rightFR, TalonSRX leftBA, TalonSRX rightBA) {
         /*Json config = JsonHelper.getConfig();*/
@@ -81,7 +83,8 @@ public class WestCoastTankDrive extends Subsystem {
         WestCoastTankDrive.loadGains(rightB, Constants.TALON_DISTANCE_SLOT_IDX, rightDistanceGains);*/
         
         zeroSensors();
-        
+        gyroController = new GyroController();
+        gyroControlled = true;
     }
     
     public void setOpenLoop(double left, double right) {
@@ -95,9 +98,23 @@ public class WestCoastTankDrive extends Subsystem {
         if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
             leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
         }
+        
         leftA.set(ControlMode.Velocity, left * Constants.TALON_RPM_TO_VELOCITY * Constants.WESTCOAST_VELOCITY_RPM_SCALE);
         rightA.set(ControlMode.Velocity, right * Constants.TALON_RPM_TO_VELOCITY * Constants.WESTCOAST_VELOCITY_RPM_SCALE);
     }
+    
+    public void setVelocityGyro(double forward) {
+        if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
+            leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
+        }
+        
+        //TODO: These constants are outdated: look on the subsystems branch
+        forward *= Constants.TALON_RPM_TO_VELOCITY * Constants.WESTCOAST_VELOCITY_RPM_SCALE;
+        
+        leftA.set(ControlMode.Velocity, forward + gyroController.correction);
+        rightA.set(ControlMode.Velocity, forward - gyroController.correction);
+    }
+    
     
     public void setDistance(double left, double right) {
        if (!leftA.getControlMode().equals(ControlMode.Position)) {

@@ -56,6 +56,7 @@ public class NetworkTableInterface {
 		}
 	}
 	
+
 	public static double getDouble(String subtablePath, String varName){
 		String[] tables = splitString(subtablePath);
 		NetworkTable table = NetworkTable.getTable(tables[0]);
@@ -102,6 +103,7 @@ public class NetworkTableInterface {
 		}else{
 			return subtable.getBoolean(varName, false);
 		}
+
 	}
 	
 	private static String[] splitString(String target){

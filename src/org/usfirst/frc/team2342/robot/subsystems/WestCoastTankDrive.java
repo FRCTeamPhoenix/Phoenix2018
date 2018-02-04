@@ -10,26 +10,21 @@ import org.usfirst.frc.team2342.util.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class WestCoastTankDrive extends Subsystem {
     
-    private static WestCoastTankDrive mInstance = new WestCoastTankDrive();
-    private WPI_TalonSRX leftA, rightA, leftB, rightB;
+    private TalonSRX leftA, rightA, leftB, rightB;
     private PCMHandler PCM;
     
-  
-    public static WestCoastTankDrive getInstance() {
-        return mInstance;
-    }
-    
-    private WestCoastTankDrive() {
+    public WestCoastTankDrive(PCMHandler PCM, TalonSRX leftFR, TalonSRX rightFR, TalonSRX leftBA, TalonSRX rightBA) {
         /*Json config = JsonHelper.getConfig();*/
-        leftA = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
-        rightA = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
-        leftB = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
-        rightB = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
         
+    	leftA = leftFR;
+    	rightA = rightFR;
+    	leftB = leftBA;
+    	rightB = rightBA;
+    	
         leftA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
         rightA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
         
@@ -84,8 +79,6 @@ public class WestCoastTankDrive extends Subsystem {
         WestCoastTankDrive.loadGains(leftB, Constants.TALON_DISTANCE_SLOT_IDX, leftDistanceGains);
         WestCoastTankDrive.loadGains(rightB, Constants.TALON_VELOCITY_SLOT_IDX, rightVelocityGains);
         WestCoastTankDrive.loadGains(rightB, Constants.TALON_DISTANCE_SLOT_IDX, rightDistanceGains);*/
-        
-        PCM = new PCMHandler(Constants.PCM_PORT);
         
         zeroSensors();
         
@@ -158,11 +151,11 @@ public class WestCoastTankDrive extends Subsystem {
     	PCM.compressorRegulate();
     }
     
-    private static void zeroEncoders(WPI_TalonSRX talon) {
+    private static void zeroEncoders(TalonSRX talon) {
         talon.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 0);
     }
     
-    private static void loadGains(WPI_TalonSRX talon, int slotIdx, PIDGains gains) {
+    private static void loadGains(TalonSRX talon, int slotIdx, PIDGains gains) {
         talon.config_kP(slotIdx, gains.p, 0);
         talon.config_kI(slotIdx, gains.i, 0);
         talon.config_kD(slotIdx, gains.d, 0);

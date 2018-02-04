@@ -5,6 +5,7 @@ import org.usfirst.frc.team2342.util.Constants;
 import org.usfirst.frc.team2342.util.NetworkTableInterface;
 
 import com.ctre.phoenix.ParamEnum;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class TalonNWT {
@@ -26,7 +27,7 @@ public class TalonNWT {
 		return (initial & mask) != 0;
 	}
 	
-	public static void updateTalon(WPI_TalonSRX talon){
+	public static void updateTalon(TalonSRX talon){
 		String talonTable = Constants.TALON_TABLE_LOCATION + "/"+talon.getDeviceID();
 		
 		NetworkTableInterface.setValue(talonTable, "Inverted", talon.getInverted());
@@ -42,7 +43,7 @@ public class TalonNWT {
 		setPIDValues(Constants.TALON_DISTANCE_SLOT_IDX, talon);
 	}
 	
-	public static void setPIDValues(int idx, WPI_TalonSRX talon){
+	public static void setPIDValues(int idx, TalonSRX talon){
 		String talonTable = Constants.TALON_TABLE_LOCATION + "/"+talon.getDeviceID()+"/pid:"+idx;
 		NetworkTableInterface.setValue(talonTable, "Position", talon.getSelectedSensorPosition(idx));
 		NetworkTableInterface.setValue(talonTable, "Velocity", talon.getSelectedSensorVelocity(idx));

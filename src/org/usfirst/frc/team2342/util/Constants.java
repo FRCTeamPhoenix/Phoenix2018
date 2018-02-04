@@ -13,10 +13,10 @@ public class Constants {
     
     
     public static final double TALON_TICKS_PER_REV = 4096.0;
-	public static final double TALON_RPM_TO_VELOCITY = TALON_TICKS_PER_REV / 600.0;
+	public static final double TALON_RPM_TO_VELOCITY = 1;//TALON_TICKS_PER_REV / 600.0;
 	
 	// Scales the speed of velocity mode
-	public static final double WESTCOAST_VELOCITY_RPM_SCALE = 500.0;
+	//public static final double WESTCOAST_VELOCITY_RPM_SCALE = 1.0;
 	public static final double WESTCOAST_MAX_SPEED = 1.0;
     
     public static final int PCM_PORT = 11;

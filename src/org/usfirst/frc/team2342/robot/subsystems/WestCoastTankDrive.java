@@ -1,7 +1,5 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
-import org.usfirst.frc.team2342.json.Json;
-import org.usfirst.frc.team2342.json.JsonHelper;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.loops.Looper;
 import org.usfirst.frc.team2342.robot.PCMHandler;
@@ -11,6 +9,9 @@ import org.usfirst.frc.team2342.util.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class WestCoastTankDrive extends Subsystem {
     
@@ -95,8 +96,8 @@ public class WestCoastTankDrive extends Subsystem {
         if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
             leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
         }
-        leftA.set(ControlMode.Velocity, left * Constants.TALON_RPM_TO_VELOCITY * Constants.WESTCOAST_VELOCITY_RPM_SCALE);
-        rightA.set(ControlMode.Velocity, right * Constants.TALON_RPM_TO_VELOCITY * Constants.WESTCOAST_VELOCITY_RPM_SCALE);
+        leftA.set(ControlMode.Velocity, left * Constants.TALON_RPM_TO_VELOCITY);
+        rightA.set(ControlMode.Velocity, right * Constants.TALON_RPM_TO_VELOCITY);
     }
     
     public void setDistance(double left, double right) {
@@ -107,7 +108,6 @@ public class WestCoastTankDrive extends Subsystem {
        rightA.set(ControlMode.Position, right * Constants.TALON_TICKS_PER_REV);
     }
     
-    @Override
     public void outputToSmartDashboard() {
     	TalonNWT.updateTalon(leftA);
     	TalonNWT.updateTalon(leftB);
@@ -115,12 +115,10 @@ public class WestCoastTankDrive extends Subsystem {
     	TalonNWT.updateTalon(rightB);
     }
 
-    @Override
     public void stop() {
         setOpenLoop(0, 0);
     }
 
-    @Override
     public void zeroSensors() {
         WestCoastTankDrive.zeroEncoders(leftA);
         WestCoastTankDrive.zeroEncoders(rightA);
@@ -128,7 +126,6 @@ public class WestCoastTankDrive extends Subsystem {
         WestCoastTankDrive.zeroEncoders(rightB);
     }
 
-    @Override
     public void registerEnabledLoops(Looper enabledLooper) {
         // TODO Auto-generated method stub
     }
@@ -163,5 +160,10 @@ public class WestCoastTankDrive extends Subsystem {
         talon.config_IntegralZone(slotIdx, gains.izone, 0);
         TalonNWT.setPIDValues(slotIdx, talon);
     }
+
+	protected void initDefaultCommand() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

@@ -10,9 +10,9 @@ public class CommandJoystickDrive extends Command{
 		requires(Robot.kDriveTrain);
 		
 	}
-	protected void execute() {
-		Robot.kDriveTrain.getInstance().setOpenLoop(left, right);
-	}
+	/*protected void execute() {
+		Robot.kDriveTrain.getInstance().setOpenLoop();
+	}*/
 	
 	@Override
 	protected boolean isFinished() {

@@ -10,13 +10,14 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
 
 /**
  * This is a demo program showing how to use Mecanum control with the RobotDrive
  * class.
  */
 public class Robot extends IterativeRobot {
-	public static final WestCoastTankDrive kDriveTrain = new WestCoastTankDrive();
+	public static final WestCoastTankDrive kDriveTrain = WestCoastTankDrive.getInstance();
 	
 	Joystick joystickR = new Joystick(1);
 	Joystick joystickL = new Joystick(2);
@@ -25,6 +26,9 @@ public class Robot extends IterativeRobot {
 	TalonSRX talonFL = new TalonSRX(2);
 	TalonSRX talonBR = new TalonSRX(3);
 	TalonSRX talonBL = new TalonSRX(4);
+	
+	Solenoid solenoid1 = new Solenoid(1);
+	Solenoid solenoid2 = new Solenoid(2);
 	
 	PCMHandler PCM;
 	
@@ -35,7 +39,7 @@ public class Robot extends IterativeRobot {
     	PCM = new PCMHandler(11);
     	TalonSRX talon1 = new TalonSRX(0);
     	TalonSRX talon2 = new TalonSRX(1);
-    	boxManipulator = new BoxManipulator(talon1, talon2, PCM);
+    	boxManipulator = new BoxManipulator(talon1, talon2, solenoid1, solenoid2);
     	cascadeElevator = new CascadeElevator(talon1, talon2);
     }
 

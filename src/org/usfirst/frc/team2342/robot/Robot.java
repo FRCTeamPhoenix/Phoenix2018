@@ -76,8 +76,10 @@ public class Robot extends IterativeRobot {
 		
     	
     	PCM.compressorRegulate();
-    	
-    	
+    }
+    
+    public void disabledInit() {
+    	Scheduler.getInstance().removeAll();
     }
     
     public void autonomousInit() {

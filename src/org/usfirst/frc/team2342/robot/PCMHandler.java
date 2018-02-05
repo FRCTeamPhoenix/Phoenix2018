@@ -2,6 +2,7 @@ package org.usfirst.frc.team2342.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PCMHandler {
 	Compressor compressor; 
@@ -31,16 +32,17 @@ public class PCMHandler {
 	}
 	
 	
-	public double getPressure (){
+	public double getCurrent (){
 		return compressor.getCompressorCurrent();
 	}
 	
 	public void compressorRegulate () {
-		if (compressor.getPressureSwitchValue()) {
+		SmartDashboard.putString("DB/String 4", ""+compressor.getPressureSwitchValue());
+		/*if (compressor.getPressureSwitchValue()) {
 			compressor.start();
 		} else {
 			compressor.stop();
-		}
+		}*/
 	}
 	
 }

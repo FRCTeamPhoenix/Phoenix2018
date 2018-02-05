@@ -13,18 +13,20 @@ public class Constants {
     
     
     public static final double TALON_TICKS_PER_REV = 4096.0;
-	public static final double TALON_RPM_TO_VELOCITY = TALON_TICKS_PER_REV / 600.0;
+    public static final double TALON_SPEED_RPS = TALON_TICKS_PER_REV / 10;
+	//public static final double TALON_RPM_TO_VELOCITY = 1;//TALON_TICKS_PER_REV / 600.0;
 	
-	// Scales the speed of velocity mode
-	public static final double WESTCOAST_VELOCITY_RPM_SCALE = 500.0;
-	public static final double WESTCOAST_MAX_SPEED = 1.0;
+    public static final double JOYSTICK_DEADZONE = 0.1;
+    
+	// Scales the speed of velocity mode (in rps)
+	public static final double WESTCOAST_MAX_SPEED = TALON_SPEED_RPS * 2.5;
     
     public static final int PCM_PORT = 11;
     
-    //wher on the smartdashboard talons go
+    //where on the smartdashboard talons go
     public static final String TALON_TABLE_LOCATION = "Talons";
     
-  //sensor ports
+    //sensor ports
   	public static final SerialPort.Port LIDAR_PORT = SerialPort.Port.kMXP;
   	//DIO port for infrared
   	public static final int INFRARED_PORT = 9;

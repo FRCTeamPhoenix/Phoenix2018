@@ -5,6 +5,7 @@ import org.usfirst.frc.team2342.commands.DriveForward;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
+import org.usfirst.frc.team2342.util.FMS;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -40,16 +41,16 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopInit() {
+    	FMS.init();
     	PCM.turnOn();
     	Command driveJoystick = new DriveGamepad(gamepad, westCoast);
     	Scheduler.getInstance().add(driveJoystick);
     }
     
     public void teleopPeriodic() {
-    	SmartDashboard.putString("DB/String 0", ""+gamepad.getRawAxis(1));
-    	SmartDashboard.putString("DB/String 1", ""+gamepad.getRawAxis(3));
-    	SmartDashboard.putString("DB/String 2", ""+gamepad.getRawButton(5));
-    	SmartDashboard.putString("DB/String 3", ""+gamepad.getRawButton(6));
+    	SmartDashboard.putString("DB/String 0", ""+FMS.teamSwitch());
+    	SmartDashboard.putString("DB/String 1", ""+FMS.scale());
+    	SmartDashboard.putString("DB/String 2", ""+FMS.enemySwitch());
     	Scheduler.getInstance().run();
     	//Drive with joystick control in velocity mode
 		westCoast.outputToSmartDashboard();

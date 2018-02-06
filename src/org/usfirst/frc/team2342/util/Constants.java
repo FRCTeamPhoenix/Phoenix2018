@@ -1,5 +1,7 @@
 package org.usfirst.frc.team2342.util;
 
+import edu.wpi.first.wpilibj.SerialPort;
+
 public class Constants {
     public static final int LEFT_MASTER_TALON_ID = 1;
     public static final int RIGHT_MASTER_TALON_ID = 2;
@@ -9,16 +11,37 @@ public class Constants {
     public static final int TALON_VELOCITY_SLOT_IDX = 0;
     public static final int TALON_DISTANCE_SLOT_IDX = 1;
     
-    
     public static final double TALON_TICKS_PER_REV = 4096.0;
     public static final double TALON_REVS_PER_INCH = 19.6;
     public static final double TALON_CONVERSION_TO_FEET = (TALON_TICKS_PER_REV * 12) / TALON_REVS_PER_INCH;
-	public static final double TALON_RPM_TO_VELOCITY = TALON_TICKS_PER_REV / 600.0;
-	
+    public static final double TALON_RPM_TO_VELOCITY = TALON_TICKS_PER_REV / 600.0;
+    
 	// Scales the speed of velocity mode
 	public static final double WESTCOAST_VELOCITY_RPM_SCALE = 500.0;
-	public static final double WESTCOAST_MAX_SPEED = 0.4;
+	public static final double WESTCOAST_MAX_SPEED = 1.0;
     
     public static final int PCM_PORT = 11;
+    
+    //wher on the smartdashboard talons go
+    public static final String TALON_TABLE_LOCATION = "Talons";
+    
+  //sensor ports
+  	public static final SerialPort.Port LIDAR_PORT = SerialPort.Port.kMXP;
+  	//DIO port for infrared
+  	public static final int INFRARED_PORT = 9;
+  	
+  	//sensor stuff
+  	public static final int SERIAL_BAUD_RATE = 115200;
+  	
+  	//lidar averages
+  	public static final int SLOW_AVERAGE_SIZE = 25;
+  	public static final int FAST_AVERAGE_SIZE = 10;
+  	
+  	
+  	//cm to inches
+  	public static final double CM_TO_INCHES = 0.393701;
+  	
+  	//inches to cm
+  	public static final double INCHES_TO_CM = 2.54;
     
 }

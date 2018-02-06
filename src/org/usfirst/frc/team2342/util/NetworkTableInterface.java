@@ -1,14 +1,13 @@
 package org.usfirst.frc.team2342.util;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.tables.ITable;
 
+@SuppressWarnings("deprecation")
 public class NetworkTableInterface {
 	
 	//use slashes to seperate subtables sort of like a file system
 	
-	@SuppressWarnings("deprecation")
 	public static void setValue(String subtablePath, String varName, double value){
 		String[] tables = splitString(subtablePath);
 		NetworkTable table = NetworkTable.getTable(tables[0]);
@@ -25,7 +24,6 @@ public class NetworkTableInterface {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static void setValue(String subtablePath, String varName, String value){
 		String[] tables = splitString(subtablePath);
 		NetworkTable table = NetworkTable.getTable(tables[0]);
@@ -42,7 +40,23 @@ public class NetworkTableInterface {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
+	public static void setValue(String subtablePath, String varName, Boolean value){
+		String[] tables = splitString(subtablePath);
+		NetworkTable table = NetworkTable.getTable(tables[0]);
+		ITable subtable = null;
+		if(tables.length > 1)
+			subtable = table.getSubTable(tables[1]);
+		for(int i = 2; i < tables.length; i++){
+			subtable = subtable.getSubTable(tables[i]);
+		}
+		if(tables.length == 1){
+			table.putBoolean(varName, value);
+		}else{
+			subtable.putBoolean(varName, value);
+		}
+	}
+	
+
 	public static double getDouble(String subtablePath, String varName){
 		String[] tables = splitString(subtablePath);
 		NetworkTable table = NetworkTable.getTable(tables[0]);
@@ -59,7 +73,6 @@ public class NetworkTableInterface {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static String getString(String subtablePath, String varName){
 		String[] tables = splitString(subtablePath);
 		NetworkTable table = NetworkTable.getTable(tables[0]);
@@ -74,6 +87,23 @@ public class NetworkTableInterface {
 		}else{
 			return subtable.getString(varName, "NULL");
 		}
+	}
+	
+	public static Boolean getBoolean(String subtablePath, String varName){
+		String[] tables = splitString(subtablePath);
+		NetworkTable table = NetworkTable.getTable(tables[0]);
+		ITable subtable = null;
+		if(tables.length > 1)
+			subtable = table.getSubTable(tables[1]);
+		for(int i = 2; i < tables.length; i++){
+			subtable = subtable.getSubTable(tables[i]);
+		}
+		if(tables.length == 1){
+			return table.getBoolean(varName, false);
+		}else{
+			return subtable.getBoolean(varName, false);
+		}
+
 	}
 	
 	private static String[] splitString(String target){

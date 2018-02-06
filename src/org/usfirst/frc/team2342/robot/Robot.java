@@ -3,6 +3,8 @@ package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.util.NetworkTableInterface;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import java.util.ArrayList;
 
 import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
@@ -18,9 +20,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * class.
  */
 public class Robot extends SampleRobot {
+	Joystick gamepad = new Joystick(0);
+	TalonSRX test = new TalonSRX(1);
+	PCMHandler PCM = new PCMHandler(11);
+	TalonSRX talonFR = new TalonSRX(1);
+	TalonSRX talonFL = new TalonSRX(2);
+	TalonSRX talonBR = new TalonSRX(3);
+	TalonSRX talonBL = new TalonSRX(4);
 	Joystick joystick1 = new Joystick(0);
 	Joystick joystick2 = new Joystick(1);
-	WestCoastTankDrive westCoast = WestCoastTankDrive.getInstance();
+	WestCoastTankDrive westCoast = new WestCoastTankDrive(PCM, talonFL, talonFR, talonBL, talonBR);
 
     @Override
     public void operatorControl() {
@@ -60,8 +69,8 @@ public class Robot extends SampleRobot {
     	boolean isEnabled = isEnabled();
     	ArrayList<Action> actions = new ArrayList<Action>();
     	
-    	actions.add(new DriveAction(7.0d, 0.0d, 3000, "1", "Foward"));
-    	actions.add(new DriveAction(0.0d, 0.0d, 1000, "2", "Stop"));
+//    	actions.add(new DriveAction(westCoast, 7.0d, 0.0d, 3000, "1", "Foward"));
+//    	actions.add(new DriveAction(westCoast, 0.0d, 0.0d, 1000, "2", "Stop"));
     	
     	ActionList actionsL = null;
 		try {
@@ -99,18 +108,20 @@ public class Robot extends SampleRobot {
 
     @Override
     public void test() {
-    	GyroPIDController pidc = new GyroPIDController(1.0d, 0.0d);
+    	westCoast.zeroSensors();
     	while(isEnabled()){
-    		System.out.println("Current Angle: " + String.valueOf(pidc.getCurAngle()) + "   Target Angle: " + String.valueOf(pidc.getTargetAngle()) + "    Calculation: " + String.valueOf(pidc.calculate()));
-    		System.out.println("Left Motor: " + String.valueOf(westCoast.getLeftEncoderVal()));
-    		System.out.println("Right Motor: " + String.valueOf(westCoast.getRightEncoderVal()));
+    		//westCoast.setVelocity(10.0d, 10.0d);
+    		double angle = westCoast.pidc.getCurAngle();
+    		System.out.println("Angle: " + String.valueOf(angle));
+    		System.out.println("PID: " + String.valueOf(westCoast.pidc.getCorrection()));
     		try {
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				break;
 			}
     	}
+    	westCoast.zeroSensors();
+    	westCoast.setVelocity(0.0d, 0.0d);
     }
 }

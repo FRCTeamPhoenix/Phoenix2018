@@ -13,12 +13,13 @@ public class DriveAction extends Action {
 	private double angle = 0;
 	private long startTime;
 	private int time;
-	private WestCoastTankDrive westCoast = WestCoastTankDrive.getInstance();
+	private WestCoastTankDrive westCoast;
 	
 	//Tag associated with the action for dependency detection	
 	//Constructor with a tag taken in for naming
-	public DriveAction(double distance, double angle, int time, String tag, String dep) {
+	public DriveAction(WestCoastTankDrive wc, double distance, double angle, int time, String tag, String dep) {
 		super(tag, dep);
+		this.westCoast = wc;
 		this.distance = distance;
 		this.angle = angle;
 		this.time = time;

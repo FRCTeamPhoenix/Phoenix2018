@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.tables.ITable;
 @SuppressWarnings("deprecation")
 public class NetworkTableInterface {
 	
-	//use slashes to seperate subtables sort of like a file system
+	//use slashes to separate subtables sort of like a file system
 	
 	public static void setValue(String subtablePath, String varName, double value){
 		String[] tables = splitString(subtablePath);

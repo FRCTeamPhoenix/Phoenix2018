@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CascadeElevator extends Subsystem {
 	private TalonSRX talon1;
-	private TalonSRX talon2;
 	
 	public static final int BASE = 0;
 	public static final int SWITCH = 1;
@@ -23,9 +22,8 @@ public class CascadeElevator extends Subsystem {
 	private final boolean SensorPhase = true;
 	private final boolean InvertMotor = false;
 
-	public CascadeElevator(TalonSRX talon1, TalonSRX talon2) {
+	public CascadeElevator(TalonSRX talon1) {
 		this.talon1 = talon1;
-		this.talon2 = talon2;
 		
 		talon1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PidLoopIndex, PidTimeOutMs);
 		talon1.setSensorPhase(SensorPhase);
@@ -42,18 +40,14 @@ public class CascadeElevator extends Subsystem {
 		talon1.config_kD(PidLoopIndex, 0.0, PidTimeOutMs);
 		
 		talon1.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
-		talon2.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
-		this.talon2.follow(this.talon1);
 	}
 	
 	public CascadeElevator() {
-		this.talon1 = new TalonSRX(0);
-		this.talon2 = new TalonSRX(1);
+		this.talon1 = new TalonSRX(1);
 	}
 	
 	public void goToPosition(double position) {
 		talon1.set(ControlMode.Position, position);
-		talon2.follow(talon1);
 	}
 	
 	public void goToBase() {
@@ -72,6 +66,11 @@ public class CascadeElevator extends Subsystem {
 		goToPosition(TOP);
 	}
 	
+	public void setVelocity(double speed) {
+		talon1.set(ControlMode.PercentOutput, speed);
+		System.out.println(speed);
+	}
+	
 	public void outputToSmartDashboard() {
 		SmartDashboard.putString("DB/String 0", "Motor Output: " + (talon1.getMotorOutputPercent()*100) + "%");
 		SmartDashboard.putString("DB/String 1", "Position: " + talon1.getSelectedSensorPosition(0));
@@ -83,12 +82,10 @@ public class CascadeElevator extends Subsystem {
 
 	public void zeroSensors() {
 		talon1.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
-		talon2.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 	}
 
 	public void registerEnabledLoops(Looper enabledLooper) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	public void initDefaultCommand() {

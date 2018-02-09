@@ -35,6 +35,11 @@ public class TalonNWT {
 		NetworkTableInterface.setValue(talonTable, "Output Voltage", talon.getMotorOutputVoltage());
 		NetworkTableInterface.setValue(talonTable, "Bus Voltage", talon.getBusVoltage());
 		NetworkTableInterface.setValue(talonTable, "Output Current", talon.getOutputCurrent());
+		NetworkTableInterface.setValue(talonTable, "Position", talon.getSelectedSensorPosition(0));
+		NetworkTableInterface.setValue(talonTable, "Velocity", talon.getSelectedSensorVelocity(0));
+		NetworkTableInterface.setValue(talonTable, "Closed Loop Error", talon.getClosedLoopError(0));
+		NetworkTableInterface.setValue(talonTable, "Error Derivative", talon.getErrorDerivative(0));
+		NetworkTableInterface.setValue(talonTable, "Integral Acummulator", talon.getIntegralAccumulator(0));
 		//NetworkTableInterface.setValue(talonTable, "Forward Limit Closed", talon.);
 		//NetworkTableInterface.setValue(talonTable, "Reverse Limit Closed", talon.);
 		//NetworkTableInterface.setValue(talonTable, "inverted", talon);
@@ -45,11 +50,6 @@ public class TalonNWT {
 	
 	public static void setPIDValues(int idx, TalonSRX talon){
 		String talonTable = Constants.TALON_TABLE_LOCATION + "/"+talon.getDeviceID()+"/pid:"+idx;
-		NetworkTableInterface.setValue(talonTable, "Position", talon.getSelectedSensorPosition(idx));
-		NetworkTableInterface.setValue(talonTable, "Velocity", talon.getSelectedSensorVelocity(idx));
-		NetworkTableInterface.setValue(talonTable, "Closed Loop Error", talon.getClosedLoopError(idx));
-		NetworkTableInterface.setValue(talonTable, "Error Derivative", talon.getErrorDerivative(idx));
-		NetworkTableInterface.setValue(talonTable, "Integral Acummulator", talon.getIntegralAccumulator(idx));
 		NetworkTableInterface.setValue(talonTable, "P", talon.configGetParameter(ParamEnum.eProfileParamSlot_P,idx, 0));
 		NetworkTableInterface.setValue(talonTable, "I", talon.configGetParameter(ParamEnum.eProfileParamSlot_I, idx, 0));
 		NetworkTableInterface.setValue(talonTable, "D", talon.configGetParameter(ParamEnum.eProfileParamSlot_D, idx, 0));

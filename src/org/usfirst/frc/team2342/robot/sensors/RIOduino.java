@@ -1,7 +1,7 @@
 package org.usfirst.frc.team2342.robot.sensors;
 
 import java.util.TimerTask;
-import org.usfirst.frc.team2342.robot.Constants;
+import org.usfirst.frc.team2342.util.Constants;
 
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;

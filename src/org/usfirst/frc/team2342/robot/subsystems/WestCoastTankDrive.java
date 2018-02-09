@@ -1,8 +1,5 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
-import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
-import org.usfirst.frc.team2342.json.Json;
-import org.usfirst.frc.team2342.json.JsonHelper;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.loops.Looper;
 import org.usfirst.frc.team2342.robot.PCMHandler;
@@ -11,18 +8,19 @@ import org.usfirst.frc.team2342.util.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class WestCoastTankDrive extends Subsystem {
     
-    private TalonSRX leftA, rightA, leftB, rightB;
-    private PCMHandler PCM;
-    public GyroPIDController pidc;
-    private boolean gyroControlled;
+    private WPI_TalonSRX leftA, rightA, leftB, rightB;
+    private PCMHandler m_PCM;
     
-    public WestCoastTankDrive(PCMHandler PCM, TalonSRX leftFR, TalonSRX rightFR, TalonSRX leftBA, TalonSRX rightBA) {
+    public WestCoastTankDrive(PCMHandler PCM, WPI_TalonSRX leftFR, WPI_TalonSRX rightFR, WPI_TalonSRX leftBA, WPI_TalonSRX rightBA) {
         /*Json config = JsonHelper.getConfig();*/
-        
+        m_PCM = PCM;
     	leftA = leftFR;
     	rightA = rightFR;
     	leftB = leftBA;
@@ -84,8 +82,7 @@ public class WestCoastTankDrive extends Subsystem {
         WestCoastTankDrive.loadGains(rightB, Constants.TALON_DISTANCE_SLOT_IDX, rightDistanceGains);*/
         
         zeroSensors();
-        this.pidc = new GyroPIDController(0.02d);
-        gyroControlled = true;
+        
     }
     
     public void setOpenLoop(double left, double right) {
@@ -99,23 +96,9 @@ public class WestCoastTankDrive extends Subsystem {
         if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
             leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
         }
-        
-        leftA.set(ControlMode.Velocity, left * Constants.TALON_RPM_TO_VELOCITY * Constants.WESTCOAST_VELOCITY_RPM_SCALE);
-        rightA.set(ControlMode.Velocity, right * Constants.TALON_RPM_TO_VELOCITY * Constants.WESTCOAST_VELOCITY_RPM_SCALE);
+        leftA.set(ControlMode.Velocity, left);
+        rightA.set(ControlMode.Velocity, right);
     }
-    
-    public void setVelocityGyro(double forward) {
-        if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
-            leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
-        }
-        
-        //TODO: These constants are outdated: look on the subsystems branch
-        forward *= Constants.TALON_RPM_TO_VELOCITY * Constants.WESTCOAST_VELOCITY_RPM_SCALE;
-        
-        leftA.set(ControlMode.Velocity, forward + pidc.getCorrection());
-        rightA.set(ControlMode.Velocity, forward - pidc.getCorrection());
-    }
-    
     
     public void setDistance(double left, double right) {
        if (!leftA.getControlMode().equals(ControlMode.Position)) {
@@ -125,7 +108,6 @@ public class WestCoastTankDrive extends Subsystem {
        rightA.set(ControlMode.Position, right * Constants.TALON_TICKS_PER_REV);
     }
     
-    @Override
     public void outputToSmartDashboard() {
     	TalonNWT.updateTalon(leftA);
     	TalonNWT.updateTalon(leftB);
@@ -133,12 +115,10 @@ public class WestCoastTankDrive extends Subsystem {
     	TalonNWT.updateTalon(rightB);
     }
 
-    @Override
     public void stop() {
         setOpenLoop(0, 0);
     }
 
-    @Override
     public void zeroSensors() {
         WestCoastTankDrive.zeroEncoders(leftA);
         WestCoastTankDrive.zeroEncoders(rightA);
@@ -146,34 +126,33 @@ public class WestCoastTankDrive extends Subsystem {
         WestCoastTankDrive.zeroEncoders(rightB);
     }
 
-    @Override
     public void registerEnabledLoops(Looper enabledLooper) {
         // TODO Auto-generated method stub
     }
     
     public void setHighGear() {
-        PCM.setHighGear(true);
-        PCM.setLowGear(false);
-        PCM.compressorRegulate();
+    	 m_PCM.setLowGear(false);
+        m_PCM.setHighGear(true);
+        m_PCM.compressorRegulate();
     }
     
     public void setLowGear() {
-        PCM.setHighGear(false);
-        PCM.setLowGear(true);
-        PCM.compressorRegulate();
+        m_PCM.setHighGear(false);
+        m_PCM.setLowGear(true);
+        m_PCM.compressorRegulate();
     }
     
     public void setNoGear() {
-    	PCM.setHighGear(false);
-    	PCM.setLowGear(false);
-    	PCM.compressorRegulate();
+    	m_PCM.setHighGear(false);
+    	m_PCM.setLowGear(false);
+    	m_PCM.compressorRegulate();
     }
     
-    private static void zeroEncoders(TalonSRX talon) {
+    private static void zeroEncoders(WPI_TalonSRX talon) {
         talon.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 0);
     }
     
-    private static void loadGains(TalonSRX talon, int slotIdx, PIDGains gains) {
+    private static void loadGains(WPI_TalonSRX talon, int slotIdx, PIDGains gains) {
         talon.config_kP(slotIdx, gains.p, 0);
         talon.config_kI(slotIdx, gains.i, 0);
         talon.config_kD(slotIdx, gains.d, 0);
@@ -181,5 +160,10 @@ public class WestCoastTankDrive extends Subsystem {
         talon.config_IntegralZone(slotIdx, gains.izone, 0);
         TalonNWT.setPIDValues(slotIdx, talon);
     }
+
+	protected void initDefaultCommand() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

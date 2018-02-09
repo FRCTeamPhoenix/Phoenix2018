@@ -1,127 +1,95 @@
 package org.usfirst.frc.team2342.robot;
 
 
-import org.usfirst.frc.team2342.util.NetworkTableInterface;
-
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
-import java.util.ArrayList;
-
-import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
-import org.usfirst.frc.team2342.robot.actions.*;
+import org.usfirst.frc.team2342.commands.DriveForward;
+import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
+import org.usfirst.frc.team2342.util.Constants;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This is a demo program showing how to use Mecanum control with the RobotDrive
  * class.
  */
-public class Robot extends SampleRobot {
-	Joystick gamepad = new Joystick(0);
-	TalonSRX test = new TalonSRX(1);
+
+public class Robot extends IterativeRobot {
+
+	Joystick gamepad = new Joystick(3);
 	PCMHandler PCM = new PCMHandler(11);
-	TalonSRX talonFR = new TalonSRX(1);
-	TalonSRX talonFL = new TalonSRX(2);
-	TalonSRX talonBR = new TalonSRX(3);
-	TalonSRX talonBL = new TalonSRX(4);
-	Joystick joystick1 = new Joystick(0);
-	Joystick joystick2 = new Joystick(1);
+	WPI_TalonSRX talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
+	WPI_TalonSRX talonFL = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
+	WPI_TalonSRX talonBR = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
+	WPI_TalonSRX talonBL = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
 	WestCoastTankDrive westCoast = new WestCoastTankDrive(PCM, talonFL, talonFR, talonBL, talonBR);
+	Joystick joystickR = new Joystick(2);
+	Joystick joystickL = new Joystick(1);
 
-    @Override
-    public void operatorControl() {
-
-    	double y = joystick1.getY();
-    	double y2 = joystick1.getY();
-    	double speedv = 0.5;
-    	while(isEnabled()){
-    		y = joystick1.getY();
-    		y2 = joystick2.getY();
-    		
-    		// high gear
-    		if (joystick1.getRawButton(8))
-    			westCoast.setHighGear();
-    		
-    		// low gear
-    		if (joystick1.getRawButton(9))
-    			westCoast.setLowGear();
-    		
-    		// no gear
-    		if (joystick1.getRawButton(10))
-    			westCoast.setNoGear();
-    		
-//    		SmartDashboard.putString("DB/String 3", "Left Encoder: " + westCoast.getLeftTicks());
-//    		SmartDashboard.putString("DB/String 4", "Right Encoder: " + westCoast.getRightTicks());
-    		SmartDashboard.putString("DB/String 5", "y: " + String.valueOf(y));
-    		SmartDashboard.putString("DB/String 6", "y2: " + String.valueOf(y2));
-	    	//teliopPeriodic    	
-    		westCoast.setOpenLoop(0.5 * y, 0.5 * y2);
-    		
-    	}
-    	
+    public Robot() {
+    	//PCM.turnOn();
+    	//WPI_TalonSRX talon1 = new WPI_TalonSRX(0);
+    	//WPI_TalonSRX talon2 = new WPI_TalonSRX(1);
+    	//boxManipulator = new BoxManipulator(talon1, talon2, PCM);
+    	//cascadeElevator = new CascadeElevator(talon1, talon2);
     }
-
-    @Override
-    public void autonomous() {
-    	boolean isEnabled = isEnabled();
-    	ArrayList<Action> actions = new ArrayList<Action>();
-    	
-//    	actions.add(new DriveAction(westCoast, 7.0d, 0.0d, 3000, "1", "Foward"));
-//    	actions.add(new DriveAction(westCoast, 0.0d, 0.0d, 1000, "2", "Stop"));
-    	
-    	ActionList actionsL = null;
-		try {
-			actionsL = new ActionList(actions);
-		} catch (DependencyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			isEnabled = false;
+    
+    public void teleopInit() {
+    	PCM.turnOn();
+    	Command driveJoystick = new DriveGamepad(gamepad, westCoast);
+    	Scheduler.getInstance().add(driveJoystick);
+    }
+    
+    public void teleopPeriodic() {
+    	SmartDashboard.putString("DB/String 0", ""+gamepad.getRawAxis(1));
+    	SmartDashboard.putString("DB/String 1", ""+gamepad.getRawAxis(3));
+    	SmartDashboard.putString("DB/String 2", ""+gamepad.getRawButton(5));
+    	SmartDashboard.putString("DB/String 3", ""+gamepad.getRawButton(6));
+    	Scheduler.getInstance().run();
+    	//Drive with joystick control in velocity mode
+		westCoast.outputToSmartDashboard();
+		//Buttons 8 & 9 or (gamepad) 5 & 6 are Low & High gear, respectively
+		if (gamepad.getRawButton(5))
+			westCoast.setLowGear();
+		else if (gamepad.getRawButton(6))
+			westCoast.setHighGear();
+		else
+			westCoast.setNoGear();
+		//Sleep for 0.01s
+		/*try {
+		    Thread.sleep(100);
+		} catch(InterruptedException ex) {
+		    Thread.currentThread().interrupt();
 		}
+		//teliopInity
+		if (joystick1.getRawButton(1)) {
+			talon1.goDistance(0.25, 0.4);
+			talon2.goDistance(-0.25, 0.4);
+			talon3.goDistance(0.25, 0.4);
+			talon4.goDistance(-0.25, 0.4);
+		}*/
 		
-    	while(isEnabled && isAutonomous()) {
-    		actionsL.execute();
-    		SmartDashboard.putString("DB/String 1", "EMS: " + joystick1.getRawButton(1));
-    		SmartDashboard.putString("DB/String 0", "Current ACTION: " + actionsL.getAction());
-    		SmartDashboard.putString("DB/String 2", "IS DONE: " + !isEnabled);
-    		
-    		if (joystick1.getRawButton(1)) {
-    			SmartDashboard.putString("DB/String 1", "EMS: " + joystick1.getRawButton(1));
-    			System.out.println("Stopping all actions");
-    			actionsL.stopAll();
-    			isEnabled = false;
-    		}
-    		
-    		else if (actionsL.isDone()) {
-    			System.out.println("Stopping all actions");
-    			actionsL.stopAll();
-    			isEnabled = false;
-    		}
-    		
-    		else
-    			isEnabled = isEnabled();
-    	}
-    	SmartDashboard.putString("DB/String 2", "IS DONE: " + !isEnabled);
+    	
+    	PCM.compressorRegulate();
     }
-
-    @Override
-    public void test() {
-    	westCoast.zeroSensors();
-    	while(isEnabled()){
-    		//westCoast.setVelocity(10.0d, 10.0d);
-    		double angle = westCoast.pidc.getCurAngle();
-    		System.out.println("Angle: " + String.valueOf(angle));
-    		System.out.println("PID: " + String.valueOf(westCoast.pidc.getCorrection()));
-    		try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	}
-    	westCoast.zeroSensors();
-    	westCoast.setVelocity(0.0d, 0.0d);
+    
+    public void disabledInit() {
+    	Scheduler.getInstance().removeAll();
+    }
+    
+    public void autonomousInit() {
+    	Command goForward = new DriveForward(20, westCoast, 6.0 * Constants.TALON_SPEED_RPS);
+    	Scheduler.getInstance().add(goForward);
+    }
+    
+    public void autonomousPeriodic(){
+    	Scheduler.getInstance().run();
+    	PCM.compressorRegulate();
+    	westCoast.outputToSmartDashboard();
     }
 }

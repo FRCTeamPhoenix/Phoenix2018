@@ -5,12 +5,12 @@ import org.usfirst.frc.team2342.util.Constants;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class DriveArc extends Command {
+public class DriveDifferential extends Command {
 	WestCoastTankDrive m_westCoast;
 	double velocityLeft;
 	double velocityRight;
 	
-	public DriveArc(int time, WestCoastTankDrive westCoast, double velocityLeft, double velocityRight) {
+	public DriveDifferential(int time, WestCoastTankDrive westCoast, double velocityLeft, double velocityRight) {
 		requires(westCoast);
 		setTimeout(time);
 		m_westCoast = westCoast;

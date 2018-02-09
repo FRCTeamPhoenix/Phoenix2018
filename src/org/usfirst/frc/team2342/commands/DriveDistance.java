@@ -8,14 +8,14 @@ import edu.wpi.first.wpilibj.command.Command;
 public class DriveDistance extends Command {
 	WestCoastTankDrive m_westCoast;
 	
-	public DriveDistance(WestCoastTankDrive westCoast, double distance) {
+	public DriveDistance(int time, WestCoastTankDrive westCoast, double distance) {
 		requires(westCoast);
 		setTimeout(time);
 		m_westCoast = westCoast;
 	}
 	
 	protected void initialize() {
-		m_westCoast.setVelocity();
+		//m_westCoast.setVelocity();
 	}
 	
 	protected boolean isFinished() {

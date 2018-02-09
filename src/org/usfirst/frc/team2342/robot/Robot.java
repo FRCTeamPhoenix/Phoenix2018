@@ -1,7 +1,8 @@
 package org.usfirst.frc.team2342.robot;
 
-import org.usfirst.frc.team2342.commands.DriveForward;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
+import org.usfirst.frc.team2342.commands.TurnAngle;
+import org.usfirst.frc.team2342.robot.sensors.Gyro;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 import org.usfirst.frc.team2342.util.FMS;
@@ -30,8 +31,11 @@ public class Robot extends IterativeRobot {
 	WestCoastTankDrive westCoast = new WestCoastTankDrive(PCM, talonFL, talonFR, talonBL, talonBR);
 	Joystick joystickR = new Joystick(2);
 	Joystick joystickL = new Joystick(1);
+	Gyro gyro = new Gyro();
 
 	public Robot() {
+		
+		gyro.init();
 		// PCM.turnOn();
 		// WPI_TalonSRX talon1 = new WPI_TalonSRX(0);
 		// WPI_TalonSRX talon2 = new WPI_TalonSRX(1);
@@ -77,12 +81,16 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousInit() {
+		
+		gyro.reset();
 		FMS fms = new FMS();
 		String position = "1";
 		String autonomousCommandGroup = fms.teamSwitch() ? "Left" : "Right" + position;
-		switch (autonomousCommandGroup) {
+		Scheduler.getInstance().add(new TurnAngle(gyro, 20, 360, westCoast));
+		/*switch (autonomousCommandGroup) {
 		case "Left1":
-			Scheduler.getInstance().add(new DriveForward(10, westCoast, 10));
+			Scheduler.getInstance().add(new TurnAngle(5, 360, westCoast));
+			//Scheduler.getInstance().add(new DriveForward(10, westCoast, 10));
 			break;
 		case "Right1":
 			break;
@@ -94,7 +102,7 @@ public class Robot extends IterativeRobot {
 			break;
 		case "Right3":
 			break;
-		}
+		}*/
 	}
 
 	public void autonomousPeriodic() {

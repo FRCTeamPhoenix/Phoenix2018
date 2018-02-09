@@ -30,6 +30,8 @@ public class DriveDifferential extends Command {
 		}
 		m_westCoast.setVelocity(Constants.TALON_SPEED_RPS * velocityLeft, Constants.TALON_SPEED_RPS * velocityRight);
 	}
+	
+	
 	@Override
 	protected boolean isFinished() {
 		return isTimedOut();

@@ -20,6 +20,7 @@ public class Constants {
     
 	// Scales the speed of velocity mode (in rps)
 	public static final double WESTCOAST_MAX_SPEED = TALON_SPEED_RPS * 2.5;
+	public static final double RPS_TO_CMPS = 47.8536;
     
     public static final int PCM_PORT = 11;
     

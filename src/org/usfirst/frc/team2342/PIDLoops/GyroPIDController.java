@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
 // must implement the velocity PID control into the Gyro
-public class GyroPIDController implements PIDOutput, PIDSource {
+public class GyroPIDController implements PIDSource, PIDOutput {
 	private ADIS16448_IMU gyro;
 	private double Kp = 0.0d;
 	private double curAngle = 0.0d;
@@ -19,21 +19,30 @@ public class GyroPIDController implements PIDOutput, PIDSource {
 	private PIDController pc;
 
 	public GyroPIDController(double p) {		
-		// angle setup & declaration of proportional values
+		// Gyro and PIDController setup
 		if (gyro == null)
 			gyro = new ADIS16448_IMU();
 		this.Kp = p;
-		pc = new PIDController(this.Kp, 0.0d, 0.0d, 0.0d, gyro, this);
+		pc = new PIDController(this.Kp, 0.0d, 0.0d, 0.0d, this, this);
+		pc.enable();
 		reset();
 	}
 	//TODO make public for later
-	private void reset() {
-		updateCurAngle();
-		pc.reset();
-		pc.setContinuous(true);
+	public void reset() {
+		//pc.setInputRange(-360, 360);
+		//pc.setContinuous();
+		pc.setP(this.Kp);
 		pc.setOutputRange(-1, 1);
-		pc.setSetpoint(this.curAngle);
-		this.targetAngle = this.curAngle;
+		pc.setAbsoluteTolerance(0.005);
+		if (this.targetAngle == 0.0d) {
+//			gyro.reset();
+			pc.setSetpoint(this.targetAngle);
+		}
+		else {
+			updateCurAngle();
+			pc.setSetpoint(this.curAngle);
+			this.targetAngle = this.curAngle;
+		}		
 		pc.enable();
 	}
 	
@@ -59,6 +68,8 @@ public class GyroPIDController implements PIDOutput, PIDSource {
 	}
 	
 	private void updateCurAngle() {
+		//this.curAngle = gyro.getAngleX() % 360;
+		//this.curAngle = (this.curAngle < 0.0d) ? this.curAngle + 360.0d : this.curAngle;
 		this.curAngle = gyro.getAngleX();
 	}
 
@@ -70,17 +81,22 @@ public class GyroPIDController implements PIDOutput, PIDSource {
 	public double getCorrection() {
 		return this.correction;
 	}
+	
+	public PIDController getPC() {
+		return this.pc;
+	}
 
 	@Override
 	public void setPIDSourceType(PIDSourceType pidSource) {
 		// TODO Auto-generated method stub
-		
+		this.gyro.setPIDSourceType(pidSource);
 	}
 
 	@Override
 	public PIDSourceType getPIDSourceType() {
 		// TODO Auto-generated method stub
-		return null;
+		//return PIDSourceType.kDisplacement;
+		return this.gyro.getPIDSourceType();
 	}
 
 	@Override
@@ -90,7 +106,6 @@ public class GyroPIDController implements PIDOutput, PIDSource {
 
 	@Override
 	public void pidWrite(double output) {
-//		System.out.println("OUTPUT: " + String.valueOf(output));
 		this.correction = output;
 	}
 }

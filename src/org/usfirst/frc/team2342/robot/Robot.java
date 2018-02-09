@@ -79,6 +79,8 @@ public class Robot extends IterativeRobot {
     }
     
     public void disabledInit() {
+    	westCoast.setVelocity(0.0d, 0.0d);
+    	westCoast.zeroSensors();
     	Scheduler.getInstance().removeAll();
     }
     
@@ -91,5 +93,23 @@ public class Robot extends IterativeRobot {
     	Scheduler.getInstance().run();
     	PCM.compressorRegulate();
     	westCoast.outputToSmartDashboard();
+    }
+    
+    @Override
+    public void testInit() {
+    	westCoast.zeroSensors();
+    }
+    
+    @Override
+    public void testPeriodic() {
+    	westCoast.setVelocity(-500d, -500d);
+    	System.out.println("Angle: " + String.valueOf(westCoast.pidc.getCurAngle()));
+    	System.out.println("PID: " + String.valueOf(westCoast.pidc.getCorrection()));
+    	try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }

@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
+import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.loops.Looper;
 import org.usfirst.frc.team2342.robot.PCMHandler;
@@ -17,6 +18,8 @@ public class WestCoastTankDrive extends Subsystem {
     
     private WPI_TalonSRX leftA, rightA, leftB, rightB;
     private PCMHandler m_PCM;
+    public GyroPIDController pidc = new GyroPIDController(0.002d);
+    private boolean gyroControll = true; 
     
     public WestCoastTankDrive(PCMHandler PCM, WPI_TalonSRX leftFR, WPI_TalonSRX rightFR, WPI_TalonSRX leftBA, WPI_TalonSRX rightBA) {
         /*Json config = JsonHelper.getConfig();*/
@@ -96,8 +99,14 @@ public class WestCoastTankDrive extends Subsystem {
         if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
             leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
         }
-        leftA.set(ControlMode.Velocity, left);
-        rightA.set(ControlMode.Velocity, right);
+        if (this.gyroControll != true) {
+        	leftA.set(ControlMode.Velocity, left);
+        	rightA.set(ControlMode.Velocity, right);
+        }
+        else {
+        	leftA.set(ControlMode.Velocity, left * (1 + pidc.getCorrection()));
+        	rightA.set(ControlMode.Velocity, right * (1 - pidc.getCorrection()));
+        }
     }
     
     public void setDistance(double left, double right) {
@@ -146,6 +155,10 @@ public class WestCoastTankDrive extends Subsystem {
     	m_PCM.setHighGear(false);
     	m_PCM.setLowGear(false);
     	m_PCM.compressorRegulate();
+    }
+    
+    public void zeroSnesors() {
+    	this.pidc.reset();
     }
     
     private static void zeroEncoders(WPI_TalonSRX talon) {

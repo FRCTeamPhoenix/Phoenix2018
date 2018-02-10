@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
+import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
 import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.loops.Looper;
@@ -10,24 +11,27 @@ import org.usfirst.frc.team2342.util.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WestCoastTankDrive extends Subsystem {
     
     private WPI_TalonSRX leftA, rightA, leftB, rightB;
     private PCMHandler m_PCM;
+    public DistancePIDController dpidc;
     public GyroPIDController pidc = new GyroPIDController(0.002d);
-    private boolean gyroControll = true; 
+    private boolean gyroControl = false; 
+    private boolean distanceControl = true;
     
     public WestCoastTankDrive(PCMHandler PCM, WPI_TalonSRX leftFR, WPI_TalonSRX rightFR, WPI_TalonSRX leftBA, WPI_TalonSRX rightBA) {
-        /*Json config = JsonHelper.getConfig();*/
+        /*Json config = JsonHelpe.getConfig();*/
         m_PCM = PCM;
     	leftA = leftFR;
     	rightA = rightFR;
     	leftB = leftBA;
     	rightB = rightBA;
+    	dpidc = new DistancePIDController(0.00095d, 0.0d, 0.0d, 0.0d, leftA, rightA);
     	
         leftA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
         rightA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
@@ -100,7 +104,7 @@ public class WestCoastTankDrive extends Subsystem {
             leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
         }
 
-        if (this.gyroControll != true) {
+        if (this.gyroControl != true) {
         	leftA.set(ControlMode.Velocity, left);
         	rightA.set(ControlMode.Velocity, right);
         }
@@ -108,6 +112,33 @@ public class WestCoastTankDrive extends Subsystem {
         	leftA.set(ControlMode.Velocity, left * (1 + pidc.getCorrection()));
         	rightA.set(ControlMode.Velocity, right * (1 - pidc.getCorrection()));
         }
+    }
+    
+    public void goDistance(double distanceInFeet){
+    	double distance = distanceInFeet/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
+		dpidc.setGoal(distance);
+    	if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
+	        leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
+	    }
+    	 
+    	leftA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
+     	rightA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
+    }
+    
+    public void distanceLoop(){
+    	SmartDashboard.putString("DB/String 0", ""+dpidc.pidGet());
+    	SmartDashboard.putString("DB/String 1", ""+dpidc.getGoal());
+    	SmartDashboard.putString("DB/String 2", ""+dpidc.getCorrection());
+    	if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
+	        leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
+	    }
+    	
+    	leftA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
+     	rightA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
+    }
+    
+    public boolean isFinished(){
+    	return (dpidc.pidGet() < dpidc.getGoal()*1.05 && dpidc.pidGet() > dpidc.getGoal()*0.95);
     }
     
     public void setDistance(double left, double right) {

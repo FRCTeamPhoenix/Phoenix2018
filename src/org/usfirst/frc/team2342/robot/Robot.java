@@ -95,12 +95,14 @@ public class Robot extends IterativeRobot {
     }
     
     public void autonomousInit() {
-    	Command goForward = new DriveForward(20, westCoast, 6.0 * Constants.TALON_SPEED_RPS);
-    	Scheduler.getInstance().add(goForward);
+    	//Command goForward = new DriveForward(20, westCoast, 6.0 * Constants.TALON_SPEED_RPS);
+    	//Scheduler.getInstance().add(goForward);
+    	westCoast.goDistance(20);
     }
     
     public void autonomousPeriodic(){
-    	Scheduler.getInstance().run();
+    	//Scheduler.getInstance().run();
+    	westCoast.distanceLoop();
     	PCM.compressorRegulate();
     	westCoast.outputToSmartDashboard();
     }

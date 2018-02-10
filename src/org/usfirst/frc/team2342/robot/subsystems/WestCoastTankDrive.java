@@ -104,8 +104,8 @@ public class WestCoastTankDrive extends Subsystem {
        if (!leftA.getControlMode().equals(ControlMode.Position)) {
            leftA.selectProfileSlot(Constants.TALON_DISTANCE_SLOT_IDX, 0);
        }
-       leftA.set(ControlMode.Position, left * Constants.TALON_TICKS_PER_REV);
-       rightA.set(ControlMode.Position, right * Constants.TALON_TICKS_PER_REV);
+       leftA.set(ControlMode.Position, left / 1.57 * Constants.TALON_TICKS_PER_REV);
+       rightA.set(ControlMode.Position, right / 1.57 * Constants.TALON_TICKS_PER_REV);
     }
     
     public void outputToSmartDashboard() {

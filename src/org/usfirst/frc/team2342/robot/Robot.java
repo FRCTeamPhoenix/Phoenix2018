@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
-	Joystick gamepad = new Joystick(3);
+	Joystick gamepad = new Joystick(0);
 	PCMHandler PCM = new PCMHandler(11);
 	WPI_TalonSRX talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
 	WPI_TalonSRX talonFL = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
@@ -86,7 +86,7 @@ public class Robot extends IterativeRobot {
 		FMS fms = new FMS();
 		String position = "1";
 		String autonomousCommandGroup = fms.teamSwitch() ? "Left" : "Right" + position;
-		Scheduler.getInstance().add(new TurnAngle(gyro, 20, 360, westCoast));
+		Scheduler.getInstance().add(new TurnAngle(gyro, 20, 90, westCoast));
 		/*switch (autonomousCommandGroup) {
 		case "Left1":
 			Scheduler.getInstance().add(new TurnAngle(5, 360, westCoast));

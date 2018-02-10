@@ -44,5 +44,8 @@ public class Constants {
   	
   	//inches to cm
   	public static final double INCHES_TO_CM = 2.54;
+  	
+  	//limit switches
+  	public static final int LOWER_LIMIT_SWITCH = 0;
     
 }

@@ -1,6 +1,8 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
 import org.usfirst.frc.team2342.loops.Looper;
+import org.usfirst.frc.team2342.robot.sensors.LowerLimit;
+import org.usfirst.frc.team2342.util.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -21,6 +23,8 @@ public class CascadeElevator extends Subsystem {
 	private final int PidTimeOutMs = 10;
 	private final boolean SensorPhase = true;
 	private final boolean InvertMotor = false;
+	
+	private LowerLimit lowerLimit;
 
 	public CascadeElevator(TalonSRX talon1) {
 		this.talon1 = talon1;
@@ -40,6 +44,8 @@ public class CascadeElevator extends Subsystem {
 		talon1.config_kD(PidLoopIndex, 0.0, PidTimeOutMs);
 		
 		talon1.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
+		
+		lowerLimit = new LowerLimit(Constants.LOWER_LIMIT_SWITCH);
 	}
 	
 	public CascadeElevator() {
@@ -69,6 +75,12 @@ public class CascadeElevator extends Subsystem {
 	public void setVelocity(double speed) {
 		talon1.set(ControlMode.PercentOutput, speed);
 		System.out.println(speed);
+		if (lowerLimit.detectsObject()) {
+			talon1.set(ControlMode.PercentOutput, Math.sqrt(speed));
+		}
+		else {
+			talon1.set(ControlMode.Current, 0.0);
+		}
 	}
 	
 	public void outputToSmartDashboard() {

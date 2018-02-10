@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class CascadeUp extends Command {
 	CascadeElevator m_cascadeElevator;
 	Joystick gamepad;
-	
+
 	public CascadeUp(Joystick gamepad, CascadeElevator m_cascadeElevator) {
 		this.gamepad = gamepad;
 		this.m_cascadeElevator = m_cascadeElevator;

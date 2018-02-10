@@ -2,13 +2,11 @@ package org.usfirst.frc.team2342.robot.subsystems;
 
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.loops.Looper;
-import org.usfirst.frc.team2342.robot.PCMHandler;
 import org.usfirst.frc.team2342.robot.TalonNWT;
 import org.usfirst.frc.team2342.util.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -16,11 +14,9 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class WestCoastTankDrive extends Subsystem {
     
     private WPI_TalonSRX leftA, rightA, leftB, rightB;
-    private PCMHandler m_PCM;
     
-    public WestCoastTankDrive(PCMHandler PCM, WPI_TalonSRX leftFR, WPI_TalonSRX rightFR, WPI_TalonSRX leftBA, WPI_TalonSRX rightBA) {
+    public WestCoastTankDrive(WPI_TalonSRX leftFR, WPI_TalonSRX rightFR, WPI_TalonSRX leftBA, WPI_TalonSRX rightBA) {
         /*Json config = JsonHelper.getConfig();*/
-        m_PCM = PCM;
     	leftA = leftFR;
     	rightA = rightFR;
     	leftB = leftBA;
@@ -128,24 +124,6 @@ public class WestCoastTankDrive extends Subsystem {
 
     public void registerEnabledLoops(Looper enabledLooper) {
         // TODO Auto-generated method stub
-    }
-    
-    public void setHighGear() {
-    	 m_PCM.setLowGear(false);
-        m_PCM.setHighGear(true);
-        m_PCM.compressorRegulate();
-    }
-    
-    public void setLowGear() {
-        m_PCM.setHighGear(false);
-        m_PCM.setLowGear(true);
-        m_PCM.compressorRegulate();
-    }
-    
-    public void setNoGear() {
-    	m_PCM.setHighGear(false);
-    	m_PCM.setLowGear(false);
-    	m_PCM.compressorRegulate();
     }
     
     private static void zeroEncoders(WPI_TalonSRX talon) {

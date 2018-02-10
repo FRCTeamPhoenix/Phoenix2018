@@ -21,6 +21,10 @@ public class DriveForward extends Command {
 		m_westCoast.setVelocity(velocity, velocity);
 	}
 	
+	protected void execute() {
+		initialize();
+	}
+	
 	protected boolean isFinished() {
 		return isTimedOut();
 	}

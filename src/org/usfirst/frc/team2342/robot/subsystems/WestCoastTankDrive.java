@@ -13,12 +13,13 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WestCoastTankDrive extends Subsystem {
     
     private WPI_TalonSRX leftA, rightA, leftB, rightB;
     private PCMHandler m_PCM;
-    public GyroPIDController pidc = new GyroPIDController(0.002d);
+    public GyroPIDController pidc;
     private boolean gyroControll = true; 
     
     public WestCoastTankDrive(PCMHandler PCM, WPI_TalonSRX leftFR, WPI_TalonSRX rightFR, WPI_TalonSRX leftBA, WPI_TalonSRX rightBA) {
@@ -83,6 +84,8 @@ public class WestCoastTankDrive extends Subsystem {
         WestCoastTankDrive.loadGains(leftB, Constants.TALON_DISTANCE_SLOT_IDX, leftDistanceGains);
         WestCoastTankDrive.loadGains(rightB, Constants.TALON_VELOCITY_SLOT_IDX, rightVelocityGains);
         WestCoastTankDrive.loadGains(rightB, Constants.TALON_DISTANCE_SLOT_IDX, rightDistanceGains);*/
+        
+        pidc = new GyroPIDController(SmartDashboard.getNumber("DB/Slider 0", 0));
         
         zeroSensors();
         

@@ -31,12 +31,12 @@ public class DriveAction extends Action {
 	
 	public void start() {
 		westCoast.zeroSensors();
-		westCoast.setDistance(this.distance, this.distance);
+		//westCoast.setDistance(this.distance, this.distance);
 		this.startTime = System.currentTimeMillis();
 	}
 	
 	public void stop() {
-		westCoast.setDistance(0.0d, 0.0d);
+		//westCoast.setDistance(0.0d, 0.0d);
 	}
 	
 	public void run() {

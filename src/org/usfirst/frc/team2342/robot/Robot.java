@@ -53,10 +53,6 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopPeriodic() {
-    	SmartDashboard.putString("DB/String 0", ""+gamepad.getRawAxis(1));
-    	SmartDashboard.putString("DB/String 1", ""+gamepad.getRawAxis(3));
-    	SmartDashboard.putString("DB/String 2", ""+gamepad.getRawButton(5));
-    	SmartDashboard.putString("DB/String 3", ""+gamepad.getRawButton(6));
     	Scheduler.getInstance().run();
     	//Drive with joystick control in velocity mode
 		westCoast.outputToSmartDashboard();
@@ -97,12 +93,12 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
     	//Command goForward = new DriveForward(20, westCoast, 6.0 * Constants.TALON_SPEED_RPS);
     	//Scheduler.getInstance().add(goForward);
-    	westCoast.goDistance(20);
+    	westCoast.goArc(8, 90, 1.05, false);
     }
     
     public void autonomousPeriodic(){
+    	westCoast.arcLoop(false);
     	//Scheduler.getInstance().run();
-    	westCoast.distanceLoop();
     	PCM.compressorRegulate();
     	westCoast.outputToSmartDashboard();
     }

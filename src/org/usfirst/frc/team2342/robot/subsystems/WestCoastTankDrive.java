@@ -4,7 +4,6 @@ import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
 import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
 import org.usfirst.frc.team2342.PIDLoops.SingleTalonDistancePIDController;
 import org.usfirst.frc.team2342.json.PIDGains;
-import org.usfirst.frc.team2342.loops.Looper;
 import org.usfirst.frc.team2342.robot.PCMHandler;
 import org.usfirst.frc.team2342.robot.TalonNWT;
 import org.usfirst.frc.team2342.util.Constants;
@@ -194,10 +193,6 @@ public class WestCoastTankDrive extends Subsystem {
         WestCoastTankDrive.zeroEncoders(rightB);
     }
 
-    public void registerEnabledLoops(Looper enabledLooper) {
-        // TODO Auto-generated method stub
-    }
-    
     public void setHighGear() {
     	m_PCM.setLowGear(false);
         m_PCM.setHighGear(true);

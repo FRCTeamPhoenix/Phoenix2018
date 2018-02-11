@@ -16,6 +16,8 @@ public class Constants {
     public static final double TALON_SPEED_RPS = TALON_TICKS_PER_REV / 10;
 	//public static final double TALON_RPM_TO_VELOCITY = 1;//TALON_TICKS_PER_REV / 600.0;
 	
+    public static final double TALON_RPS_TO_FPS = 1.57;
+    
     public static final double JOYSTICK_DEADZONE = 0.1;
     
 	// Scales the speed of velocity mode (in rps)

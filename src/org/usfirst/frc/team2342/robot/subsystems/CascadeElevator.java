@@ -1,7 +1,5 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
-import org.usfirst.frc.team2342.loops.Looper;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -84,11 +82,6 @@ public class CascadeElevator extends Subsystem {
 	public void zeroSensors() {
 		talon1.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 		talon2.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
-	}
-
-	public void registerEnabledLoops(Looper enabledLooper) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	public void initDefaultCommand() {

@@ -1,13 +1,6 @@
 package org.usfirst.frc.team2342.robot;
 
-import org.usfirst.frc.team2342.commands.DriveGamepad;
-import org.usfirst.frc.team2342.commands.TurnAngle;
-import org.usfirst.frc.team2342.robot.sensors.Gyro;
-import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
-import org.usfirst.frc.team2342.util.Constants;
-import org.usfirst.frc.team2342.util.FMS;
-
-import org.usfirst.frc.team2342.commands.DriveForward;
+import org.usfirst.frc.team2342.commands.DriveDistance;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
@@ -97,12 +90,12 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
     	//Command goForward = new DriveForward(20, westCoast, 6.0 * Constants.TALON_SPEED_RPS);
     	//Scheduler.getInstance().add(goForward);
-    	westCoast.goDistance(20);
+    	DriveDistance driveDistance = new DriveDistance(westCoast, 8);
+    	Scheduler.getInstance().add(driveDistance);
     }
     
     public void autonomousPeriodic(){
-    	//Scheduler.getInstance().run();
-    	westCoast.distanceLoop();
+    	Scheduler.getInstance().run();
     	PCM.compressorRegulate();
     	westCoast.outputToSmartDashboard();
     }

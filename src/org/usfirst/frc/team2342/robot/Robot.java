@@ -1,9 +1,11 @@
 package org.usfirst.frc.team2342.robot;
 
-import org.usfirst.frc.team2342.commands.DriveDistance;
+import org.usfirst.frc.team2342.automodes.middleleftside;
+import org.usfirst.frc.team2342.automodes.middlerightside;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
+import org.usfirst.frc.team2342.util.FMS;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -11,7 +13,6 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This is a demo program showing how to use Mecanum control with the RobotDrive
@@ -84,16 +85,41 @@ public class Robot extends IterativeRobot {
     }
     
     public void autonomousInit() {
-    	//Command goForward = new DriveForward(20, westCoast, 6.0 * Constants.TALON_SPEED_RPS);
-    	//Scheduler.getInstance().add(goForward);
-    	westCoast.goArc(8, 90, 0.425, 0.5, false);
-    	//DriveDistance driveDistance = new DriveDistance(westCoast, 8);
-    	//Scheduler.getInstance().add(driveDistance);
+    	FMS.init();
+    	//calculate auto mode
+    	switch(FMS.getPosition()){
+    	case 1:
+    		if(FMS.scale()){
+    			//go for scale left side
+    		}else if(FMS.teamSwitch()){
+    			//go for switch on left side
+    		}else{
+    			//go for switch on right side
+    		}
+    	case 2:
+    		if(FMS.teamSwitch()){
+        		//middle to left side
+    			Scheduler.getInstance().add(new middleleftside(westCoast));
+        	}else{
+        		//middle to right side
+        		Scheduler.getInstance().add(new middlerightside(westCoast));
+        	}
+    	case 3:
+    		if(!FMS.scale()){
+    			//go for scale right side
+    		}else if(!FMS.teamSwitch()){
+    			//go for switch on right side
+    		}else{
+    			//go for switch on left side
+    		}
+		default:
+			break;
+    	}
+    	
     }
     
     public void autonomousPeriodic(){
-    	westCoast.arcLoop(false);
-    	//Scheduler.getInstance().run();
+    	Scheduler.getInstance().run();
     	PCM.compressorRegulate();
     	westCoast.outputToSmartDashboard();
     }

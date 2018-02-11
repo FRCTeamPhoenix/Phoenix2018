@@ -139,20 +139,20 @@ public class WestCoastTankDrive extends Subsystem {
     }
     
     public boolean isDistanceFinished(){
-    	return (dpidc.pidGet() < dpidc.getGoal()*1.05 && dpidc.pidGet() > dpidc.getGoal()*0.95);
+    	return (dpidc.pidGet() > dpidc.getGoal()*1.05 && dpidc.pidGet() < dpidc.getGoal()*0.95);
     }
     
     private double innerSpeed = 0.0d;
     private double outerSpeed = 0.0d;
     
-    public void goArc(double radius, double degrees, double multiplyer, boolean isLeftInner){
+    public void goArc(double radius, double degrees, double outerMultiplyer, double innerMultiplyer, boolean isLeftInner){
     	double circumfrence = 2 * radius * Math.PI;
     	double innerCircumfrence = 2 * (radius - (11.0/12.0)) * Math.PI;
     	double outerCircumfrence = 2 * (radius + (11.0/12.0)) * Math.PI;
     	
     	double degreeMultiplyer = degrees / 360;
-    	innerSpeed = Constants.WESTCOAST_MAX_SPEED * (innerCircumfrence/outerCircumfrence) * multiplyer;
-    	outerSpeed = Constants.WESTCOAST_MAX_SPEED * (outerCircumfrence/innerCircumfrence) * multiplyer;
+    	innerSpeed = Constants.WESTCOAST_MAX_SPEED * (innerCircumfrence/outerCircumfrence) * innerMultiplyer;
+    	outerSpeed = Constants.WESTCOAST_MAX_SPEED * (outerCircumfrence/innerCircumfrence) * outerMultiplyer;
     	double distance = circumfrence/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
 		dpidc.setGoal(distance * degreeMultiplyer);
     	if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
@@ -199,7 +199,7 @@ public class WestCoastTankDrive extends Subsystem {
     }
     
     public void setHighGear() {
-    	 m_PCM.setLowGear(false);
+    	m_PCM.setLowGear(false);
         m_PCM.setHighGear(true);
         m_PCM.compressorRegulate();
     }

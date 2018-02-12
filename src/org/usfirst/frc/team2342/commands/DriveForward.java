@@ -6,19 +6,19 @@ import org.usfirst.frc.team2342.util.Constants;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveForward extends Command {
-	WestCoastTankDrive m_westCoast;
+	//WestCoastTankDrive m_westCoast;
 	double velocity;
 	
 	public DriveForward(int time, WestCoastTankDrive westCoast, double speedRPS) {
 		requires(westCoast);
 		setTimeout(time);
-		m_westCoast = westCoast;
+		//m_westCoast = westCoast;
 		//limit at max val
 		velocity = Math.min(speedRPS, Constants.WESTCOAST_MAX_SPEED);
 	}
 	
 	protected void initialize() {
-		m_westCoast.setVelocity(velocity, velocity);
+		//m_westCoast.setVelocity(velocity, velocity);
 	}
 	
 	protected void execute() {
@@ -30,7 +30,7 @@ public class DriveForward extends Command {
 	}
 	
 	protected void end() {
-		m_westCoast.setVelocity(0, 0);
+		//m_westCoast.setVelocity(0, 0);
 	}
 	
 	protected void interrupted() {

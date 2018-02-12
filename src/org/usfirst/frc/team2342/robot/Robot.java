@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
-	Joystick gamepad = new Joystick(3);
+	Joystick gamepad = new Joystick(0);
 	PCMHandler PCM = new PCMHandler(11);
 	WPI_TalonSRX talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
 	WPI_TalonSRX talonFL = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
@@ -31,27 +31,29 @@ public class Robot extends IterativeRobot {
 	Joystick joystickR = new Joystick(2);
 	Joystick joystickL = new Joystick(1);
 
-    public Robot() {
-    	//PCM.turnOn();
-    	//WPI_TalonSRX talon1 = new WPI_TalonSRX(0);
-    	//WPI_TalonSRX talon2 = new WPI_TalonSRX(1);
-    	//boxManipulator = new BoxManipulator(talon1, talon2, PCM);
-    	//cascadeElevator = new CascadeElevator(talon1, talon2);
-    }
-    
-    public void teleopInit() {
-    	PCM.turnOn();
-    	Command driveJoystick = new DriveGamepad(gamepad, westCoast);
-    	Scheduler.getInstance().add(driveJoystick);
-    }
-    
-    public void teleopPeriodic() {
-    	SmartDashboard.putString("DB/String 0", ""+gamepad.getRawAxis(1));
-    	SmartDashboard.putString("DB/String 1", ""+gamepad.getRawAxis(3));
-    	SmartDashboard.putString("DB/String 2", ""+gamepad.getRawButton(5));
-    	SmartDashboard.putString("DB/String 3", ""+gamepad.getRawButton(6));
-    	Scheduler.getInstance().run();
-    	//Drive with joystick control in velocity mode
+	public Robot() {
+		//PCM.turnOn();
+		//WPI_TalonSRX talon1 = new WPI_TalonSRX(0);
+		//WPI_TalonSRX talon2 = new WPI_TalonSRX(1);
+		//boxManipulator = new BoxManipulator(talon1, talon2, PCM);
+		//cascadeElevator = new CascadeElevator(talon1, talon2);
+	}
+
+	public void teleopInit() {
+		System.out.println("TELEOP MODE INIT");
+		PCM.turnOn();
+		Command driveJoystick = new DriveGamepad(gamepad, westCoast);
+		Scheduler.getInstance().add(driveJoystick);
+		westCoast.setGyroControl(false);
+	}
+
+	public void teleopPeriodic() {
+		SmartDashboard.putString("DB/String 0", ""+gamepad.getRawAxis(1));
+		SmartDashboard.putString("DB/String 1", ""+gamepad.getRawAxis(3));
+		SmartDashboard.putString("DB/String 2", ""+gamepad.getRawButton(5));
+		SmartDashboard.putString("DB/String 3", ""+gamepad.getRawButton(6));
+		Scheduler.getInstance().run();
+		//Drive with joystick control in velocity mode
 		westCoast.outputToSmartDashboard();
 		//Buttons 8 & 9 or (gamepad) 5 & 6 are Low & High gear, respectively
 		if (gamepad.getRawButton(5))
@@ -73,43 +75,47 @@ public class Robot extends IterativeRobot {
 			talon3.goDistance(0.25, 0.4);
 			talon4.goDistance(-0.25, 0.4);
 		}*/
-		
-    	
-    	PCM.compressorRegulate();
-    }
-    
-    public void disabledInit() {
-    	westCoast.setVelocity(0.0d, 0.0d);
-    	westCoast.zeroSensors();
-    	Scheduler.getInstance().removeAll();
-    }
-    
-    public void autonomousInit() {
-    	Command goForward = new DriveForward(20, westCoast, 6.0 * Constants.TALON_SPEED_RPS);
-    	Scheduler.getInstance().add(goForward);
-    }
-    
-    public void autonomousPeriodic(){
-    	Scheduler.getInstance().run();
-    	PCM.compressorRegulate();
-    	westCoast.outputToSmartDashboard();
-    }
-    
-    @Override
-    public void testInit() {
-    	westCoast.zeroSensors();
-    }
-    
-    @Override
-    public void testPeriodic() {
-    	westCoast.setVelocity(-500d, -500d);
-    	System.out.println("Angle: " + String.valueOf(westCoast.pidc.getCurAngle()));
-    	System.out.println("PID: " + String.valueOf(westCoast.pidc.getCorrection()));
-    	try {
+
+
+		PCM.compressorRegulate();
+	}
+
+	public void disabledInit() {
+		westCoast.setVelocity(0.0d, 0.0d);
+		westCoast.zeroSensors();
+		Scheduler.getInstance().removeAll();
+	}
+
+	public void autonomousInit() {
+		Command goForward = new DriveForward(20, westCoast, 6.0 * Constants.TALON_SPEED_RPS);
+		Scheduler.getInstance().add(goForward);
+	}
+
+	public void autonomousPeriodic(){
+		Scheduler.getInstance().run();
+		PCM.compressorRegulate();
+		westCoast.outputToSmartDashboard();
+	}
+
+	@Override
+	public void testInit() {
+		System.out.println("TEST MODE INIT");
+		westCoast.pidc.getGyro().reset();
+		westCoast.setGyroControl(true);
+		westCoast.zeroSensors();
+	}
+
+	@Override
+	public void testPeriodic() {
+		// Limit for the current velocity for the robot without cascade is 3000
+		double vel = -1000 * SmartDashboard.getNumber("DB/Slider 1", 0);
+		try {
+			westCoast.updatePID();
+			westCoast.setVelocity(vel, vel);
+			westCoast.outputToSmartDashboard();  // update network tables
 			Thread.sleep(100);
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-    }
+	}
 }

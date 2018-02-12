@@ -45,4 +45,9 @@ public class Constants {
   	//inches to cm
   	public static final double INCHES_TO_CM = 2.54;
     
+  	
+  	// PID for Gyro
+  	public static final double Kp = 0.02d;
+  	public static final double Ki = 0.0d;
+  	public static final double Kd = 0.0d;
 }

@@ -1,15 +1,17 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
+import org.usfirst.frc.team2342.robot.sensors.LowerLimit;
+import org.usfirst.frc.team2342.util.Constants;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CascadeElevator extends Subsystem {
-	private TalonSRX talon1;
-	private TalonSRX talon2;
+	private WPI_TalonSRX talonCascade;
 	
 	public static final int BASE = 0;
 	public static final int SWITCH = 1;
@@ -20,38 +22,37 @@ public class CascadeElevator extends Subsystem {
 	private final int PidTimeOutMs = 10;
 	private final boolean SensorPhase = true;
 	private final boolean InvertMotor = false;
+	
+	private LowerLimit lowerLimit;
 
-	public CascadeElevator(TalonSRX talon1, TalonSRX talon2) {
-		this.talon1 = talon1;
-		this.talon2 = talon2;
+	public CascadeElevator(WPI_TalonSRX talonCascade) {
+		this.talonCascade = talonCascade;
 		
-		talon1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PidLoopIndex, PidTimeOutMs);
-		talon1.setSensorPhase(SensorPhase);
-		talon1.setInverted(InvertMotor);
-		talon1.configNominalOutputForward(0, PidTimeOutMs);
-		talon1.configNominalOutputReverse(0, PidTimeOutMs);
-		talon1.configPeakOutputForward(1, PidTimeOutMs);
-		talon1.configPeakOutputReverse(-1, PidTimeOutMs);
-		talon1.configAllowableClosedloopError(0, PidLoopIndex, PidTimeOutMs);
+		talonCascade.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PidLoopIndex, PidTimeOutMs);
+		talonCascade.setSensorPhase(SensorPhase);
+		talonCascade.setInverted(InvertMotor);
+		talonCascade.configNominalOutputForward(0, PidTimeOutMs);
+		talonCascade.configNominalOutputReverse(0, PidTimeOutMs);
+		talonCascade.configPeakOutputForward(1, PidTimeOutMs);
+		talonCascade.configPeakOutputReverse(-1, PidTimeOutMs);
+		talonCascade.configAllowableClosedloopError(0, PidLoopIndex, PidTimeOutMs);
 		
-		talon1.config_kF(PidLoopIndex, 0.0, PidTimeOutMs);
-		talon1.config_kP(PidLoopIndex, 0.1, PidTimeOutMs);
-		talon1.config_kI(PidLoopIndex, 0.0, PidTimeOutMs);
-		talon1.config_kD(PidLoopIndex, 0.0, PidTimeOutMs);
+		talonCascade.config_kF(PidLoopIndex, 0.0, PidTimeOutMs);
+		talonCascade.config_kP(PidLoopIndex, 0.1, PidTimeOutMs);
+		talonCascade.config_kI(PidLoopIndex, 0.0, PidTimeOutMs);
+		talonCascade.config_kD(PidLoopIndex, 0.0, PidTimeOutMs);
 		
-		talon1.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
-		talon2.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
-		this.talon2.follow(this.talon1);
+		talonCascade.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
+		
+		lowerLimit = new LowerLimit(Constants.LOWER_LIMIT_SWITCH);
 	}
 	
 	public CascadeElevator() {
-		this.talon1 = new TalonSRX(0);
-		this.talon2 = new TalonSRX(1);
+
 	}
 	
 	public void goToPosition(double position) {
-		talon1.set(ControlMode.Position, position);
-		talon2.follow(talon1);
+		talonCascade.set(ControlMode.Position, position);
 	}
 	
 	public void goToBase() {
@@ -70,20 +71,30 @@ public class CascadeElevator extends Subsystem {
 		goToPosition(TOP);
 	}
 	
+	public void setVelocity(double speed) {
+		talonCascade.set(ControlMode.PercentOutput, speed);
+		System.out.println(speed);
+		if (lowerLimit.detectsObject()) {
+			talonCascade.set(ControlMode.PercentOutput, Math.sqrt(speed));
+		}
+		else {
+			talonCascade.set(ControlMode.Current, 0.0);
+		}
+	}
+	
 	public void outputToSmartDashboard() {
-		SmartDashboard.putString("DB/String 0", "Motor Output: " + (talon1.getMotorOutputPercent()*100) + "%");
-		SmartDashboard.putString("DB/String 1", "Position: " + talon1.getSelectedSensorPosition(0));
+		SmartDashboard.putString("DB/String 0", "Motor Output: " + (talonCascade.getMotorOutputPercent()*100) + "%");
+		SmartDashboard.putString("DB/String 1", "Position: " + talonCascade.getSelectedSensorPosition(0));
 	}
 
 	public void stop() {
-		talon1.set(ControlMode.Current, 0.0);
+		talonCascade.set(ControlMode.Current, 0.0);
 	}
 
 	public void zeroSensors() {
-		talon1.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
-		talon2.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
+		talonCascade.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 	}
-	
+
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
 		// setDefaultCommand(new MySpecialCommand());

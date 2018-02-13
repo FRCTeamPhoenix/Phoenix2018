@@ -5,10 +5,12 @@ import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,17 +28,20 @@ public class Robot extends IterativeRobot {
 	WPI_TalonSRX talonFL = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
 	WPI_TalonSRX talonBR = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
 	WPI_TalonSRX talonBL = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
+	WPI_TalonSRX talonCascade = new WPI_TalonSRX(Constants.TALON_CASCADE);
+	WPI_TalonSRX talonIntakeRight = new WPI_TalonSRX(Constants.TALON_INTAKE_RIGHT);
+	WPI_TalonSRX talonIntakeLeft = new WPI_TalonSRX(Constants.TALON_INTAKE_LEFT);
+	WPI_TalonSRX talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
+	Solenoid solenoidLowGear = new Solenoid(Constants.PCM_CAN_ID ,Constants.PCM_SLOT_LOWGEAR);
+	Solenoid solenoidHighGear = new Solenoid(Constants.PCM_CAN_ID ,Constants.PCM_SLOT_HIGHGEAR);
+	Solenoid solenoid1 = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_BOX_MANIPULATOR);
 	WestCoastTankDrive westCoast = new WestCoastTankDrive(PCM, talonFL, talonFR, talonBL, talonBR);
 	Joystick joystickR = new Joystick(2);
 	Joystick joystickL = new Joystick(1);
 
 
     public Robot() {
-    	//PCM.turnOn();
-    	//WPI_TalonSRX talon1 = new WPI_TalonSRX(0);
-    	//WPI_TalonSRX talon2 = new WPI_TalonSRX(1);
-    	//boxManipulator = new BoxManipulator(talon1, talon2, PCM);
-    	//cascadeElevator = new CascadeElevator(talon1, talon2);
+    	
     }
     
     public void teleopInit() {
@@ -101,6 +106,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void testInit() {
     	westCoast.zeroSensors();
+    	PCM.turnOn();
     }
     
     @Override

@@ -47,8 +47,25 @@ public class Constants {
 	//inches to cm
 	public static final double INCHES_TO_CM = 2.54;
 
+	//limit switches
+	public static final int LOWER_LIMIT_SWITCH = 0;
+
+	//boxmanipulator talon constants
+	public static final int TALON_CASCADE = 5;
+	public static final int TALON_INTAKE_RIGHT = 8;
+	public static final int TALON_INTAKE_LEFT = 7;
+	public static final int TALON_TIP = 0;
+	public static final int TALON_CLIMBER = 9;
+
+	//solenoid constants
+	public static final int PCM_CAN_ID = 11;
+	public static final int PCM_SLOT_LOWGEAR = 0;
+	public static final int PCM_SLOT_HIGHGEAR = 1;
+	public static final int PCM_BOX_MANIPULATOR = 2;
+
 	// PID for Gyro
 	public static final double Kp = 0.02d;
 	public static final double Ki = 0.0d;
 	public static final double Kd = 0.0d;
+
 }

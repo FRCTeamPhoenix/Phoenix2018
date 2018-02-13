@@ -1,7 +1,13 @@
 package org.usfirst.frc.team2342.robot;
 
+import org.usfirst.frc.team2342.automodes.leftscaleleftside;
+import org.usfirst.frc.team2342.automodes.leftscalerightside;
+import org.usfirst.frc.team2342.automodes.leftswitchleft;
 import org.usfirst.frc.team2342.automodes.middleleftside;
 import org.usfirst.frc.team2342.automodes.middlerightside;
+import org.usfirst.frc.team2342.automodes.rightscaleleft;
+import org.usfirst.frc.team2342.automodes.rightscaleright;
+import org.usfirst.frc.team2342.automodes.rightswitchright;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
@@ -91,10 +97,13 @@ public class Robot extends IterativeRobot {
     	case 1:
     		if(FMS.scale()){
     			//go for scale left side
+    			Scheduler.getInstance().add(new leftscaleleftside(westCoast));
     		}else if(FMS.teamSwitch()){
     			//go for switch on left side
+    			Scheduler.getInstance().add(new leftswitchleft(westCoast));
     		}else{
     			//go for switch on right side
+    			Scheduler.getInstance().add(new leftscalerightside(westCoast));
     		}
     	case 2:
     		if(FMS.teamSwitch()){
@@ -107,10 +116,13 @@ public class Robot extends IterativeRobot {
     	case 3:
     		if(!FMS.scale()){
     			//go for scale right side
+    			Scheduler.getInstance().add(new rightscaleright(westCoast));
     		}else if(!FMS.teamSwitch()){
     			//go for switch on right side
+    			Scheduler.getInstance().add(new rightswitchright(westCoast));
     		}else{
     			//go for switch on left side
+    			Scheduler.getInstance().add(new rightscaleleft(westCoast));
     		}
 		default:
 			break;

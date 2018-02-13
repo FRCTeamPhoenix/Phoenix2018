@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class middleleftside extends CommandGroup {
 	public middleleftside(WestCoastTankDrive westCoast){
-		addSequential(new DriveArc(westCoast, 3, 90, 0.5, 0.55, true));
-		addSequential(new DriveArc(westCoast, 5, 90, 0.5, 0.45, false));
+		addSequential(new DriveArc(westCoast, 3, 90, 1.0, 1.0, true));
+		addSequential(new DriveArc(westCoast, 5, 90, 0.5, 0.5, false));
 	}
 }

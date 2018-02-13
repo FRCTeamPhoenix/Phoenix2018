@@ -159,6 +159,9 @@ public class WestCoastTankDrive extends Subsystem {
     	if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
 	        leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
 	    }
+    	if (!rightA.getControlMode().equals(ControlMode.Velocity)) {
+	        rightA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
+	    }
     	 
     	//leftA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
      	//rightA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());

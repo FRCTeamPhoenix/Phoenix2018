@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class leftswitchleft extends CommandGroup {
 	public leftswitchleft(WestCoastTankDrive westCoast){
 		//move forward 8 feet
+		addSequential(new DriveDistance(westCoast, 8));
 		//arc 90 degrees to the right with a radius of 2.5 feet
+		addSequential(new DriveArc(westCoast, 2.5, 90, 1.0, 1.0, false));
 	}
 }

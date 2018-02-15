@@ -47,9 +47,6 @@ public class Constants {
 	//inches to cm
 	public static final double INCHES_TO_CM = 2.54;
 
-	//limit switches
-	public static final int LOWER_LIMIT_SWITCH = 0;
-
 	//boxmanipulator talon constants
 	public static final int TALON_CASCADE = 5;
 	public static final int TALON_INTAKE_RIGHT = 8;
@@ -67,5 +64,8 @@ public class Constants {
 	public static final double Kp = 0.02d;
 	public static final double Ki = 0.0d;
 	public static final double Kd = 0.0d;
+	
+	// cascade homing
+	public static final double CASCADE_HOMING_SPEED = -0.2;
 
 }

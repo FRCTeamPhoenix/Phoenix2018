@@ -1,6 +1,4 @@
 package org.usfirst.frc.team2342.robot.subsystems;
-
-import org.usfirst.frc.team2342.robot.sensors.LowerLimit;
 import org.usfirst.frc.team2342.util.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -23,7 +21,8 @@ public class CascadeElevator extends Subsystem {
 	private final boolean SensorPhase = true;
 	private final boolean InvertMotor = false;
 	
-	private LowerLimit lowerLimit;
+	private int lowerEncoderValue = 0;
+	private int upperEncoderValue = 0;
 
 	public CascadeElevator(WPI_TalonSRX talonCascade) {
 		this.talonCascade = talonCascade;
@@ -43,8 +42,6 @@ public class CascadeElevator extends Subsystem {
 		talonCascade.config_kD(PidLoopIndex, 0.0, PidTimeOutMs);
 		
 		talonCascade.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
-		
-		lowerLimit = new LowerLimit(Constants.LOWER_LIMIT_SWITCH);
 	}
 	
 	public CascadeElevator() {
@@ -74,12 +71,30 @@ public class CascadeElevator extends Subsystem {
 	public void setVelocity(double speed) {
 		talonCascade.set(ControlMode.PercentOutput, speed);
 		System.out.println(speed);
-		if (lowerLimit.detectsObject()) {
-			talonCascade.set(ControlMode.PercentOutput, Math.sqrt(speed));
-		}
-		else {
-			talonCascade.set(ControlMode.Current, 0.0);
-		}
+	}
+	
+	public int getLowerEncoderValue() {
+		return lowerEncoderValue;
+	}
+
+	public void setLowerEncoderValue(int lowerEncoderValue) {
+		this.lowerEncoderValue = lowerEncoderValue;
+	}
+
+	public int getUpperEncoderValue() {
+		return upperEncoderValue;
+	}
+
+	public void setUpperEncoderValue(int upperEncoderValue) {
+		this.upperEncoderValue = upperEncoderValue;
+	}
+	
+	public boolean isRevLimitSwitchClosed() {
+		return talonCascade.getSensorCollection().isRevLimitSwitchClosed();
+	}
+	
+	public boolean isFwdLimitSwitchClosed() {
+		return talonCascade.getSensorCollection().isFwdLimitSwitchClosed();
 	}
 	
 	public void outputToSmartDashboard() {

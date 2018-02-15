@@ -48,6 +48,12 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 		}		
 		pc.enable();
 	}
+	
+	// update the angle and the target thing
+	public void updateAngle(double angle) {
+		this.targetAngle = angle;
+		pc.setSetpoint(this.targetAngle);
+	}
 
 	// get the p value
 	public double getP() {

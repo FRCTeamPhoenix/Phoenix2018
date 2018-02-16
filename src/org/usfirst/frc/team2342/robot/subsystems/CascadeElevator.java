@@ -62,7 +62,11 @@ public class CascadeElevator extends Subsystem {
 		if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < position) {
 			speed *= -1;
 		}
+		
 		setVelocity(speed);
+	}
+	public void holdPosition() {
+		talonCascade.set(ControlMode.PercentOutput, 0.1);
 	}
 
 	public void goToBase() {
@@ -95,7 +99,7 @@ public class CascadeElevator extends Subsystem {
 			System.out.println("ABOVE");
 			speed = Math.abs(speed);
 		} else if (talonCascade.getSelectedSensorPosition(PidLoopIndex) > Constants.LOWER_SENSOR_POSITION) {
-			System.out.println("BELLOW");
+			System.out.println("BELOW");
 			speed = -Math.abs(speed);
 		}
 		System.out.println(speed);

@@ -26,12 +26,15 @@ public class CascadePosition extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	cascade.goToPosition(position);
+    	if (Math.abs(cascade.talonCascade.getSelectedSensorPosition(0) - position) < 500)
+    		cascade.holdPosition();
+    	else 
+    		cascade.goToPosition(position);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Math.abs(cascade.talonCascade.getSelectedSensorPosition(0) - position) < 500;
+        return false;
     }
 
     // Called once after isFinished returns true

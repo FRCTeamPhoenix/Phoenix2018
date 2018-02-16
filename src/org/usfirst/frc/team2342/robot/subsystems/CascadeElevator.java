@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CascadeElevator extends Subsystem {
-	private WPI_TalonSRX talonCascade;
+	public WPI_TalonSRX talonCascade;
 
 	public static final int BASE = 0;
 	public static final int SWITCH = 1;
@@ -57,9 +57,9 @@ public class CascadeElevator extends Subsystem {
 	}
 
 	public void goToPosition(double position) {
-		double speed = 0.4;
+		double speed = -0.4;
 
-		if (talonCascade.getSelectedSensorPosition(PidLoopIndex) > position) {
+		if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < position) {
 			speed *= -1;
 		}
 		setVelocity(speed);
@@ -83,16 +83,20 @@ public class CascadeElevator extends Subsystem {
 
 	public void setVelocity(double speed) {
 
-		if (lowerLimit.get()) {
-			speed = Math.abs(speed) * -1;
+		if (!lowerLimit.get()) {
+			System.out.println("LOWER LIMIT REACHED");
+			speed = -Math.abs(speed);
 			talonCascade.setSelectedSensorPosition(Constants.LOWER_SENSOR_POSITION, PidLoopIndex, PidTimeOutMs);
-		} else if (upperLimit.get()) {
+		} else if (!upperLimit.get()) {
+			System.out.println("UPPER LIMIT REACHED");
 			speed = Math.abs(speed);
 			talonCascade.setSelectedSensorPosition(Constants.UPPER_SENSOR_POSITION, PidLoopIndex, PidTimeOutMs);
-		} else if (talonCascade.getSelectedSensorPosition(PidLoopIndex) > Constants.UPPER_SENSOR_POSITION) {
-			speed = Math.abs(speed) * -1;
-		} else if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < Constants.LOWER_SENSOR_POSITION) {
+		} else if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < Constants.UPPER_SENSOR_POSITION) {
+			System.out.println("ABOVE");
 			speed = Math.abs(speed);
+		} else if (talonCascade.getSelectedSensorPosition(PidLoopIndex) > Constants.LOWER_SENSOR_POSITION) {
+			System.out.println("BELLOW");
+			speed = -Math.abs(speed);
 		}
 		System.out.println(speed);
 		talonCascade.set(ControlMode.PercentOutput, speed);

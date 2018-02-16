@@ -53,7 +53,7 @@ public class Constants {
 	
 	//Sensor positions
 	public static final int LOWER_SENSOR_POSITION = 0;
-	public static final int UPPER_SENSOR_POSITION = 1;
+	public static final int UPPER_SENSOR_POSITION = -28000;
 	public static final int SWITCH_SENSOR_POSITION = 0;
 	public static final int SCALE_SENSOR_POSITION = 1;
 	

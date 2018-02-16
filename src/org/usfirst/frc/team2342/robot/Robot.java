@@ -103,12 +103,12 @@ public class Robot extends IterativeRobot {
 		//DriveDistance driveDistance = new DriveDistance(westCoast, 8);
 		//Scheduler.getInstance().add(driveDistance);
 		try {
-			Command cascadeGo = new CascadePosition(cascadeElevator, -5000);
+			Command cascadeGo = new CascadePosition(cascadeElevator, -10000);
 			Scheduler.getInstance().add(cascadeGo);
 			Thread.sleep(100);
 		}
 		catch (Exception e) {
-			//BLA
+			
 		}
 	}
 

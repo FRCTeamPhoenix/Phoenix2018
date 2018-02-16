@@ -2,6 +2,7 @@ package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.commands.DriveDistance;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
+import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 
@@ -38,13 +39,14 @@ public class Robot extends IterativeRobot {
 	WestCoastTankDrive westCoast = new WestCoastTankDrive(PCM, talonFL, talonFR, talonBL, talonBR);
 	Joystick joystickR = new Joystick(2);
 	Joystick joystickL = new Joystick(1);
+	CascadeElevator cascadeElevator = new CascadeElevator(talonCascade);
 
 	public Robot() {
 		//PCM.turnOn();
 		//WPI_TalonSRX talon1 = new WPI_TalonSRX(0);
 		//WPI_TalonSRX talon2 = new WPI_TalonSRX(1);
 		//boxManipulator = new BoxManipulator(talon1, talon2, PCM);
-		//cascadeElevator = new CascadeElevator(talon1, talon2);
+		//cascadeElevator = new CascadeElevator(talonCascade);
 	}
 
 	public void teleopInit() {
@@ -57,7 +59,9 @@ public class Robot extends IterativeRobot {
 	}
     
     public void teleopPeriodic() {
-    	Scheduler.getInstance().run();
+    	
+    	
+    	/*Scheduler.getInstance().run();
     	//Drive with joystick control in velocity mode
 		westCoast.outputToSmartDashboard();
 		//Buttons 8 & 9 or (gamepad) 5 & 6 are Low & High gear, respectively
@@ -68,7 +72,7 @@ public class Robot extends IterativeRobot {
 		else
 			westCoast.setNoGear();
 		//Sleep for 0.01s
-		/*try {
+		try {
 		    Thread.sleep(100);
 		} catch(InterruptedException ex) {
 		    Thread.currentThread().interrupt();
@@ -79,14 +83,14 @@ public class Robot extends IterativeRobot {
 			talon2.goDistance(-0.25, 0.4);
 			talon3.goDistance(0.25, 0.4);
 			talon4.goDistance(-0.25, 0.4);
-		}*/
+		}
 
 		// PCM.turnOn();
 		// WPI_TalonSRX talon1 = new WPI_TalonSRX(0);
 		// WPI_TalonSRX talon2 = new WPI_TalonSRX(1);
 		// boxManipulator = new BoxManipulator(talon1, talon2, PCM);
 		// cascadeElevator = new CascadeElevator(talon1, talon2);
-	}
+*/	}
     
 	public void disabledInit() {
 		westCoast.setVelocity(0.0d, 0.0d);
@@ -97,16 +101,19 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		//Command goForward = new DriveForward(20, westCoast, 6.0 * Constants.TALON_SPEED_RPS);
 		//Scheduler.getInstance().add(goForward);
-		westCoast.goArc(8, 90, 0.425, 0.5, false);
+		//westCoast.goArc(8, 90, 0.425, 0.5, false);
 		//DriveDistance driveDistance = new DriveDistance(westCoast, 8);
 		//Scheduler.getInstance().add(driveDistance);
 	}
 
 	public void autonomousPeriodic(){
-		westCoast.arcLoop(false);
+		/*westCoast.arcLoop(false);
 		//Scheduler.getInstance().run();
 		PCM.compressorRegulate();
-		westCoast.outputToSmartDashboard();
+		westCoast.outputToSmartDashboard();*/
+		cascadeElevator.outputToSmartDashboard();
+		cascadeElevator.goToPosition(5000);
+		
 	}
 
 	@Override

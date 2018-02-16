@@ -49,6 +49,14 @@ public class Constants {
 
 	//limit switches
 	public static final int LOWER_LIMIT_SWITCH = 0;
+	public static final int UPPER_LIMIT_SWITCH = 1;
+	
+	//Sensor positions
+	public static final int LOWER_SENSOR_POSITION = 0;
+	public static final int UPPER_SENSOR_POSITION = 1;
+	public static final int SWITCH_SENSOR_POSITION = 0;
+	public static final int SCALE_SENSOR_POSITION = 1;
+	
 
 	//boxmanipulator talon constants
 	public static final int TALON_CASCADE = 5;

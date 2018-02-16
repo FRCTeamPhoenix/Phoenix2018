@@ -1,12 +1,14 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
 import org.usfirst.frc.team2342.robot.sensors.LowerLimit;
+import org.usfirst.frc.team2342.robot.sensors.UpperLimit;
 import org.usfirst.frc.team2342.util.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -23,7 +25,8 @@ public class CascadeElevator extends Subsystem {
 	private final boolean SensorPhase = true;
 	private final boolean InvertMotor = false;
 	
-	private LowerLimit lowerLimit;
+	private DigitalInput lowerLimit;
+	private DigitalInput upperLimit;
 
 	public CascadeElevator(WPI_TalonSRX talonCascade) {
 		this.talonCascade = talonCascade;
@@ -44,7 +47,9 @@ public class CascadeElevator extends Subsystem {
 		
 		talonCascade.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 		
-		lowerLimit = new LowerLimit(Constants.LOWER_LIMIT_SWITCH);
+		lowerLimit = new DigitalInput(Constants.LOWER_LIMIT_SWITCH);
+		
+		upperLimit = new DigitalInput(Constants.UPPER_LIMIT_SWITCH);
 	}
 	
 	public CascadeElevator() {
@@ -52,8 +57,14 @@ public class CascadeElevator extends Subsystem {
 	}
 	
 	public void goToPosition(double position) {
-		talonCascade.set(ControlMode.Position, position);
+		double speed = 0.4;
+		
+		if (talonCascade.getSelectedSensorPosition(PidLoopIndex) > position) {
+			speed *= -1;
+		}
+		setVelocity(speed);
 	}
+	
 	
 	public void goToBase() {
 		goToPosition(BASE);
@@ -72,14 +83,22 @@ public class CascadeElevator extends Subsystem {
 	}
 	
 	public void setVelocity(double speed) {
-		talonCascade.set(ControlMode.PercentOutput, speed);
+		
 		System.out.println(speed);
-		if (lowerLimit.detectsObject()) {
+		if (!lowerLimit.get()) {
+			talonCascade.set(ControlMode.PercentOutput, Math.sqrt(speed) * -1);
+			talonCascade.setSelectedSensorPosition(Constants.LOWER_SENSOR_POSITION,PidLoopIndex, PidTimeOutMs);
+		} else if (!upperLimit.get()) {
 			talonCascade.set(ControlMode.PercentOutput, Math.sqrt(speed));
+			talonCascade.setSelectedSensorPosition(Constants.UPPER_SENSOR_POSITION,PidLoopIndex, PidTimeOutMs);
+		} else if (talonCascade.getSelectedSensorPosition(PidLoopIndex) > Constants.UPPER_SENSOR_POSITION) {
+			talonCascade.set(ControlMode.PercentOutput, Math.sqrt(speed) * -1);
+		} else if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < Constants.LOWER_SENSOR_POSITION) {
+			talonCascade.set(ControlMode.PercentOutput, Math.sqrt(speed));
+		} else {
+			talonCascade.set(ControlMode.PercentOutput, speed);
 		}
-		else {
-			talonCascade.set(ControlMode.Current, 0.0);
-		}
+		
 	}
 	
 	public void outputToSmartDashboard() {

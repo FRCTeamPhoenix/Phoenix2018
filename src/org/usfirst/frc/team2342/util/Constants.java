@@ -21,7 +21,7 @@ public class Constants {
 	public static final double JOYSTICK_DEADZONE = 0.1;
 
 	// Scales the speed of velocity mode (in rps)
-	public static final double WESTCOAST_MAX_SPEED = TALON_SPEED_RPS * 2.5;
+	public static final double WESTCOAST_MAX_SPEED = TALON_SPEED_RPS * 5.0;
 
 	public static final int PCM_PORT = 11;
 

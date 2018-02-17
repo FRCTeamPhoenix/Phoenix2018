@@ -88,7 +88,9 @@ public class Robot extends IterativeRobot {
 		// WPI_TalonSRX talon2 = new WPI_TalonSRX(1);
 		// boxManipulator = new BoxManipulator(talon1, talon2, PCM);
 		// cascadeElevator = new CascadeElevator(talon1, talon2);
-		 */	}
+		 */	
+		Scheduler.getInstance().run();
+	}
 
 	public void disabledInit() {
 		westCoast.setVelocity(0.0d, 0.0d);

@@ -5,6 +5,7 @@ import org.usfirst.frc.team2342.util.Constants;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveGamepad extends Command {
 
@@ -24,6 +25,8 @@ public class DriveGamepad extends Command {
 				leftVelocity = gamepad.getRawAxis(1) * Constants.WESTCOAST_MAX_SPEED;
 		else
 			leftVelocity = 0.0;
+		
+		
 		
 		if(Math.abs(gamepad.getRawAxis(3)) > Constants.JOYSTICK_DEADZONE)
 			rightVelocity = gamepad.getRawAxis(3) * Constants.WESTCOAST_MAX_SPEED;
@@ -46,6 +49,7 @@ public class DriveGamepad extends Command {
 			rightVelocity = m_gamepad.getRawAxis(3) * Constants.WESTCOAST_MAX_SPEED;
 		else
 			rightVelocity = 0.0;
+		
 		m_westCoast.setVelocity(leftVelocity, rightVelocity);
 	}
 	

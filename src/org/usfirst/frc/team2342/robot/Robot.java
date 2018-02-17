@@ -6,6 +6,7 @@ import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -67,6 +68,18 @@ public class Robot extends IterativeRobot {
 			westCoast.setHighGear();
 		else
 			westCoast.setNoGear();
+		
+		if(joystickL.getRawButton(1))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE));
+		
+		if(joystickL.getRawButton(2))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH));
+
+		if(joystickL.getRawButton(3))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE));
+		
+		if(joystickL.getRawButton(4))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE));
 
 		/*Scheduler.getInstance().run();
     	//Drive with joystick control in velocity mode
@@ -122,14 +135,14 @@ public class Robot extends IterativeRobot {
 		//Scheduler.getInstance().add(driveDistance);
 //		westCoast.goArc(4, 90, -1.0d, -1.0d, false);
 		westCoast.updatePID();
-//		try {
-//			Command cascadeGo = new CascadePosition(cascadeElevator, -10000);
-//			Scheduler.getInstance().add(cascadeGo);
-//			Thread.sleep(100);
-//		}
-//		catch (Exception e) {
-//			//DONOTHING
-//		}
+		try {
+			Command cascadeGo = new CascadePosition(cascadeElevator, 35);
+			Scheduler.getInstance().add(cascadeGo);
+			Thread.sleep(100);
+		}
+		catch (Exception e) {
+			//DONOTHING
+		}
 		
 		westCoast.setGyroControl(true);
 		westCoast.pidc.gyroReset();
@@ -148,15 +161,16 @@ public class Robot extends IterativeRobot {
 			TalonNWT.updateGyroPID(westCoast.pidc);
 			westCoast.rotateAuto(-2000.0d);
 			SmartDashboard.putString("DB/String 1", String.valueOf(westCoast.pidc.getCorrection()));
+//			System.out.println(talonCascade.getSelectedSensorPosition(0));
 			Thread.sleep(100);
 		}
 		catch (Exception e) {
 			
 		}
 		//cascadeElevator.outputToSmartDashboard();
-		Scheduler.getInstance().run();
+		Scheduler.getInstance().add(new CascadePosition(cascadeElevator, 42));
 	}
-
+	
 	@Override
 	public void testInit() {
 		System.out.println("TEST MODE INIT");
@@ -164,7 +178,8 @@ public class Robot extends IterativeRobot {
 		westCoast.pidc.gyroReset();
 		westCoast.zeroSensors();
 		westCoast.debug = true;
-		westCoast.turnSet(90.0d);
+		westCoast.turnSet(90.0d);		
+		talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
 	}
 
 	@Override
@@ -175,6 +190,7 @@ public class Robot extends IterativeRobot {
 		try {
 			TalonNWT.updateGyroPID(westCoast.pidc);
 			westCoast.rotateAuto(-2000.0d);
+			talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
 		}
 		catch (Exception e) {
 			//NOTHING

@@ -25,6 +25,10 @@ public class Constants {
 	public static final double WESTCOAST_HALF_SPEED = WESTCOAST_MAX_SPEED * 0.5d;
 
 	public static final int PCM_PORT = 11;
+	
+	public static final int LOWER_SENSOR_POSITION = 0;
+	public static final int UPPER_SENSOR_POSITION = -28000;
+	public static final int INCHES_TO_TICKS_CASCADE = -290;
 
 	//where on the smartdashboard talons go
 	public static final String TALON_TABLE_LOCATION = "Talons";
@@ -50,6 +54,7 @@ public class Constants {
 
 	//limit switches
 	public static final int LOWER_LIMIT_SWITCH = 0;
+	public static final int UPPER_LIMIT_SWITCH = 1;
 
 	//boxmanipulator talon constants
 	public static final int TALON_CASCADE = 5;
@@ -57,6 +62,12 @@ public class Constants {
 	public static final int TALON_INTAKE_LEFT = 7;
 	public static final int TALON_TIP = 0;
 	public static final int TALON_CLIMBER = 9;
+	
+	//positions of important cascade heights
+	public static final int CASCADE_BASE = 0;
+	public static final int CASCADE_SWITCH = 24;
+	public static final int CASCADE_LOWER_SCALE = 60;
+	public static final int CASCADE_UPPER_SCALE = 60;
 
 	//solenoid constants
 	public static final int PCM_CAN_ID = 11;

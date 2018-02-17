@@ -82,9 +82,10 @@ public class TalonNWT {
 		NetworkTableInterface.setValue(talonTable, "D", talon.configGetParameter(ParamEnum.eProfileParamSlot_D, idx, 0));
 		NetworkTableInterface.setValue(talonTable, "FF", talon.configGetParameter(ParamEnum.eProfileParamSlot_F, idx, 0));
 		NetworkTableInterface.setValue(talonTable, "IZone", talon.configGetParameter(ParamEnum.eProfileParamSlot_IZone, idx, 0));
-		NetworkTableInterface.getDouble(subtablePath, varName)
 		//NetworkTableInterface.setValue(talonTable, "inverted", talon);
 	}
 	
 	public static void getPIDValue(int idx, TalonSRX talon) {
+		//Donothing
+	}
 }

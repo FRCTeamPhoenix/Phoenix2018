@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2342.commands;
 
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
+import org.usfirst.frc.team2342.util.Constants;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -26,7 +27,7 @@ public class CascadePosition extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if (Math.abs(cascade.talonCascade.getSelectedSensorPosition(0) - position) < 500)
+    	if (Math.abs(cascade.talonCascade.getSelectedSensorPosition(0) - position * Constants.INCHES_TO_TICKS_CASCADE) < 500)
     		cascade.holdPosition();
     	else 
     		cascade.goToPosition(position);

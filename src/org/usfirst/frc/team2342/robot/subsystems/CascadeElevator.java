@@ -66,7 +66,7 @@ public class CascadeElevator extends Subsystem {
 		setVelocity(speed);
 	}
 	public void holdPosition() {
-		talonCascade.set(ControlMode.PercentOutput, 0.1);
+		talonCascade.set(ControlMode.PercentOutput, -0.2);
 	}
 
 	public void goToBase() {

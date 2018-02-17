@@ -22,6 +22,7 @@ public class BoxManipulator extends Subsystem {
 	private final boolean SensorPhase = true;
 	private final boolean InvertMotor = false;
 	
+	
 	public BoxManipulator(WPI_TalonSRX talonIntakeRight, WPI_TalonSRX talonIntakeLeft, WPI_TalonSRX talonTip, Solenoid solenoid1) {
 		this.talonIntakeRight = talonIntakeRight;
 		this.talonIntakeLeft = talonIntakeLeft;
@@ -45,12 +46,21 @@ public class BoxManipulator extends Subsystem {
 		talonIntakeLeft.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 		this.talonIntakeLeft.follow(this.talonIntakeRight);
 		//Need equivalent for solenoids
-
+		
 	}
 	
 	public BoxManipulator() {
 		
 	}
+	
+	public void initialize() {
+		talonTip.set(ControlMode.PercentOutput, 0.1);
+	}
+	public void setTipToZero() {
+		talonIntakeRight.set(ControlMode.Current, 0.0);
+	}
+	
+	
 	
 	public void closeManipulator() {
 		this.solenoid1.set(true);
@@ -76,6 +86,13 @@ public class BoxManipulator extends Subsystem {
 		SmartDashboard.putString("DB/String 0", "Motor Output: " + (talonIntakeRight.getMotorOutputPercent()*100) + "%");
 		SmartDashboard.putString("DB/String 1", "Position: " + talonIntakeRight.getSelectedSensorPosition(0));
 		//Need equivalent for solenoids
+	}
+	public boolean atUpperLimit() {
+		return talonTip.getSensorCollection().isRevLimitSwitchClosed();
+			
+	}
+	public void end(int t) {
+		talonTip.set(ControlMode.PercentOutput, 0.4 * Math.exp(-t / 50));
 	}
 
 	public void stop() {

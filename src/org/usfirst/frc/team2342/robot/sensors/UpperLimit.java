@@ -2,18 +2,18 @@ package org.usfirst.frc.team2342.robot.sensors;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
-public class LowerLimit {
-	private DigitalInput lowerLimit;
+public class UpperLimit {
+	private DigitalInput upperLimit;
 	
-	public LowerLimit(int channel){
-		lowerLimit = new DigitalInput(channel);
+	public UpperLimit(int channel){
+		upperLimit = new DigitalInput(channel);
 	}
 	
 	public boolean detectsObject(){
 		//flip the output because false normally means detected
-		return !lowerLimit.get();
+		return !upperLimit.get();
 	}
 	public boolean atObject() {
-		return lowerLimit.isAnalogTrigger();
+		return upperLimit.isAnalogTrigger();
 	}
 }

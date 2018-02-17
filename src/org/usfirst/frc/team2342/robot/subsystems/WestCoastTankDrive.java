@@ -111,15 +111,19 @@ public class WestCoastTankDrive extends Subsystem {
 		if (this.gyroControl != true) {
 			leftA.set(ControlMode.Velocity, left);
 			rightA.set(ControlMode.Velocity, right);
+			if (this.debug) {
+				SmartDashboard.putString("DB/String 0", String.valueOf(left));
+				SmartDashboard.putString("DB/String 1", String.valueOf(right));
+			}
 		}
 		else {
 			left = left  * (1 - pidc.getCorrection());
 			right = right * (1 + pidc.getCorrection());
 			leftA.set(ControlMode.Velocity,  left);
 			rightA.set(ControlMode.Velocity, right);
+			if (this.debug)
+				printGDebug(left, right);
 		}
-		if (this.debug)
-			printGDebug(left, right);
 	}
 	
 	public void setPercentage(double left, double right) {
@@ -155,7 +159,7 @@ public class WestCoastTankDrive extends Subsystem {
 		this.pidc.setP(Constants.tKp);
 		this.pidc.setI(Constants.tKi);
 		this.pidc.setD(Constants.tKd);
-		this.pidc.updateAngle(angle + 5.0d);
+		this.pidc.updateAngle(angle);
 	}
 
 	public void rotateAuto(double velocity) {
@@ -167,7 +171,8 @@ public class WestCoastTankDrive extends Subsystem {
 			double lspeed = -velocity * pidc.getCorrection();
 			double rspeed =  velocity * pidc.getCorrection();
 			if (this.debug)
-				printGDebug(lspeed, rspeed);
+				SmartDashboard.putString("DB/String 0", String.valueOf(this.pidc.getCurAngle()));
+//				printGDebug(lspeed, rspeed);
 			leftA.set(ControlMode.Velocity,  lspeed);
 			rightA.set(ControlMode.Velocity, rspeed);
 		}
@@ -290,8 +295,9 @@ public class WestCoastTankDrive extends Subsystem {
 
 	}
 
-	// updates the PID in gyro with the sliders.
+	// updates the PID in gyro with the sliders or the networktables.
 	public void updatePID() {
+//		TalonNWT.populateGyroPID(this.pidc);
 		pidc.setP(SmartDashboard.getNumber("DB/Slider 0", Constants.Kp));
 		pidc.setI(SmartDashboard.getNumber("DB/Slider 1", Constants.Ki));
 		pidc.setD(SmartDashboard.getNumber("DB/Slider 2", Constants.Kd));
@@ -306,6 +312,10 @@ public class WestCoastTankDrive extends Subsystem {
 		System.out.println("Ki Vlaue: " + String.valueOf(pidc.getI()));
 		System.out.println("Kd Vlaue: " + String.valueOf(pidc.getD()));
 	}
+	
+	/*
+	 * Need to get values for talons from network tables to be able to read and write talon values.
+	 */
 
 	// set gyro control
 	public void setGyroControl(boolean b) {

@@ -11,9 +11,9 @@ public class TurnAngle extends Command {
 	WestCoastTankDrive m_westCoast;
 	double angle = 0.0d;
 	double vel = 0.0d;
-	double deadZone = 0.6d;
+	double deadZone = 5.0d;
 	
-	public TurnAngle(double velocity, int time, double angle, WestCoastTankDrive westCoast){
+	public TurnAngle(double velocity, double angle, WestCoastTankDrive westCoast){
 		requires(westCoast);
 		this.angle = angle;
 		m_westCoast = westCoast;

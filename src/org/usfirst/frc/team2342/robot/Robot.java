@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This is a demo program showing how to use Mecanum control with the RobotDrive
@@ -113,6 +114,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousInit() {
+		System.out.println("AUTOMODE INIT");
 		//Command goForward = new DriveForward(20, westCoast, 6.0 * Constants.TALON_SPEED_RPS);
 		//Scheduler.getInstance().add(goForward);
 		//westCoast.goArc(8, 90, 0.425, 0.5, false);
@@ -120,49 +122,59 @@ public class Robot extends IterativeRobot {
 		//Scheduler.getInstance().add(driveDistance);
 //		westCoast.goArc(4, 90, -1.0d, -1.0d, false);
 		westCoast.updatePID();
-		try {
-			Command cascadeGo = new CascadePosition(cascadeElevator, -10000);
-			Scheduler.getInstance().add(cascadeGo);
-			Thread.sleep(100);
-		}
-		catch (Exception e) {
-			//DONOTHING
-		}
+//		try {
+//			Command cascadeGo = new CascadePosition(cascadeElevator, -10000);
+//			Scheduler.getInstance().add(cascadeGo);
+//			Thread.sleep(100);
+//		}
+//		catch (Exception e) {
+//			//DONOTHING
+//		}
 		
 		westCoast.setGyroControl(true);
 		westCoast.pidc.gyroReset();
 		westCoast.zeroSensors();
-		westCoast.debug = false;
-		westCoast.turnSet(90.0d);
+		westCoast.debug = true;
+		westCoast.turnSet(-90.0d);
+		TalonNWT.updateGyroPID(westCoast.pidc);
 	}
 
 	public void autonomousPeriodic(){
-		westCoast.updatePID();
 		/*westCoast.arcLoop(false);
 		//Scheduler.getInstance().run();
-		PCM.compressorRegulate();
-		westCoast.outputToSmartDashboard();*/
-//		westCoast.rotateAuto(-2000.0d);;
-		cascadeElevator.outputToSmartDashboard();
+		PCM.compressorRegulate();*/
+		westCoast.updatePID();
+		try {
+			TalonNWT.updateGyroPID(westCoast.pidc);
+			westCoast.rotateAuto(-2000.0d);
+			SmartDashboard.putString("DB/String 1", String.valueOf(westCoast.pidc.getCorrection()));
+			Thread.sleep(100);
+		}
+		catch (Exception e) {
+			
+		}
+		//cascadeElevator.outputToSmartDashboard();
 		Scheduler.getInstance().run();
 	}
 
 	@Override
 	public void testInit() {
 		System.out.println("TEST MODE INIT");
-		westCoast.pidc.getGyro().reset();
 		westCoast.setGyroControl(true);
+		westCoast.pidc.gyroReset();
 		westCoast.zeroSensors();
 		westCoast.debug = true;
+		westCoast.turnSet(90.0d);
 	}
 
 	@Override
 	public void testPeriodic() {
 		// Limit for the current velocity for the robot without cascade is 3000
-		try {
+		if (TalonNWT.isUpdatePID())
 			westCoast.updatePID();
-			westCoast.setVelocity(-1500, -1500); // test velocity
-			westCoast.outputToSmartDashboard();  // update network tables
+		try {
+			TalonNWT.updateGyroPID(westCoast.pidc);
+			westCoast.rotateAuto(-2000.0d);
 		}
 		catch (Exception e) {
 			//NOTHING

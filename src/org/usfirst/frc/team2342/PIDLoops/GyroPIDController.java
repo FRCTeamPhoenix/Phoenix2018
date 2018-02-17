@@ -132,6 +132,10 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 	public PIDController getPC() {
 		return this.pc;
 	}
+	
+	public void gyroReset() {
+		this.gyro.reset();
+	}
 
 	@Override
 	public void setPIDSourceType(PIDSourceType pidSource) {

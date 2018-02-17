@@ -27,7 +27,7 @@ public class DriveArc extends Command {
 	}
 	
 	protected void execute() {
-		m_westCoast.arcLoop(this.isLeftInner);
+		m_westCoast.arcLoop();
 	}
 	
 	public boolean isFinished(){

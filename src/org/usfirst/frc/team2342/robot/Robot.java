@@ -116,10 +116,12 @@ public class Robot extends IterativeRobot {
 		westCoast.setGyroControl(true);
 		westCoast.zeroSensors();
 		westCoast.debug = true;
+		Scheduler.getInstance.add(new TeleOpCommands(gamepad, m_cascadeElevator, westCoast, radius, angle, innerMultiplyer, outerMultiplyer, isLeftInner, westCoast, distance, time, westCoast, speedRPS, gamepad, westCoast, gyro, time, goalAngle, westCoast));
 	}
 
 	@Override
 	public void testPeriodic() {
+		Scheduler.getInstance.run;
 		// Limit for the current velocity for the robot without cascade is 3000
 		try {
 			westCoast.updatePID();

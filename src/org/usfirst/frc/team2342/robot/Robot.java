@@ -68,11 +68,17 @@ public class Robot extends IterativeRobot {
 		else
 			westCoast.setNoGear();
 		
-		if(joystickL.getRawButton(8))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, 60));
+		if(joystickL.getRawButton(1))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE));
 		
-		if(joystickL.getRawButton(7))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, 30));
+		if(joystickL.getRawButton(2))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH));
+
+		if(joystickL.getRawButton(3))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE));
+		
+		if(joystickL.getRawButton(4))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE));
 
 		/*Scheduler.getInstance().run();
     	//Drive with joystick control in velocity mode

@@ -62,6 +62,12 @@ public class Constants {
 	public static final int TALON_INTAKE_LEFT = 7;
 	public static final int TALON_TIP = 0;
 	public static final int TALON_CLIMBER = 9;
+	
+	//positions of important cascade heights
+	public static final int CASCADE_BASE = 0;
+	public static final int CASCADE_SWITCH = 24;
+	public static final int CASCADE_LOWER_SCALE = 60;
+	public static final int CASCADE_UPPER_SCALE = 60;
 
 	//solenoid constants
 	public static final int PCM_CAN_ID = 11;

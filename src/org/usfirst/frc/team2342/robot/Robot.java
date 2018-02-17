@@ -1,11 +1,11 @@
 package org.usfirst.frc.team2342.robot;
 
-import org.usfirst.frc.team2342.commands.DriveDistance;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
+import org.usfirst.frc.team2342.commands.TeleOpCommands;
+import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This is a demo program showing how to use Mecanum control with the RobotDrive
@@ -36,6 +35,7 @@ public class Robot extends IterativeRobot {
 	Solenoid solenoidHighGear = new Solenoid(Constants.PCM_CAN_ID ,Constants.PCM_SLOT_HIGHGEAR);
 	Solenoid solenoid1 = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_BOX_MANIPULATOR);
 	WestCoastTankDrive westCoast = new WestCoastTankDrive(PCM, talonFL, talonFR, talonBL, talonBR);
+	CascadeElevator cascadeElevator = new CascadeElevator(talonCascade);
 	Joystick joystickR = new Joystick(2);
 	Joystick joystickL = new Joystick(1);
 
@@ -54,6 +54,7 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().add(driveJoystick);
 		westCoast.setGyroControl(false);
 		westCoast.debug = false;
+		Scheduler.getInstance().add(new TeleOpCommands(gamepad, cascadeElevator, westCoast));
 	}
     
     public void teleopPeriodic() {
@@ -116,12 +117,10 @@ public class Robot extends IterativeRobot {
 		westCoast.setGyroControl(true);
 		westCoast.zeroSensors();
 		westCoast.debug = true;
-		Scheduler.getInstance.add(new TeleOpCommands(gamepad, m_cascadeElevator, westCoast, radius, angle, innerMultiplyer, outerMultiplyer, isLeftInner, westCoast, distance, time, westCoast, speedRPS, gamepad, westCoast, gyro, time, goalAngle, westCoast));
 	}
 
 	@Override
 	public void testPeriodic() {
-		Scheduler.getInstance.run;
 		// Limit for the current velocity for the robot without cascade is 3000
 		try {
 			westCoast.updatePID();

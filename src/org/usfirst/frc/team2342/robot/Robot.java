@@ -6,6 +6,7 @@ import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -66,6 +67,12 @@ public class Robot extends IterativeRobot {
 			westCoast.setHighGear();
 		else
 			westCoast.setNoGear();
+		
+		if(joystickL.getRawButton(8))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, 60));
+		
+		if(joystickL.getRawButton(7))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, 30));
 
 		/*Scheduler.getInstance().run();
     	//Drive with joystick control in velocity mode
@@ -160,15 +167,18 @@ public class Robot extends IterativeRobot {
 		westCoast.setGyroControl(true);
 		westCoast.zeroSensors();
 		westCoast.debug = true;
+		
+		talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
 	}
 
 	@Override
 	public void testPeriodic() {
 		// Limit for the current velocity for the robot without cascade is 3000
+		talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
 		try {
 			westCoast.updatePID();
-			westCoast.setVelocity(-1500, -1500); // test velocity
-			westCoast.outputToSmartDashboard();  // update network tables
+			//westCoast.setVelocity(-1500, -1500); // test velocity
+			//westCoast.outputToSmartDashboard();  // update network tables
 		}
 		catch (Exception e) {
 			//NOTHING

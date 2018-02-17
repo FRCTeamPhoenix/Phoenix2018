@@ -27,8 +27,8 @@ public class Constants {
 	public static final int PCM_PORT = 11;
 	
 	public static final int LOWER_SENSOR_POSITION = 0;
-	public static final int UPPER_SENSOR_POSITION = -28500;
-	public static final int INCHES_TO_TICKS_CASCADE = -285;
+	public static final int UPPER_SENSOR_POSITION = -28000;
+	public static final int INCHES_TO_TICKS_CASCADE = -290;
 
 	//where on the smartdashboard talons go
 	public static final String TALON_TABLE_LOCATION = "Talons";

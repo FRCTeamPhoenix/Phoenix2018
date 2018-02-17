@@ -40,10 +40,10 @@ public class CascadeElevator extends Subsystem {
 		talonCascade.configPeakOutputReverse(-1, PidTimeOutMs);
 		talonCascade.configAllowableClosedloopError(0, PidLoopIndex, PidTimeOutMs);
 
-		talonCascade.config_kF(PidLoopIndex, 0.4, PidTimeOutMs);
+		talonCascade.config_kF(PidLoopIndex, 0.5, PidTimeOutMs);
 		talonCascade.config_kP(PidLoopIndex, 0.02, PidTimeOutMs);
-		talonCascade.config_kI(PidLoopIndex, 0.0, PidTimeOutMs);
-		talonCascade.config_kD(PidLoopIndex, 0.0, PidTimeOutMs);
+		talonCascade.config_kI(PidLoopIndex, 0.001, PidTimeOutMs);
+		talonCascade.config_kD(PidLoopIndex, 50, PidTimeOutMs);
 
 		talonCascade.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 
@@ -51,13 +51,9 @@ public class CascadeElevator extends Subsystem {
 
 		upperLimit = new DigitalInput(Constants.UPPER_LIMIT_SWITCH);
 	}
-
-	public CascadeElevator() {
-
-	}
-
+	
 	public void goToPosition(double position) {
-		double speed = -100;
+		double speed = -600;
 
 		if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < position * Constants.INCHES_TO_TICKS_CASCADE) {
 			speed *= -1;

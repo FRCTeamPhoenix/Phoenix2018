@@ -40,8 +40,8 @@ public class CascadeElevator extends Subsystem {
 		talonCascade.configPeakOutputReverse(-1, PidTimeOutMs);
 		talonCascade.configAllowableClosedloopError(0, PidLoopIndex, PidTimeOutMs);
 
-		talonCascade.config_kF(PidLoopIndex, 0.0, PidTimeOutMs);
-		talonCascade.config_kP(PidLoopIndex, 0.1, PidTimeOutMs);
+		talonCascade.config_kF(PidLoopIndex, 0.4, PidTimeOutMs);
+		talonCascade.config_kP(PidLoopIndex, 0.02, PidTimeOutMs);
 		talonCascade.config_kI(PidLoopIndex, 0.0, PidTimeOutMs);
 		talonCascade.config_kD(PidLoopIndex, 0.0, PidTimeOutMs);
 
@@ -57,16 +57,16 @@ public class CascadeElevator extends Subsystem {
 	}
 
 	public void goToPosition(double position) {
-		double speed = -0.4;
+		double speed = -100;
 
-		if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < position) {
+		if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < position * Constants.INCHES_TO_TICKS_CASCADE) {
 			speed *= -1;
 		}
 		
 		setVelocity(speed);
 	}
 	public void holdPosition() {
-		talonCascade.set(ControlMode.PercentOutput, -0.2);
+		talonCascade.set(ControlMode.Velocity, 0);
 	}
 
 	public void goToBase() {
@@ -102,8 +102,12 @@ public class CascadeElevator extends Subsystem {
 			System.out.println("BELOW");
 			speed = -Math.abs(speed);
 		}
-		System.out.println(speed);
-		talonCascade.set(ControlMode.PercentOutput, speed);
+		try {
+			System.out.println("speed: " + speed);
+		} catch(Exception e) {
+			System.out.println("speed: " + speed);
+		}
+		talonCascade.set(ControlMode.Velocity, speed);
 
 	}
 

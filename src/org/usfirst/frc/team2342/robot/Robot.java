@@ -121,7 +121,7 @@ public class Robot extends IterativeRobot {
 //		westCoast.goArc(4, 90, -1.0d, -1.0d, false);
 		westCoast.updatePID();
 		try {
-			Command cascadeGo = new CascadePosition(cascadeElevator, -10000);
+			Command cascadeGo = new CascadePosition(cascadeElevator, 35);
 			Scheduler.getInstance().add(cascadeGo);
 			Thread.sleep(100);
 		}
@@ -134,16 +134,22 @@ public class Robot extends IterativeRobot {
 		westCoast.zeroSensors();
 		westCoast.debug = false;
 		westCoast.turnSet(90.0d);
+		Scheduler.getInstance().add(new CascadePosition(cascadeElevator, 42));
 	}
 
 	public void autonomousPeriodic(){
-		westCoast.updatePID();
+		//westCoast.updatePID();
 		/*westCoast.arcLoop(false);
 		//Scheduler.getInstance().run();
 		PCM.compressorRegulate();
 		westCoast.outputToSmartDashboard();*/
 //		westCoast.rotateAuto(-2000.0d);;
-		cascadeElevator.outputToSmartDashboard();
+		//cascadeElevator.outputToSmartDashboard();
+		try {
+		System.out.println(talonCascade.getSelectedSensorPosition(0));
+		} catch(Exception e) {
+			
+		}
 		Scheduler.getInstance().run();
 	}
 

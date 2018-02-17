@@ -48,6 +48,12 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 		}		
 		pc.enable();
 	}
+	
+	// update the angle and the target thing
+	public void updateAngle(double angle) {
+		this.targetAngle = angle;
+		pc.setSetpoint(this.targetAngle);
+	}
 
 	// get the p value
 	public double getP() {
@@ -125,6 +131,10 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 	// get the PID Controller
 	public PIDController getPC() {
 		return this.pc;
+	}
+	
+	public void gyroReset() {
+		this.gyro.reset();
 	}
 
 	@Override

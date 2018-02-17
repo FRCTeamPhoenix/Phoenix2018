@@ -53,11 +53,19 @@ public class Robot extends IterativeRobot {
 		Command driveJoystick = new DriveGamepad(gamepad, westCoast);
 		Scheduler.getInstance().add(driveJoystick);
 		westCoast.setGyroControl(false);
-		westCoast.debug = false;
+		westCoast.debug = true;
 	}
 
 	public void teleopPeriodic() {
-
+		//Drive with joystick control in velocity mode
+		westCoast.outputToSmartDashboard();
+		//Buttons 8 & 9 or (gamepad) 5 & 6 are Low & High gear, respectively
+		if (gamepad.getRawButton(5))
+			westCoast.setLowGear();
+		else if (gamepad.getRawButton(6))
+			westCoast.setHighGear();
+		else
+			westCoast.setNoGear();
 
 		/*Scheduler.getInstance().run();
     	//Drive with joystick control in velocity mode
@@ -89,7 +97,13 @@ public class Robot extends IterativeRobot {
 		// boxManipulator = new BoxManipulator(talon1, talon2, PCM);
 		// cascadeElevator = new CascadeElevator(talon1, talon2);
 		 */	
-		Scheduler.getInstance().run();
+		try {
+			Scheduler.getInstance().run();
+			Thread.sleep(100);
+		}
+		catch (Exception e) {
+			//TODO NOTHING
+		}
 	}
 
 	public void disabledInit() {
@@ -104,21 +118,31 @@ public class Robot extends IterativeRobot {
 		//westCoast.goArc(8, 90, 0.425, 0.5, false);
 		//DriveDistance driveDistance = new DriveDistance(westCoast, 8);
 		//Scheduler.getInstance().add(driveDistance);
+//		westCoast.goArc(4, 90, -1.0d, -1.0d, false);
+		westCoast.updatePID();
 		try {
 			Command cascadeGo = new CascadePosition(cascadeElevator, -10000);
 			Scheduler.getInstance().add(cascadeGo);
 			Thread.sleep(100);
 		}
 		catch (Exception e) {
-			
+			//DONOTHING
 		}
+		
+		westCoast.setGyroControl(true);
+		westCoast.pidc.gyroReset();
+		westCoast.zeroSensors();
+		westCoast.debug = false;
+		westCoast.turnSet(90.0d);
 	}
 
 	public void autonomousPeriodic(){
+		westCoast.updatePID();
 		/*westCoast.arcLoop(false);
 		//Scheduler.getInstance().run();
 		PCM.compressorRegulate();
 		westCoast.outputToSmartDashboard();*/
+//		westCoast.rotateAuto(-2000.0d);;
 		cascadeElevator.outputToSmartDashboard();
 		Scheduler.getInstance().run();
 	}

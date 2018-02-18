@@ -53,8 +53,8 @@ public class Constants {
 	public static final double INCHES_TO_CM = 2.54;
 
 	//limit switches
-	public static final int LOWER_LIMIT_SWITCH = 0;
-	public static final int UPPER_LIMIT_SWITCH = 1;
+	public static final int LOWER_LIMIT_SWITCH = 1;
+	public static final int UPPER_LIMIT_SWITCH = 0;
 
 	//boxmanipulator talon constants
 	public static final int TALON_CASCADE = 5;
@@ -84,4 +84,7 @@ public class Constants {
 	public static final double tKp = 0.1d;
 	public static final double tKi = 0.001d;
 	public static final double tKd = 0.0d;
+	
+	
+	public static final double CASCADE_DEADZONE = 0.1;
 }

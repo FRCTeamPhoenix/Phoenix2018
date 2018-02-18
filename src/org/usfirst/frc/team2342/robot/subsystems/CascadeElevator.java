@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,8 +23,8 @@ public class CascadeElevator extends Subsystem {
 	private final boolean SensorPhase = true;
 	private final boolean InvertMotor = false;
 
-	public Counter lowerLimit;
-	public Counter upperLimit;
+	public DigitalInput lowerLimit;
+	public DigitalInput upperLimit;
 
 	public CascadeElevator(WPI_TalonSRX talonCascade) {
 		this.talonCascade = talonCascade;
@@ -46,9 +45,8 @@ public class CascadeElevator extends Subsystem {
 
 		talonCascade.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 
-		lowerLimit = new Counter(Constants.LOWER_LIMIT_SWITCH);
-
-		upperLimit = new Counter(Constants.UPPER_LIMIT_SWITCH);
+		lowerLimit = new DigitalInput(Constants.LOWER_LIMIT_SWITCH);
+		upperLimit = new DigitalInput(Constants.UPPER_LIMIT_SWITCH);
 	}
 
 	public void goToPosition(double position) {
@@ -83,23 +81,34 @@ public class CascadeElevator extends Subsystem {
 
 	public void setVelocity(double speed) {
 
-		if (lowerLimit.get() == 1) {
-			System.out.println("LOWER LIMIT REACHED");
-			speed = -Math.abs(speed);
-			talonCascade.setSelectedSensorPosition(Constants.LOWER_SENSOR_POSITION, PidLoopIndex, PidTimeOutMs);
-		} else if (upperLimit.get() == 1) {
-			System.out.println("UPPER LIMIT REACHED");
-			speed = Math.abs(speed);
-			talonCascade.setSelectedSensorPosition(Constants.UPPER_SENSOR_POSITION, PidLoopIndex, PidTimeOutMs);
-		} else if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < Constants.UPPER_SENSOR_POSITION) {
-			System.out.println("ABOVE");
-			speed = Math.abs(speed);
-		} else if (talonCascade.getSelectedSensorPosition(PidLoopIndex) > Constants.LOWER_SENSOR_POSITION) {
-			System.out.println("BELOW");
-			speed = -Math.abs(speed);
-		}
 		try {
-			System.out.println("limit: " + lowerLimit.get() + " limitupper: " + upperLimit.get());
+			if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < Constants.UPPER_SENSOR_POSITION) {
+				System.out.println("ABOVE");
+				speed = Math.max(speed, 0);	
+			} 
+			
+			if (talonCascade.getSelectedSensorPosition(PidLoopIndex) > Constants.LOWER_SENSOR_POSITION) {
+				System.out.println("BELOW");
+				speed = Math.min(speed, 0);
+			}
+		
+			if (lowerLimit.get()) { // switches are NC so true if tripped
+				System.out.println("LOWER LIMIT REACHED");
+				speed = Math.min(speed, 0);
+				// talonCascade.setSelectedSensorPosition(Constants.LOWER_SENSOR_POSITION,
+				// PidLoopIndex, PidTimeOutMs);
+			} 
+			
+			if (upperLimit.get()) {
+				System.out.println("UPPER LIMIT REACHED");
+				speed = Math.max(speed, 0);
+				// talonCascade.setSelectedSensorPosition(Constants.UPPER_SENSOR_POSITION,
+				// PidLoopIndex, PidTimeOutMs);
+			}
+			
+			System.out.println("limit: " + lowerLimit.get() + 
+					" limitupper: " + upperLimit.get() + 
+					" position: " + talonCascade.getSelectedSensorPosition(PidLoopIndex));
 
 		} catch (Exception e) {
 
@@ -118,7 +127,7 @@ public class CascadeElevator extends Subsystem {
 	}
 
 	public void zeroSensors() {
-		talonCascade.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
+		talonCascade.setSelectedSensorPosition(Constants.LOWER_SENSOR_POSITION, PidLoopIndex, PidTimeOutMs);
 	}
 
 	public void initDefaultCommand() {

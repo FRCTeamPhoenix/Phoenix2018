@@ -49,6 +49,13 @@ public class Robot extends IterativeRobot {
 		//WPI_TalonSRX talon2 = new WPI_TalonSRX(1);
 		//boxManipulator = new BoxManipulator(talon1, talon2, PCM);
 		//cascadeElevator = new CascadeElevator(talonCascade);
+		
+	}
+	
+	@Override
+	public void robotInit() {
+		if(!cascadeElevator.lowerLimit.get())
+			cascadeElevator.zeroSensors();
 	}
 
 	public void teleopInit() {
@@ -71,17 +78,22 @@ public class Robot extends IterativeRobot {
 		else
 			westCoast.setNoGear();
 		
-		if(joystickL.getRawButton(1))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE));
-		
-		if(joystickL.getRawButton(2))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH));
-
-		if(joystickL.getRawButton(3))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE));
-		
-		if(joystickL.getRawButton(4))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE));
+		if (Math.abs(joystickL.getRawAxis(3)) > Constants.CASCADE_DEADZONE) {
+			double s = joystickL.getRawAxis(3);
+			double max = s < 0 ? 600 : 400;
+			System.out.println(s);
+			cascadeElevator.setVelocity(s * max);
+		}
+		else if(joystickL.getRawButton(1))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, joystickL));
+		else if(joystickL.getRawButton(2))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, joystickL));
+		else if(joystickL.getRawButton(3))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, joystickL));
+		else if(joystickL.getRawButton(4))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, joystickL));
+		else
+			cascadeElevator.setVelocity(0);
 		
 		if(joystickL.getRawButton(5))
 			solenoid1.set(true);
@@ -155,14 +167,6 @@ public class Robot extends IterativeRobot {
 		//Scheduler.getInstance().add(driveDistance);
 //		westCoast.goArc(4, 90, -1.0d, -1.0d, false);
 		westCoast.updatePID();
-		try {
-			Command cascadeGo = new CascadePosition(cascadeElevator, 35);
-			Scheduler.getInstance().add(cascadeGo);
-			Thread.sleep(100);
-		}
-		catch (Exception e) {
-			//DONOTHING
-		}
 		
 		westCoast.setGyroControl(true);
 		westCoast.pidc.gyroReset();
@@ -188,12 +192,12 @@ public class Robot extends IterativeRobot {
 			
 		}
 		//cascadeElevator.outputToSmartDashboard();
-		Scheduler.getInstance().add(new CascadePosition(cascadeElevator, 42));
+		Scheduler.getInstance().add(new CascadePosition(cascadeElevator, 42, joystickL));
 	}
 	
 	@Override
 	public void testInit() {
-		System.out.println("TEST MODE INIT");
+		/*System.out.println("TEST MODE INIT");
 		westCoast.setGyroControl(true);
 		westCoast.pidc.gyroReset();
 		westCoast.zeroSensors();
@@ -202,14 +206,25 @@ public class Robot extends IterativeRobot {
 		//talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
 
 		westCoast.turnSet(90.0d);		
-		talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
+		talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));*/
 	}
 
 	@Override
 	public void testPeriodic() {
 		// Limit for the current velocity for the robot without cascade is 3000
 		//talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
-		if (TalonNWT.isUpdatePID())
+		
+		/*if (Math.abs(joystickL.getRawAxis(3)) > Constants.CASCADE_DEADZONE) {
+			double s = joystickL.getRawAxis(3);
+			if(s < 0) s /= 2;
+			talonCascade.set(ControlMode.PercentOutput,s);
+		}*/
+		try {
+			System.out.println(cascadeElevator.lowerLimit.get() + "    " + cascadeElevator.upperLimit.get() +  "   " + talonCascade.getSelectedSensorPosition(0));
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		/*if (TalonNWT.isUpdatePID())
 			westCoast.updatePID();
 		try {
 			TalonNWT.updateGyroPID(westCoast.pidc);
@@ -220,6 +235,6 @@ public class Robot extends IterativeRobot {
 			//NOTHING
 		}
 		
-		System.out.println(cascadeElevator.lowerLimit.get() + "   " + cascadeElevator.upperLimit.get());
+		System.out.println(cascadeElevator.lowerLimit.get() + "   " + cascadeElevator.upperLimit.get());*/
 	}
 }

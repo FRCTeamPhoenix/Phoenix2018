@@ -146,9 +146,45 @@ public class Robot extends IterativeRobot {
 //		westCoast.goArc(4, 90, -1.0d, -1.0d, false);
 		westCoast.updatePID();
 		try {
+			FMS.init();
+	    	//calculate auto mode
+	    	switch(FMS.getPosition()){
+	    	case 1:
+	    		if(FMS.scale()){
+	    			//go for scale left side
+	    			Scheduler.getInstance().add(new leftscaleleftside(westCoast));
+	    		}else if(FMS.teamSwitch()){
+	    			//go for switch on left side
+	    			Scheduler.getInstance().add(new leftswitchleft(westCoast));
+	    		}else{
+	    			//go for switch on right side
+	    			Scheduler.getInstance().add(new leftscalerightside(westCoast));
+	    		}
+	    	case 2:
+	    		if(FMS.teamSwitch()){
+	        		//middle to left side
+	    			Scheduler.getInstance().add(new middleleftside(westCoast));
+	        	}else{
+	        		//middle to right side
+	        		Scheduler.getInstance().add(new middlerightside(westCoast));
+	        	}
+	    	case 3:
+	    		if(!FMS.scale()){
+	    			//go for scale right side
+	    			Scheduler.getInstance().add(new rightscaleright(westCoast));
+	    		}else if(!FMS.teamSwitch()){
+	    			//go for switch on right side
+	    			Scheduler.getInstance().add(new rightswitchright(westCoast));
+	    		}else{
+	    			//go for switch on left side
+	    			Scheduler.getInstance().add(new rightscaleleft(westCoast));
+	    		}
+			default:
+				break;
+	    	}
 			Command cascadeGo = new CascadePosition(cascadeElevator, 35);
 			Scheduler.getInstance().add(cascadeGo);
-			Thread.sleep(100);
+			Thread.sleep(10);
 		}
 		catch (Exception e) {
 			//DONOTHING
@@ -172,7 +208,7 @@ public class Robot extends IterativeRobot {
 			westCoast.rotateAuto(-2000.0d);
 			SmartDashboard.putString("DB/String 1", String.valueOf(westCoast.pidc.getCorrection()));
 //			System.out.println(talonCascade.getSelectedSensorPosition(0));
-			Thread.sleep(100);
+			Thread.sleep(10);
 		}
 		catch (Exception e) {
 			

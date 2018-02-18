@@ -24,7 +24,7 @@ public class WestCoastTankDrive extends Subsystem {
 	public SingleTalonDistancePIDController leftpidc;
 	public SingleTalonDistancePIDController rightpidc;
 	public boolean debug = false; // debug messages
-	private boolean gyroControl = true; // gyro Control
+	private boolean gyroControl = false; // gyro Control
 	private boolean isLeftInner = false;
 
 	public WestCoastTankDrive(PCMHandler PCM, WPI_TalonSRX leftFR, WPI_TalonSRX rightFR, WPI_TalonSRX leftBA, WPI_TalonSRX rightBA) {

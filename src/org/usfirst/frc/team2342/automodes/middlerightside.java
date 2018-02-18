@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class middlerightside extends CommandGroup {
 	public middlerightside(WestCoastTankDrive westCoast){
+		//drive 8.5 ft forward
 		addSequential(new DriveDistance(westCoast, 8.5));
 	}
 }

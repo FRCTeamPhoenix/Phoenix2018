@@ -2,17 +2,17 @@ package org.usfirst.frc.team2342.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class BoxManipulator extends Subsystem {
-	private TalonSRX talon1;
-	private TalonSRX talon2;
+	private WPI_TalonSRX talonIntakeRight;
+	private WPI_TalonSRX talonIntakeLeft;
+	private WPI_TalonSRX talonTip;
 	private Solenoid solenoid1;
-	private Solenoid solenoid2;
 	
 	public static final int PULL = 0;
 	public static final int PUSH = 1;
@@ -22,53 +22,56 @@ public class BoxManipulator extends Subsystem {
 	private final boolean SensorPhase = true;
 	private final boolean InvertMotor = false;
 	
-	public BoxManipulator(TalonSRX talon1, TalonSRX talon2, Solenoid solenoid1, Solenoid solenoid2) {
-		this.talon1 = talon1;
-		this.talon2 = talon2;
+	
+	public BoxManipulator(WPI_TalonSRX talonIntakeRight, WPI_TalonSRX talonIntakeLeft, WPI_TalonSRX talonTip, Solenoid solenoid1) {
+		this.talonIntakeRight = talonIntakeRight;
+		this.talonIntakeLeft = talonIntakeLeft;
+		this.talonTip = talonTip;
 		
-		talon1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PidLoopIndex, PidTimeOutMs);
-		talon1.setSensorPhase(SensorPhase);
-		talon1.setInverted(InvertMotor);
-		talon1.configNominalOutputForward(0, PidTimeOutMs);
-		talon1.configNominalOutputReverse(0, PidTimeOutMs);
-		talon1.configPeakOutputForward(1, PidTimeOutMs);
-		talon1.configPeakOutputReverse(-1, PidTimeOutMs);
-		talon1.configAllowableClosedloopError(0, PidLoopIndex, PidTimeOutMs);
+		talonIntakeRight.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PidLoopIndex, PidTimeOutMs);
+		talonIntakeRight.setSensorPhase(SensorPhase);
+		talonIntakeRight.setInverted(InvertMotor);
+		talonIntakeRight.configNominalOutputForward(0, PidTimeOutMs);
+		talonIntakeRight.configNominalOutputReverse(0, PidTimeOutMs);
+		talonIntakeRight.configPeakOutputForward(1, PidTimeOutMs);
+		talonIntakeRight.configPeakOutputReverse(-1, PidTimeOutMs);
+		talonIntakeRight.configAllowableClosedloopError(0, PidLoopIndex, PidTimeOutMs);
 		
-		talon1.config_kF(PidLoopIndex, 0.0, PidTimeOutMs);
-		talon1.config_kP(PidLoopIndex, 0.1, PidTimeOutMs);
-		talon1.config_kI(PidLoopIndex, 0.0, PidTimeOutMs);
-		talon1.config_kD(PidLoopIndex, 0.0, PidTimeOutMs);
+		talonIntakeRight.config_kF(PidLoopIndex, 0.0, PidTimeOutMs);
+		talonIntakeRight.config_kP(PidLoopIndex, 0.1, PidTimeOutMs);
+		talonIntakeRight.config_kI(PidLoopIndex, 0.0, PidTimeOutMs);
+		talonIntakeRight.config_kD(PidLoopIndex, 0.0, PidTimeOutMs);
 		
-		talon1.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
-		talon2.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
-		this.talon2.follow(this.talon1);
+		talonIntakeRight.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
+		talonIntakeLeft.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
+		this.talonIntakeLeft.follow(this.talonIntakeRight);
 		//Need equivalent for solenoids
 		
-		this.solenoid1 = solenoid1;
-		this.solenoid2 = solenoid2;
 	}
 	
 	public BoxManipulator() {
-		this.talon1 = new TalonSRX(0);
-		this.talon2 = new TalonSRX(1);
-		this.solenoid1 = new Solenoid(0,0);
-		this.solenoid2 = new Solenoid(0,1);
+		
 	}
+	
+	public void initialize() {
+		talonTip.set(ControlMode.PercentOutput, 0.1);
+	}
+	public void setTipToZero() {
+		talonIntakeRight.set(ControlMode.Current, 0.0);
+	}
+	
+	
 	
 	public void closeManipulator() {
 		this.solenoid1.set(true);
-		this.solenoid2.set(true);
 	}
 	
 	public void openManipulator() {
 		this.solenoid1.set(false);
-		this.solenoid2.set(false);
 	}
 	
 	public void goToPosition(double position) {
-		talon1.set(ControlMode.Position, position);
-		talon2.follow(talon1);
+		talonIntakeRight.set(ControlMode.Position, position);
 	}
 	
 	public void pullBox() {
@@ -79,25 +82,26 @@ public class BoxManipulator extends Subsystem {
 		goToPosition(PUSH);
 	}
 	
-	/*public void distance() {
-		
-	}*/
-	
 	public void outputToSmartDashboard() {
-		SmartDashboard.putString("DB/String 0", "Motor Output: " + (talon1.getMotorOutputPercent()*100) + "%");
-		SmartDashboard.putString("DB/String 1", "Position: " + talon1.getSelectedSensorPosition(0));
+		SmartDashboard.putString("DB/String 0", "Motor Output: " + (talonIntakeRight.getMotorOutputPercent()*100) + "%");
+		SmartDashboard.putString("DB/String 1", "Position: " + talonIntakeRight.getSelectedSensorPosition(0));
 		//Need equivalent for solenoids
+	}
+	public boolean atUpperLimit() {
+		return talonTip.getSensorCollection().isRevLimitSwitchClosed();
+			
+	}
+	public void end(int t) {
+		talonTip.set(ControlMode.PercentOutput, 0.4 * Math.exp(-t / 50));
 	}
 
 	public void stop() {
-		talon1.set(ControlMode.Current, 0.0);
+		talonIntakeRight.set(ControlMode.Current, 0.0);
 		this.solenoid1.set(false);
-		this.solenoid2.set(false);
 	}
 
 	protected void initDefaultCommand() {
 		// TODO Auto-generated method stub
-		
 	}
 	
 }

@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class BoxManipulator extends Subsystem {
-	private WPI_TalonSRX talonIntakeRight;
-	private WPI_TalonSRX talonIntakeLeft;
+	public WPI_TalonSRX talonIntakeRight;
+	public WPI_TalonSRX talonIntakeLeft;
 	private WPI_TalonSRX talonTip;
 	private Solenoid solenoid1;
 	
@@ -89,8 +89,8 @@ public class BoxManipulator extends Subsystem {
 	}
 	public boolean atUpperLimit() {
 		return talonTip.getSensorCollection().isRevLimitSwitchClosed();
-			
 	}
+	
 	public void end(int t) {
 		talonTip.set(ControlMode.PercentOutput, 0.4 * Math.exp(-t / 50));
 	}

@@ -58,16 +58,16 @@ public class Constants {
 
 	//boxmanipulator talon constants
 	public static final int TALON_CASCADE = 5;
-	public static final int TALON_INTAKE_RIGHT = 8;
-	public static final int TALON_INTAKE_LEFT = 7;
-	public static final int TALON_TIP = 0;
-	public static final int TALON_CLIMBER = 9;
+	public static final int TALON_INTAKE_RIGHT = 9;
+	public static final int TALON_INTAKE_LEFT = 10;
+	public static final int TALON_TIP = 8;
+	public static final int TALON_CLIMBER = 0;
 	
 	//positions of important cascade heights
 	public static final int CASCADE_BASE = 0;
 	public static final int CASCADE_SWITCH = 24;
-	public static final int CASCADE_LOWER_SCALE = 60;
-	public static final int CASCADE_UPPER_SCALE = 60;
+	public static final int CASCADE_LOWER_SCALE = 72;
+	public static final int CASCADE_UPPER_SCALE = 72;
 
 	//solenoid constants
 	public static final int PCM_CAN_ID = 11;

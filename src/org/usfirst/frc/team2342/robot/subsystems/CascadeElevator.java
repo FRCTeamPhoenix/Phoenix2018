@@ -1,13 +1,12 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
-import org.usfirst.frc.team2342.robot.sensors.LowerLimit;
-import org.usfirst.frc.team2342.robot.sensors.UpperLimit;
 import org.usfirst.frc.team2342.util.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,8 +24,8 @@ public class CascadeElevator extends Subsystem {
 	private final boolean SensorPhase = true;
 	private final boolean InvertMotor = false;
 
-	private DigitalInput lowerLimit;
-	private DigitalInput upperLimit;
+	public Counter lowerLimit;
+	public Counter upperLimit;
 
 	public CascadeElevator(WPI_TalonSRX talonCascade) {
 		this.talonCascade = talonCascade;
@@ -47,20 +46,21 @@ public class CascadeElevator extends Subsystem {
 
 		talonCascade.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 
-		lowerLimit = new DigitalInput(Constants.LOWER_LIMIT_SWITCH);
+		lowerLimit = new Counter(Constants.LOWER_LIMIT_SWITCH);
 
-		upperLimit = new DigitalInput(Constants.UPPER_LIMIT_SWITCH);
+		upperLimit = new Counter(Constants.UPPER_LIMIT_SWITCH);
 	}
-	
+
 	public void goToPosition(double position) {
 		double speed = -600;
 
 		if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < position * Constants.INCHES_TO_TICKS_CASCADE) {
 			speed *= -1;
 		}
-		
+
 		setVelocity(speed);
 	}
+
 	public void holdPosition() {
 		talonCascade.set(ControlMode.Velocity, 0);
 	}
@@ -83,11 +83,11 @@ public class CascadeElevator extends Subsystem {
 
 	public void setVelocity(double speed) {
 
-		if (!lowerLimit.get()) {
+		if (lowerLimit.get() == 1) {
 			System.out.println("LOWER LIMIT REACHED");
 			speed = -Math.abs(speed);
 			talonCascade.setSelectedSensorPosition(Constants.LOWER_SENSOR_POSITION, PidLoopIndex, PidTimeOutMs);
-		} else if (!upperLimit.get()) {
+		} else if (upperLimit.get() == 1) {
 			System.out.println("UPPER LIMIT REACHED");
 			speed = Math.abs(speed);
 			talonCascade.setSelectedSensorPosition(Constants.UPPER_SENSOR_POSITION, PidLoopIndex, PidTimeOutMs);
@@ -99,9 +99,10 @@ public class CascadeElevator extends Subsystem {
 			speed = -Math.abs(speed);
 		}
 		try {
-			System.out.println("speed: " + speed);
-		} catch(Exception e) {
-			System.out.println("speed: " + speed);
+			System.out.println("limit: " + lowerLimit.get() + " limitupper: " + upperLimit.get());
+
+		} catch (Exception e) {
+
 		}
 		talonCascade.set(ControlMode.Velocity, speed);
 

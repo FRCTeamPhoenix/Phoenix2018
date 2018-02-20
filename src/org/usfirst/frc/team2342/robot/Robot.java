@@ -52,6 +52,17 @@ public class Robot extends IterativeRobot {
 		//cascadeElevator = new CascadeElevator(talon1, talon2);
 	}
 
+	
+	public void robotInit(){
+		
+		int[] indexes = {0, 1, 2};
+		System.out.println("hi ho");
+		CameraControl cameras = new CameraControl(indexes, 640, 480);
+		System.out.println("hi ho hi ho");
+		cameras.run();
+		System.out.println("its off to work we go");
+	}
+	
 	public void teleopInit() {
 		/*System.out.println("TELEOP MODE INIT");
 		PCM.turnOn();
@@ -101,15 +112,15 @@ public class Robot extends IterativeRobot {
         }).start();*/
 		
 		
-		int[] indexes = {0, 1, 2};
+		/*int[] indexes = {0, 1, 2};
 		CameraControl cameras = new CameraControl(indexes, 640, 480);
 		
-		cameras.run();
+		cameras.run();*/
 		
-		try{Thread.sleep(30000);}
-		catch(InterruptedException e){}
+		//try{Thread.sleep(30000);}
+		//catch(InterruptedException e){}
 		
-		cameras.stop();
+		//cameras.stop();
 		
 		/*System.out.println("hi");
 		cameras.switchTo(1);

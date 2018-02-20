@@ -61,17 +61,16 @@ public class CameraControl{
 	
 	private CvSink in;
 	
-	private CvSource out;
+	//private CvSource out;
 	
 	private Mat source;
-	
-	private boolean stopped;
 	
 	//Initialize all the cameras
 	public CameraControl(int[] cameraIndexes,  int resolutionX, int resolutionY){
 		
-		out = CameraServer.getInstance().putVideo("CameraMain", resolutionX, resolutionY);
-		out.setFPS(30);
+		//If one output ever works
+		/*out = CameraServer.getInstance().putVideo("CameraMain", resolutionX, resolutionY);
+		out.setFPS(30);*/
 		
 		source = new Mat(resolutionX, resolutionY, CvType.CV_32FC3);
 		
@@ -97,28 +96,18 @@ public class CameraControl{
 		
 		new Thread(() -> {
 			
-	        while(!Thread.interrupted() && !stopped) {
-	        	in.setEnabled(true);
-	        	//cameras[currentCamera].getCamera().setExposureAuto();
-	        	//in.setSource(cameras[currentCamera].getCamera());
+			in.setEnabled(true);
+			
+	        while(!Thread.interrupted()) {
+	        	
 	            in.grabFrame(source);
 	            
-	            //PixelFormat format = new PixelFormat();
-	            //out.setPixelFormat();
-	            out.putFrame(source);
+	            //out.putFrame(source);
 	        }
 	        
 	        System.out.println("im out here");
 	        in.setEnabled(false);
 	        
 		}).start();
-	}
-	
-	public void stop(){
-		
-		for(int i = 0; i < cameras.length; i++)
-			cameras[i] = null;
-		
-		stopped = true;
 	}
 }

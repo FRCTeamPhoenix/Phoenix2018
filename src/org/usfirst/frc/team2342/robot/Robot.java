@@ -60,12 +60,33 @@ public class Robot extends IterativeRobot {
 		westCoast.setGyroControl(false);
 		westCoast.debug = false;*/
 		
+		/*new Thread(() -> {
+            UsbCamera camera = CameraServer.getInstance().startAutomaticCapture("Stuff", 0);
+            camera.setResolution(640, 480);
+            
+            //CameraServer.getInstance().startAutomaticCapture(name, path);
+            
+            CvSink cvSink = CameraServer.getInstance().getVideo(camera);
+            CvSource outputStream = CameraServer.getInstance().putVideo("BLAH", 640, 480);
+            
+            Mat source = new Mat(640, 480, CvType.CV_32FC3);
+            Mat output = new Mat();
+            
+            while(!Thread.interrupted()) {
+            	cvSink.setEnabled(true);
+                cvSink.grabFrame(source);
+                outputStream.putFrame(output);
+                Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
+                
+            }
+        }).start();
+		
 		new Thread(() -> {
-            UsbCamera camera = CameraServer.getInstance().startAutomaticCapture("USB Camera 6", 0);
+            UsbCamera camera = CameraServer.getInstance().startAutomaticCapture("USB Camera 1", 1);
             camera.setResolution(640, 480);
             
             CvSink cvSink = CameraServer.getInstance().getVideo(camera);
-            CvSource outputStream = CameraServer.getInstance().putVideo("Blur Current", 320, 240);
+            CvSource outputStream = CameraServer.getInstance().putVideo("Blur Current2", 1280, 960);
             
             Mat source = new Mat(320, 240, CvType.CV_32FC3);
             Mat output = new Mat();
@@ -77,7 +98,39 @@ public class Robot extends IterativeRobot {
                 Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
                 
             }
-        }).start();
+        }).start();*/
+		
+		
+		int[] indexes = {0, 1, 2};
+		CameraControl cameras = new CameraControl(indexes, 640, 480);
+		
+		cameras.run();
+		
+		try{Thread.sleep(30000);}
+		catch(InterruptedException e){}
+		
+		cameras.stop();
+		
+		/*System.out.println("hi");
+		cameras.switchTo(1);
+		
+		try{Thread.sleep(10000);}
+		catch(InterruptedException e){}
+		
+		System.out.println("hi");
+		cameras.switchTo(2);
+		
+		try{Thread.sleep(10000);}
+		catch(InterruptedException e){}
+		
+		System.out.println("hi2");
+		cameras.switchTo(0);
+		
+		try{Thread.sleep(10000);}
+		catch(InterruptedException e){}
+		
+		cameras.stop();*/
+		
 	}
     
     public void teleopPeriodic() {

@@ -1,5 +1,7 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
+import org.usfirst.frc.team2342.util.Constants;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -11,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class BoxManipulator extends Subsystem {
 	public WPI_TalonSRX talonIntakeRight;
 	public WPI_TalonSRX talonIntakeLeft;
-	private WPI_TalonSRX talonTip;
+	public WPI_TalonSRX talonTip;
 	private Solenoid solenoid1;
 	
 	public static final int PULL = 0;
@@ -54,13 +56,12 @@ public class BoxManipulator extends Subsystem {
 	}
 	
 	public void initialize() {
-		talonTip.set(ControlMode.PercentOutput, 0.1);
+		talonTip.set(ControlMode.PercentOutput, 0.4);
 	}
+	
 	public void setTipToZero() {
-		talonIntakeRight.set(ControlMode.Current, 0.0);
+		talonTip.set(ControlMode.PercentOutput, 0.0);
 	}
-	
-	
 	
 	public void closeManipulator() {
 		this.solenoid1.set(true);
@@ -71,7 +72,17 @@ public class BoxManipulator extends Subsystem {
 	}
 	
 	public void goToPosition(double position) {
-		talonIntakeRight.set(ControlMode.Position, position);
+		double speed = -0.3;
+
+		if (talonTip.getSelectedSensorPosition(PidLoopIndex) < position * Constants.INCHES_TO_TICKS_CASCADE) {
+			speed *= -1;
+		}
+
+		setTiltVelocity(speed);
+	}
+	
+	public void holdPosition() {
+		talonTip.set(ControlMode.Velocity, 0);
 	}
 	
 	public void pullBox() {
@@ -82,17 +93,33 @@ public class BoxManipulator extends Subsystem {
 		goToPosition(PUSH);
 	}
 	
+	public void setTiltVelocity(double speed) {
+
+		if (talonTip.getSelectedSensorPosition(PidLoopIndex) < 0) {
+			System.out.println("ABOVE");
+			speed = Math.max(speed, 0);	
+		} 
+			
+		if (talonTip.getSensorCollection().isFwdLimitSwitchClosed()) {
+			System.out.println("UPPER LIMIT REACHED");
+				talonTip.setSelectedSensorPosition(0,
+				PidLoopIndex, PidTimeOutMs);
+		}
+		talonTip.set(ControlMode.Velocity, -speed);
+	}
+	
 	public void outputToSmartDashboard() {
 		SmartDashboard.putString("DB/String 0", "Motor Output: " + (talonIntakeRight.getMotorOutputPercent()*100) + "%");
 		SmartDashboard.putString("DB/String 1", "Position: " + talonIntakeRight.getSelectedSensorPosition(0));
 		//Need equivalent for solenoids
 	}
+	
 	public boolean atUpperLimit() {
 		return talonTip.getSensorCollection().isRevLimitSwitchClosed();
 	}
 	
 	public void end(int t) {
-		talonTip.set(ControlMode.PercentOutput, 0.4 * Math.exp(-t / 50));
+		talonTip.set(ControlMode.PercentOutput, 0.4);
 	}
 
 	public void stop() {

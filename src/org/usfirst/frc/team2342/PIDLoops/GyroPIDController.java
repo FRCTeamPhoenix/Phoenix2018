@@ -7,6 +7,10 @@ import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
+/*
+ * 
+ */
+
 // must implement the velocity PID control into the Gyro
 public class GyroPIDController implements PIDSource, PIDOutput {
 	private ADIS16448_IMU gyro; 		// gyro instance

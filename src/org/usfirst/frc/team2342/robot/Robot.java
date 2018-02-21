@@ -42,6 +42,8 @@ public class Robot extends IterativeRobot {
 	Joystick joystickL = new Joystick(1);
 	CascadeElevator cascadeElevator = new CascadeElevator(talonCascade);
 	BoxManipulator boxManipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, solenoid1);
+	double speed = 0.0d;
+	double tangle = 0.0d;
 
 	public Robot() {
 		//PCM.turnOn();
@@ -165,26 +167,29 @@ public class Robot extends IterativeRobot {
 		//westCoast.goArc(8, 90, 0.425, 0.5, false);
 		//DriveDistance driveDistance = new DriveDistance(westCoast, 8);
 		//Scheduler.getInstance().add(driveDistance);
-//		westCoast.goArc(4, 90, -1.0d, -1.0d, false);
-		westCoast.updatePID();
-		
+		//westCoast.goArc(4, 90, -1.0d, -1.0d, false);
 		westCoast.setGyroControl(true);
 		westCoast.pidc.gyroReset();
 		westCoast.zeroSensors();
 		westCoast.debug = true;
 		westCoast.turnSet(-90.0d);
-		TalonNWT.updateGyroPID(westCoast.pidc);
+		System.out.println(String.valueOf(westCoast.pidc.getTargetAngle()));
+		westCoast.updatePID();
+		this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
+		//TalonNWT.updateGyroPID(westCoast.pidc);
 	}
 
 	public void autonomousPeriodic(){
 		/*westCoast.arcLoop(false);
 		//Scheduler.getInstance().run();
 		PCM.compressorRegulate();*/
-		westCoast.updatePID();
 		try {
-			TalonNWT.updateGyroPID(westCoast.pidc);
-			westCoast.rotateAuto(-2000.0d);
-			SmartDashboard.putString("DB/String 1", String.valueOf(westCoast.pidc.getCorrection()));
+			this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
+			westCoast.updatePID();
+			//TalonNWT.updateGyroPID(westCoast.pidc);
+			westCoast.rotateAuto(-300 * speed);
+//			System.out.println(String.valueOf(westCoast.pidc.getCorrection()));
+			//SmartDashboard.putString("DB/String 1", String.valueOf(westCoast.pidc.getCorrection()));
 //			System.out.println(talonCascade.getSelectedSensorPosition(0));
 			Thread.sleep(100);
 		}
@@ -197,16 +202,19 @@ public class Robot extends IterativeRobot {
 	
 	@Override
 	public void testInit() {
-		/*System.out.println("TEST MODE INIT");
+		System.out.println("TEST MODE INIT");
 		westCoast.setGyroControl(true);
 		westCoast.pidc.gyroReset();
 		westCoast.zeroSensors();
 		westCoast.debug = true;
+		this.tangle = 90.0d;
+		westCoast.turnSet(this.tangle);
+		System.out.println(String.valueOf(westCoast.pidc.getTargetAngle()));
+		this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
 		
-		//talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
+		talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
 
-		westCoast.turnSet(90.0d);		
-		talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));*/
+		//talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
 	}
 
 	@Override
@@ -214,15 +222,20 @@ public class Robot extends IterativeRobot {
 		// Limit for the current velocity for the robot without cascade is 3000
 		//talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
 		
-		/*if (Math.abs(joystickL.getRawAxis(3)) > Constants.CASCADE_DEADZONE) {
+		if (Math.abs(joystickL.getRawAxis(3)) > Constants.CASCADE_DEADZONE) {
 			double s = joystickL.getRawAxis(3);
 			if(s < 0) s /= 2;
 			talonCascade.set(ControlMode.PercentOutput,s);
-		}*/
+		}
 		try {
-			System.out.println(cascadeElevator.lowerLimit.get() + "    " + cascadeElevator.upperLimit.get() +  "   " + talonCascade.getSelectedSensorPosition(0));
+			westCoast.updatePID();
+			if (!westCoast.reachAngle(tangle, westCoast.pidc.getCurAngle()))
+				westCoast.rotateAuto(-300 * speed);
+			else
+				westCoast.setVelocity(0, 0);
+			Thread.sleep(100);
 		} catch(Exception e) {
-			e.printStackTrace();
+			//DONOTHING
 		}
 		/*if (TalonNWT.isUpdatePID())
 			westCoast.updatePID();

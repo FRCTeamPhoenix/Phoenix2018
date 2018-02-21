@@ -9,16 +9,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TurnAngle extends Command {
 	WestCoastTankDrive m_westCoast;
-	double angle = 0.0d;
-	double vel = 0.0d;
-	double deadZone = 5.0d;
-	
+	private double cangle = 0.0d;
+	private double angle = 0.0d;
+	private double vel = 0.0d;
+	private double deadZone = 1.0d;
+
 	public TurnAngle(double velocity, double angle, WestCoastTankDrive westCoast){
 		requires(westCoast);
 		this.angle = angle;
 		m_westCoast = westCoast;
+		this.cangle = westCoast.pidc.getCurAngle();
 	}
-	
+
 	protected void initialize(){
 		m_westCoast.pidc.gyroReset();
 		m_westCoast.turnSet(this.angle);
@@ -27,11 +29,15 @@ public class TurnAngle extends Command {
 	protected void execute(){
 		//SmartDashboard.putString("DB/String 0", ""+ String.valueOf(m_westCoast.pidc.calculateAE()));
 		m_westCoast.rotateAuto(this.vel);
+		this.cangle = m_westCoast.pidc.getCurAngle();
 	}
-	
+
 	@Override
+	// Check to see if the gyro is done
 	protected boolean isFinished() {
-		return Math.abs(m_westCoast.pidc.calculateAE()) < deadZone;
+		if ((Math.abs(this.angle) - Math.abs(cangle) >= this.deadZone))
+			return true;
+		return false;
 	}
 	@Override
 	protected void interrupted() {

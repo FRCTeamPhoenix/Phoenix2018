@@ -21,7 +21,7 @@ public class Constants {
 	public static final double JOYSTICK_DEADZONE = 0.025;
 
 	// Scales the speed of velocity mode (in rps)
-	public static final double WESTCOAST_MAX_SPEED = TALON_SPEED_RPS * 5.95d; // 2.5 origionally
+	public static final double WESTCOAST_MAX_SPEED = TALON_SPEED_RPS * 5.95d; // It is set for the tuning of the controller manuverablility
 	public static final double WESTCOAST_HALF_SPEED = WESTCOAST_MAX_SPEED * 0.5d;
 
 	public static final int PCM_PORT = 11;
@@ -80,7 +80,7 @@ public class Constants {
 	public static final double Ki = 0.0d;
 	public static final double Kd = 0.0d;
 	
-	// PID for Gyro TIP Turn In Place
+	// PID for Gyro TIP (Turn In Place)
 	public static final double tKp = 0.1d;
 	public static final double tKi = 0.001d;
 	public static final double tKd = 0.0d;

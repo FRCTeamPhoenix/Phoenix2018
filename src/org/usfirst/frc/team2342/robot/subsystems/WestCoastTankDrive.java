@@ -125,7 +125,7 @@ public class WestCoastTankDrive extends Subsystem {
 				printGDebug(left, right);
 		}
 	}
-	
+
 	public void setPercentage(double left, double right) {
 		leftA.set(ControlMode.PercentOutput, left);
 		rightA.set(ControlMode.PercentOutput, right);
@@ -159,13 +159,18 @@ public class WestCoastTankDrive extends Subsystem {
 		rightA.set(ControlMode.Velocity, Constants.WESTCOAST_HALF_SPEED * dpidc.getCorrection());
 	}
 
+	// Turn setup
 	public void turnSet(double angle) {
 		this.pidc.setP(Constants.tKp);
 		this.pidc.setI(Constants.tKi);
 		this.pidc.setD(Constants.tKd);
 		this.pidc.updateAngle(angle);
+		SmartDashboard.putString("DB/String 7", String.valueOf(pidc.getP()));
+		SmartDashboard.putString("DB/String 8", String.valueOf(pidc.getI()));
+		SmartDashboard.putString("DB/String 9", String.valueOf(pidc.getD()));
 	}
 
+	// Rotate the robot in autonomous
 	public void rotateAuto(double velocity) {
 		if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
 			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
@@ -174,12 +179,23 @@ public class WestCoastTankDrive extends Subsystem {
 		if (this.gyroControl == true) {
 			double lspeed = -velocity * pidc.getCorrection();
 			double rspeed =  velocity * pidc.getCorrection();
-			if (this.debug)
+			if (this.debug) {
 				SmartDashboard.putString("DB/String 0", String.valueOf(this.pidc.getCurAngle()));
-//				printGDebug(lspeed, rspeed);
+				SmartDashboard.putString("DB/String 2", String.valueOf(lspeed));
+				SmartDashboard.putString("DB/String 3", String.valueOf(rspeed));
+				//printGDebug(lspeed, rspeed);
+			}
 			leftA.set(ControlMode.Velocity,  lspeed);
 			rightA.set(ControlMode.Velocity, rspeed);
 		}
+	}
+	
+	// Check to see if the gyro is done
+	public boolean reachAngle(double tangle, double cangle) {
+		double threashold = 1.0d;
+		if ((Math.abs(tangle) - Math.abs(cangle) >= threashold))
+				return true;
+		return false;
 	}
 
 	public boolean isDistanceFinished(){
@@ -303,10 +319,15 @@ public class WestCoastTankDrive extends Subsystem {
 
 	// updates the PID in gyro with the sliders or the networktables.
 	public void updatePID() {
-//		TalonNWT.populateGyroPID(this.pidc);
+		//TalonNWT.populateGyroPID(this.pidc);
 		pidc.setP(SmartDashboard.getNumber("DB/Slider 0", Constants.Kp));
 		pidc.setI(SmartDashboard.getNumber("DB/Slider 1", Constants.Ki));
 		pidc.setD(SmartDashboard.getNumber("DB/Slider 2", Constants.Kd));
+		if (this.debug) {
+			SmartDashboard.putString("DB/String 7", String.valueOf(pidc.getP()));
+			SmartDashboard.putString("DB/String 8", String.valueOf(pidc.getI()));
+			SmartDashboard.putString("DB/String 9", String.valueOf(pidc.getD()));
+		}
 	}
 
 	// print gyro debug
@@ -318,7 +339,7 @@ public class WestCoastTankDrive extends Subsystem {
 		System.out.println("Ki Vlaue: " + String.valueOf(pidc.getI()));
 		System.out.println("Kd Vlaue: " + String.valueOf(pidc.getD()));
 	}
-	
+
 	/*
 	 * Need to get values for talons from network tables to be able to read and write talon values.
 	 */

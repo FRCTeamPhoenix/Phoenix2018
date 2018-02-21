@@ -11,6 +11,7 @@ import org.usfirst.frc.team2342.automodes.rightswitchright;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveDistance;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
+import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
@@ -45,11 +46,14 @@ public class Robot extends IterativeRobot {
 	WPI_TalonSRX talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
 	//Solenoid solenoidLowGear = new Solenoid(Constants.PCM_CAN_ID ,Constants.PCM_SLOT_LOWGEAR);
 	//Solenoid solenoidHighGear = new Solenoid(Constants.PCM_CAN_ID ,Constants.PCM_SLOT_HIGHGEAR);
-	//Solenoid solenoid1 = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_BOX_MANIPULATOR);
+	Solenoid solenoid1 = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_BOX_MANIPULATOR);
 	WestCoastTankDrive westCoast = new WestCoastTankDrive(PCM, talonFL, talonFR, talonBL, talonBR);
 	Joystick joystickR = new Joystick(2);
 	Joystick joystickL = new Joystick(1);
 	CascadeElevator cascadeElevator = new CascadeElevator(talonCascade);
+	BoxManipulator boxManipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, solenoid1);
+	double speed = 0.0d;
+	double tangle = 0.0d;
 
 	public Robot() {
 		//PCM.turnOn();
@@ -57,6 +61,13 @@ public class Robot extends IterativeRobot {
 		//WPI_TalonSRX talon2 = new WPI_TalonSRX(1);
 		//boxManipulator = new BoxManipulator(talon1, talon2, PCM);
 		//cascadeElevator = new CascadeElevator(talonCascade);
+		
+	}
+	
+	@Override
+	public void robotInit() {
+		if(!cascadeElevator.lowerLimit.get())
+			cascadeElevator.zeroSensors();
 	}
 
 	public void teleopInit() {
@@ -70,7 +81,7 @@ public class Robot extends IterativeRobot {
 
 	public void teleopPeriodic() {
 		//Drive with joystick control in velocity mode
-		westCoast.outputToSmartDashboard();
+		//westCoast.outputToSmartDashboard();
 		//Buttons 8 & 9 or (gamepad) 5 & 6 are Low & High gear, respectively
 		if (gamepad.getRawButton(5))
 			westCoast.setLowGear();
@@ -79,17 +90,39 @@ public class Robot extends IterativeRobot {
 		else
 			westCoast.setNoGear();
 		
-		if(joystickL.getRawButton(1))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE));
+		if (Math.abs(joystickL.getRawAxis(3)) > Constants.CASCADE_DEADZONE) {
+			double s = joystickL.getRawAxis(3);
+			double max = s < 0 ? 600 : 400;
+			System.out.println(s);
+			cascadeElevator.setVelocity(s * max);
+		}
+		else if(joystickL.getRawButton(1))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, joystickL));
+		else if(joystickL.getRawButton(2))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, joystickL));
+		else if(joystickL.getRawButton(3))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, joystickL));
+		else if(joystickL.getRawButton(4))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, joystickL));
+		else
+			cascadeElevator.setVelocity(0);
 		
-		if(joystickL.getRawButton(2))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH));
-
-		if(joystickL.getRawButton(3))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE));
+		if(joystickL.getRawButton(5))
+			solenoid1.set(true);
+		else
+			solenoid1.set(false);
 		
-		if(joystickL.getRawButton(4))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE));
+		if(joystickL.getRawButton(7)) {
+			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0.5);
+			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -0.5);
+		}
+		else if(joystickL.getRawButton(8)) {
+			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, -0.5);
+			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0.5);
+		} else {
+			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0);
+			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0);
+		}
 
 		/*Scheduler.getInstance().run();
     	//Drive with joystick control in velocity mode
@@ -122,13 +155,14 @@ public class Robot extends IterativeRobot {
 		// cascadeElevator = new CascadeElevator(talon1, talon2);
 
 		 */	
+		Scheduler.getInstance().run();
 		try {
-			Scheduler.getInstance().run();
-			Thread.sleep(100);
+			Thread.sleep(10);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		catch (Exception e) {
-			//TODO NOTHING
-		}
+		
 	}
 
 	public void disabledInit() {
@@ -214,10 +248,11 @@ public class Robot extends IterativeRobot {
 		/*westCoast.arcLoop(false);
 		//Scheduler.getInstance().run();
 		PCM.compressorRegulate();*/
-		/*westCoast.updatePID();
-		try {
-			TalonNWT.updateGyroPID(westCoast.pidc);
-			//westCoast.rotateAuto(-2000.0d);
+			/*this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
+			westCoast.updatePID();
+			//TalonNWT.updateGyroPID(westCoast.pidc);
+			westCoast.rotateAuto(-300 * speed);
+//			System.out.println(String.valueOf(westCoast.pidc.getCorrection()));
 			//SmartDashboard.putString("DB/String 1", String.valueOf(westCoast.pidc.getCorrection()));
 //			System.out.println(talonCascade.getSelectedSensorPosition(0));
 			Thread.sleep(10);
@@ -236,14 +271,37 @@ public class Robot extends IterativeRobot {
 		westCoast.pidc.gyroReset();
 		westCoast.zeroSensors();
 		westCoast.debug = true;
-		westCoast.turnSet(90.0d);		
+		this.tangle = 90.0d;
+		westCoast.turnSet(this.tangle);
+		System.out.println(String.valueOf(westCoast.pidc.getTargetAngle()));
+		this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
+		
 		talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
+
+		//talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
 	}
 
 	@Override
 	public void testPeriodic() {
 		// Limit for the current velocity for the robot without cascade is 3000
-		if (TalonNWT.isUpdatePID())
+		//talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
+		
+		if (Math.abs(joystickL.getRawAxis(3)) > Constants.CASCADE_DEADZONE) {
+			double s = joystickL.getRawAxis(3);
+			if(s < 0) s /= 2;
+			talonCascade.set(ControlMode.PercentOutput,s);
+		}
+		try {
+			westCoast.updatePID();
+			if (!westCoast.reachAngle(tangle, westCoast.pidc.getCurAngle()))
+				westCoast.rotateAuto(-300 * speed);
+			else
+				westCoast.setVelocity(0, 0);
+			Thread.sleep(100);
+		} catch(Exception e) {
+			//DONOTHING
+		}
+		/*if (TalonNWT.isUpdatePID())
 			westCoast.updatePID();
 		try {
 			TalonNWT.updateGyroPID(westCoast.pidc);
@@ -253,5 +311,7 @@ public class Robot extends IterativeRobot {
 		catch (Exception e) {
 			//NOTHING
 		}
+		
+		System.out.println(cascadeElevator.lowerLimit.get() + "   " + cascadeElevator.upperLimit.get());*/
 	}
 }

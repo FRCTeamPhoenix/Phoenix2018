@@ -21,7 +21,7 @@ public class Constants {
 	public static final double JOYSTICK_DEADZONE = 0.025;
 
 	// Scales the speed of velocity mode (in rps)
-	public static final double WESTCOAST_MAX_SPEED = TALON_SPEED_RPS * 5.95d; // 2.5 origionally
+	public static final double WESTCOAST_MAX_SPEED = TALON_SPEED_RPS * 5.95d; // It is set for the tuning of the controller manuverablility
 	public static final double WESTCOAST_HALF_SPEED = WESTCOAST_MAX_SPEED * 0.5d;
 
 	public static final int PCM_PORT = 11;
@@ -53,21 +53,21 @@ public class Constants {
 	public static final double INCHES_TO_CM = 2.54;
 
 	//limit switches
-	public static final int LOWER_LIMIT_SWITCH = 0;
-	public static final int UPPER_LIMIT_SWITCH = 1;
+	public static final int LOWER_LIMIT_SWITCH = 1;
+	public static final int UPPER_LIMIT_SWITCH = 0;
 
 	//boxmanipulator talon constants
 	public static final int TALON_CASCADE = 5;
-	public static final int TALON_INTAKE_RIGHT = 8;
-	public static final int TALON_INTAKE_LEFT = 7;
-	public static final int TALON_TIP = 0;
-	public static final int TALON_CLIMBER = 9;
+	public static final int TALON_INTAKE_RIGHT = 9;
+	public static final int TALON_INTAKE_LEFT = 10;
+	public static final int TALON_TIP = 8;
+	public static final int TALON_CLIMBER = 0;
 	
 	//positions of important cascade heights
 	public static final int CASCADE_BASE = 0;
 	public static final int CASCADE_SWITCH = 24;
-	public static final int CASCADE_LOWER_SCALE = 60;
-	public static final int CASCADE_UPPER_SCALE = 60;
+	public static final int CASCADE_LOWER_SCALE = 72;
+	public static final int CASCADE_UPPER_SCALE = 72;
 
 	//solenoid constants
 	public static final int PCM_CAN_ID = 11;
@@ -80,8 +80,11 @@ public class Constants {
 	public static final double Ki = 0.0d;
 	public static final double Kd = 0.0d;
 	
-	// PID for Gyro TIP Turn In Place
+	// PID for Gyro TIP (Turn In Place)
 	public static final double tKp = 0.1d;
 	public static final double tKi = 0.001d;
 	public static final double tKd = 0.0d;
+	
+	
+	public static final double CASCADE_DEADZONE = 0.1;
 }

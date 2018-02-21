@@ -114,7 +114,7 @@ public class Robot extends IterativeRobot {
 		}
 		
 		if(joystickL.getRawButton(9)) {
-			Scheduler.getInstance().add(new InitBoxManipulator(boxManipulator));
+			Scheduler.getInstance().add(new InitBoxManipulator(boxManipulator, 0));
 		}
 
 		/*Scheduler.getInstance().run();
@@ -212,6 +212,8 @@ public class Robot extends IterativeRobot {
 
 		westCoast.turnSet(90.0d);		
 		talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));*/
+		
+		talonCascade.setSelectedSensorPosition(0, 0, 10);
 	}
 
 	@Override
@@ -224,7 +226,7 @@ public class Robot extends IterativeRobot {
 			if(s < 0) s /= 2;
 			talonCascade.set(ControlMode.PercentOutput,s);
 		}*/
-		try {
+		/*try {
 			System.out.println(cascadeElevator.lowerLimit.get() + "    " + cascadeElevator.upperLimit.get() +  "   " + talonCascade.getSelectedSensorPosition(0));
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -240,6 +242,9 @@ public class Robot extends IterativeRobot {
 			//NOTHING
 		}
 		
-		System.out.println(cascadeElevator.lowerLimit.get() + "   " + cascadeElevator.upperLimit.get());*/
+		*/
+		System.out.println(talonTip.getSelectedSensorPosition(0));
+		
+		//System.out.println(cascadeElevator.lowerLimit.get() + "   " + cascadeElevator.upperLimit.get());
 	}
 }

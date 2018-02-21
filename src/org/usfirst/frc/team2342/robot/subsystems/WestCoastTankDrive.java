@@ -34,7 +34,7 @@ public class WestCoastTankDrive extends Subsystem {
 		rightA = rightFR;
 		leftB = leftBA;
 		rightB = rightBA;
-		dpidc = new DistancePIDController(0.0004d, 0.0d, 0.0d, 0.0d, leftA, rightA);
+		dpidc = new DistancePIDController(0.0008d, 0.0d, 0.0d, 0.0d, leftA, rightA);
 		leftpidc = new SingleTalonDistancePIDController(0.00095d, 0.0d, 0.0d, 0.0d, leftA);
 		rightpidc = new SingleTalonDistancePIDController(0.00095d, 0.0d, 0.0d, 0.0d, rightA);
 
@@ -138,13 +138,12 @@ public class WestCoastTankDrive extends Subsystem {
 	public void goDistance(double distanceInFeet){
 		double distance = distanceInFeet/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
 		dpidc.setGoal(distance);
-
 		if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
 			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
 		}
 
-		leftA.set(ControlMode.Velocity, Constants.WESTCOAST_HALF_SPEED * dpidc.getCorrection());
-		rightA.set(ControlMode.Velocity, Constants.WESTCOAST_HALF_SPEED * dpidc.getCorrection());
+		leftA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
+		rightA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
 	}
 
 	public void distanceLoop(){
@@ -152,22 +151,17 @@ public class WestCoastTankDrive extends Subsystem {
 			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
 		}
 
-		if(this.debug) {
-			System.out.println(dpidc.getCorrection());
-		}
-		leftA.set(ControlMode.Velocity, Constants.WESTCOAST_HALF_SPEED * dpidc.getCorrection());
-		rightA.set(ControlMode.Velocity, Constants.WESTCOAST_HALF_SPEED * dpidc.getCorrection());
+		leftA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED  * dpidc.getCorrection());
+		rightA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
 	}
 
-	// Turn setup
+	// Turn setup for rotating the robot
 	public void turnSet(double angle) {
-		this.pidc.setP(Constants.tKp);
-		this.pidc.setI(Constants.tKi);
-		this.pidc.setD(Constants.tKd);
+//		this.pidc.setP(Constants.tKp);
+//		this.pidc.setI(Constants.tKi);
+//		this.pidc.setD(Constants.tKd);
+		this.updatePID();
 		this.pidc.updateAngle(angle);
-		SmartDashboard.putString("DB/String 7", String.valueOf(pidc.getP()));
-		SmartDashboard.putString("DB/String 8", String.valueOf(pidc.getI()));
-		SmartDashboard.putString("DB/String 9", String.valueOf(pidc.getD()));
 	}
 
 	// Rotate the robot in autonomous
@@ -183,24 +177,15 @@ public class WestCoastTankDrive extends Subsystem {
 				SmartDashboard.putString("DB/String 0", String.valueOf(this.pidc.getCurAngle()));
 				SmartDashboard.putString("DB/String 2", String.valueOf(lspeed));
 				SmartDashboard.putString("DB/String 3", String.valueOf(rspeed));
-				//printGDebug(lspeed, rspeed);
+				printGDebug(lspeed, rspeed);
 			}
 			leftA.set(ControlMode.Velocity,  lspeed);
 			rightA.set(ControlMode.Velocity, rspeed);
 		}
 	}
-	
-	// Check to see if the gyro is done
-	public boolean reachAngle(double tangle, double cangle) {
-		double threashold = 1.0d;
-		if ((Math.abs(tangle) - Math.abs(cangle) >= threashold))
-				return true;
-		return false;
-	}
 
 	public boolean isDistanceFinished(){
-		return (Math.abs(dpidc.pidGet()) > Math.abs(dpidc.getGoal())*0.80 && 
-				Math.abs(leftA.getSelectedSensorVelocity(0)) < Constants.WESTCOAST_HALF_SPEED * 0.05);
+		return (dpidc.pidGet() > dpidc.getGoal()*1.02 && dpidc.pidGet() < dpidc.getGoal()*0.98);
 	}
 
 	private double innerSpeed = 0.0d;
@@ -221,7 +206,6 @@ public class WestCoastTankDrive extends Subsystem {
 		outerSpeed = Constants.WESTCOAST_MAX_SPEED * outerMultiplyer;
 		double distance = circumfrence/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
 		dpidc.setGoal(distance * degreeMultiplyer);
-
 		if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
 			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
 		}
@@ -320,9 +304,9 @@ public class WestCoastTankDrive extends Subsystem {
 	// updates the PID in gyro with the sliders or the networktables.
 	public void updatePID() {
 		//TalonNWT.populateGyroPID(this.pidc);
-		pidc.setP(SmartDashboard.getNumber("DB/Slider 0", Constants.Kp));
-		pidc.setI(SmartDashboard.getNumber("DB/Slider 1", Constants.Ki));
-		pidc.setD(SmartDashboard.getNumber("DB/Slider 2", Constants.Kd));
+		pidc.setP(SmartDashboard.getNumber("DB/Slider 0", 0));
+		pidc.setI(SmartDashboard.getNumber("DB/Slider 1", 0));
+		pidc.setD(SmartDashboard.getNumber("DB/Slider 2", 0));
 		if (this.debug) {
 			SmartDashboard.putString("DB/String 7", String.valueOf(pidc.getP()));
 			SmartDashboard.putString("DB/String 8", String.valueOf(pidc.getI()));

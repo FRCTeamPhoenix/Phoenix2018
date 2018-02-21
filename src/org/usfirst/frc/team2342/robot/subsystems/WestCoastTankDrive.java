@@ -34,7 +34,7 @@ public class WestCoastTankDrive extends Subsystem {
 		rightA = rightFR;
 		leftB = leftBA;
 		rightB = rightBA;
-		dpidc = new DistancePIDController(0.0008d, 0.0d, 0.0d, 0.0d, leftA, rightA);
+		dpidc = new DistancePIDController(0.0004d, 0.0d, 0.0d, 0.0d, leftA, rightA);
 		leftpidc = new SingleTalonDistancePIDController(0.00095d, 0.0d, 0.0d, 0.0d, leftA);
 		rightpidc = new SingleTalonDistancePIDController(0.00095d, 0.0d, 0.0d, 0.0d, rightA);
 
@@ -143,8 +143,8 @@ public class WestCoastTankDrive extends Subsystem {
 			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
 		}
 
-		leftA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
-		rightA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
+		leftA.set(ControlMode.Velocity, Constants.WESTCOAST_HALF_SPEED * dpidc.getCorrection());
+		rightA.set(ControlMode.Velocity, Constants.WESTCOAST_HALF_SPEED * dpidc.getCorrection());
 	}
 
 	public void distanceLoop(){
@@ -152,8 +152,11 @@ public class WestCoastTankDrive extends Subsystem {
 			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
 		}
 
-		leftA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED  * dpidc.getCorrection());
-		rightA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
+		if(this.debug) {
+			System.out.println(dpidc.getCorrection());
+		}
+		leftA.set(ControlMode.Velocity, Constants.WESTCOAST_HALF_SPEED * dpidc.getCorrection());
+		rightA.set(ControlMode.Velocity, Constants.WESTCOAST_HALF_SPEED * dpidc.getCorrection());
 	}
 
 	public void turnSet(double angle) {
@@ -180,7 +183,8 @@ public class WestCoastTankDrive extends Subsystem {
 	}
 
 	public boolean isDistanceFinished(){
-		return (dpidc.pidGet() > dpidc.getGoal()*1.02 && dpidc.pidGet() < dpidc.getGoal()*0.98);
+		return (Math.abs(dpidc.pidGet()) > Math.abs(dpidc.getGoal())*0.80 && 
+				Math.abs(leftA.getSelectedSensorVelocity(0)) < Constants.WESTCOAST_HALF_SPEED * 0.05);
 	}
 
 	private double innerSpeed = 0.0d;

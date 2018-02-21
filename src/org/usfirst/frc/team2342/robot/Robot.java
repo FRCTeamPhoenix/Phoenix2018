@@ -9,6 +9,7 @@ import org.usfirst.frc.team2342.automodes.rightscaleleft;
 import org.usfirst.frc.team2342.automodes.rightscaleright;
 import org.usfirst.frc.team2342.automodes.rightswitchright;
 import org.usfirst.frc.team2342.commands.CascadePosition;
+import org.usfirst.frc.team2342.commands.DriveDistance;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
@@ -144,77 +145,88 @@ public class Robot extends IterativeRobot {
 		//DriveDistance driveDistance = new DriveDistance(westCoast, 8);
 		//Scheduler.getInstance().add(driveDistance);
 //		westCoast.goArc(4, 90, -1.0d, -1.0d, false);
-		westCoast.updatePID();
+		//westCoast.updatePID();
+		FMS.init();
+    	//calculate auto mode
+    	switch(FMS.getPosition()){
+    	case 1:
+    		if(FMS.scale()){
+    			System.out.println("1;1");
+    			//go for scale left side
+    			Scheduler.getInstance().add(new leftscaleleftside(westCoast));
+    		}else if(FMS.teamSwitch()){
+    			System.out.println("1;2");
+    			//go for switch on left side
+    			Scheduler.getInstance().add(new leftswitchleft(westCoast));
+    		}else{
+    			System.out.println("1;3");
+    			//go for switch on right side
+    			Scheduler.getInstance().add(new leftscalerightside(westCoast));
+    		}
+    	case 2:
+    		if(FMS.teamSwitch()){
+    			System.out.println("2;1");
+        		//middle to left side
+    			Scheduler.getInstance().add(new middleleftside(westCoast));
+        	}else{
+        		System.out.println("2;2");
+        		//middle to right side
+        		Scheduler.getInstance().add(new middlerightside(westCoast));
+        	}
+    	case 3:
+    		if(!FMS.scale()){
+    			System.out.println("3;1");
+    			//go for scale right side
+    			Scheduler.getInstance().add(new rightscaleright(westCoast));
+    		}else if(!FMS.teamSwitch()){
+    			System.out.println("3;2");
+    			//go for switch on right side
+    			Scheduler.getInstance().add(new rightswitchright(westCoast));
+    		}else{
+    			System.out.println("3;3");
+    			//go for switch on left side
+    			Scheduler.getInstance().add(new rightscaleleft(westCoast));
+    		}
+		default:
+			System.out.println("Default called!");
+			//just drive forward 10 ft if a glitch occurs
+			Scheduler.getInstance().add(new DriveDistance(westCoast, 10));
+			break;
+    	}
+		//Command cascadeGo = new CascadePosition(cascadeElevator, 35);
+		//Scheduler.getInstance().add(cascadeGo);
 		try {
-			FMS.init();
-	    	//calculate auto mode
-	    	switch(FMS.getPosition()){
-	    	case 1:
-	    		if(FMS.scale()){
-	    			//go for scale left side
-	    			Scheduler.getInstance().add(new leftscaleleftside(westCoast));
-	    		}else if(FMS.teamSwitch()){
-	    			//go for switch on left side
-	    			Scheduler.getInstance().add(new leftswitchleft(westCoast));
-	    		}else{
-	    			//go for switch on right side
-	    			Scheduler.getInstance().add(new leftscalerightside(westCoast));
-	    		}
-	    	case 2:
-	    		if(FMS.teamSwitch()){
-	        		//middle to left side
-	    			Scheduler.getInstance().add(new middleleftside(westCoast));
-	        	}else{
-	        		//middle to right side
-	        		Scheduler.getInstance().add(new middlerightside(westCoast));
-	        	}
-	    	case 3:
-	    		if(!FMS.scale()){
-	    			//go for scale right side
-	    			Scheduler.getInstance().add(new rightscaleright(westCoast));
-	    		}else if(!FMS.teamSwitch()){
-	    			//go for switch on right side
-	    			Scheduler.getInstance().add(new rightswitchright(westCoast));
-	    		}else{
-	    			//go for switch on left side
-	    			Scheduler.getInstance().add(new rightscaleleft(westCoast));
-	    		}
-			default:
-				break;
-	    	}
-			Command cascadeGo = new CascadePosition(cascadeElevator, 35);
-			Scheduler.getInstance().add(cascadeGo);
 			Thread.sleep(10);
-		}
-		catch (Exception e) {
-			//DONOTHING
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		westCoast.setGyroControl(true);
-		westCoast.pidc.gyroReset();
-		westCoast.zeroSensors();
-		westCoast.debug = true;
-		westCoast.turnSet(-90.0d);
-		TalonNWT.updateGyroPID(westCoast.pidc);
+		//westCoast.setGyroControl(true);
+		//westCoast.pidc.gyroReset();
+		//westCoast.zeroSensors();
+		westCoast.debug = false;
+		//westCoast.turnSet(-90.0d);
+		//TalonNWT.updateGyroPID(westCoast.pidc);
 	}
 
 	public void autonomousPeriodic(){
 		/*westCoast.arcLoop(false);
 		//Scheduler.getInstance().run();
 		PCM.compressorRegulate();*/
-		westCoast.updatePID();
+		/*westCoast.updatePID();
 		try {
 			TalonNWT.updateGyroPID(westCoast.pidc);
-			westCoast.rotateAuto(-2000.0d);
-			SmartDashboard.putString("DB/String 1", String.valueOf(westCoast.pidc.getCorrection()));
+			//westCoast.rotateAuto(-2000.0d);
+			//SmartDashboard.putString("DB/String 1", String.valueOf(westCoast.pidc.getCorrection()));
 //			System.out.println(talonCascade.getSelectedSensorPosition(0));
 			Thread.sleep(10);
 		}
 		catch (Exception e) {
 			
-		}
+		}*/
 		//cascadeElevator.outputToSmartDashboard();
-		Scheduler.getInstance().add(new CascadePosition(cascadeElevator, 42));
+		Scheduler.getInstance().run();
 	}
 	
 	@Override

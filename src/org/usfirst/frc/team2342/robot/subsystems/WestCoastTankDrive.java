@@ -121,8 +121,8 @@ public class WestCoastTankDrive extends Subsystem {
 			right = right * (1 + pidc.getCorrection());
 			leftA.set(ControlMode.Velocity,  left);
 			rightA.set(ControlMode.Velocity, right);
-			if (this.debug)
-				printGDebug(left, right);
+//			if (this.debug)
+//				printGDebug(left, right);
 		}
 	}
 
@@ -157,13 +157,14 @@ public class WestCoastTankDrive extends Subsystem {
 
 	// Turn setup
 	public void turnSet(double angle) {
-		this.pidc.setP(Constants.tKp);
-		this.pidc.setI(Constants.tKi);
-		this.pidc.setD(Constants.tKd);
+//		this.pidc.setP(Constants.tKp);
+//		this.pidc.setI(Constants.tKi);
+//		this.pidc.setD(Constants.tKd);
+		this.updatePID();
+//		SmartDashboard.putString("DB/String 7", String.valueOf(pidc.getP()));
+//		SmartDashboard.putString("DB/String 8", String.valueOf(pidc.getI()));
+//		SmartDashboard.putString("DB/String 9", String.valueOf(pidc.getD()));
 		this.pidc.updateAngle(angle);
-		SmartDashboard.putString("DB/String 7", String.valueOf(pidc.getP()));
-		SmartDashboard.putString("DB/String 8", String.valueOf(pidc.getI()));
-		SmartDashboard.putString("DB/String 9", String.valueOf(pidc.getD()));
 	}
 
 	// Rotate the robot in autonomous
@@ -187,7 +188,7 @@ public class WestCoastTankDrive extends Subsystem {
 	}
 	
 	// Check to see if the gyro is done
-	public boolean reachAngle(double tangle, double cangle) {
+	public boolean reachedAngle(double tangle, double cangle) {
 		double threashold = 1.0d;
 		if ((Math.abs(tangle) - Math.abs(cangle) >= threashold))
 				return true;
@@ -314,9 +315,9 @@ public class WestCoastTankDrive extends Subsystem {
 	// updates the PID in gyro with the sliders or the networktables.
 	public void updatePID() {
 		//TalonNWT.populateGyroPID(this.pidc);
-		pidc.setP(SmartDashboard.getNumber("DB/Slider 0", Constants.Kp));
-		pidc.setI(SmartDashboard.getNumber("DB/Slider 1", Constants.Ki));
-		pidc.setD(SmartDashboard.getNumber("DB/Slider 2", Constants.Kd));
+		pidc.setP(SmartDashboard.getNumber("DB/Slider 0", 0));
+		pidc.setI(SmartDashboard.getNumber("DB/Slider 1", 0));
+		pidc.setD(SmartDashboard.getNumber("DB/Slider 2", 0));
 		if (this.debug) {
 			SmartDashboard.putString("DB/String 7", String.valueOf(pidc.getP()));
 			SmartDashboard.putString("DB/String 8", String.valueOf(pidc.getI()));

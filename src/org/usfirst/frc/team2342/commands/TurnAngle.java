@@ -16,18 +16,23 @@ public class TurnAngle extends Command {
 
 	public TurnAngle(double velocity, double angle, WestCoastTankDrive westCoast){
 		requires(westCoast);
+		m_westCoast.setGyroControl(true);
+		m_westCoast.pidc.gyroReset();
 		this.angle = angle;
 		m_westCoast = westCoast;
 		this.cangle = westCoast.pidc.getCurAngle();
+		this.vel = velocity;
 	}
 
 	protected void initialize(){
-		m_westCoast.pidc.gyroReset();
+		System.out.println(String.valueOf(this.angle));
 		m_westCoast.turnSet(this.angle);
 	}
+	
 	@Override
 	protected void execute(){
 		//SmartDashboard.putString("DB/String 0", ""+ String.valueOf(m_westCoast.pidc.calculateAE()));
+		System.out.println("HELLO WORLD");
 		m_westCoast.rotateAuto(this.vel);
 		this.cangle = m_westCoast.pidc.getCurAngle();
 	}
@@ -37,7 +42,8 @@ public class TurnAngle extends Command {
 	protected boolean isFinished() {
 		if ((Math.abs(this.angle) - Math.abs(cangle) >= this.deadZone))
 			return true;
-		return false;
+		else
+			return false;
 	}
 	@Override
 	protected void interrupted() {
@@ -45,5 +51,6 @@ public class TurnAngle extends Command {
 	}
 	protected void end() {
 		m_westCoast.setVelocity(0, 0);
+		m_westCoast.setGyroControl(false);
 	}
 }

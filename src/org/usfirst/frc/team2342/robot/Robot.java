@@ -187,38 +187,46 @@ public class Robot extends IterativeRobot {
     		if(FMS.scale()){
     			System.out.println("1;1");
     			//go for scale left side
+    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, joystickL));
     			Scheduler.getInstance().add(new leftscaleleftside(westCoast));
     		}else if(FMS.teamSwitch()){
     			System.out.println("1;2");
     			//go for switch on left side
+    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, joystickL));
     			Scheduler.getInstance().add(new leftswitchleft(westCoast));
     		}else{
     			System.out.println("1;3");
     			//go for switch on right side
+    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, joystickL));
     			Scheduler.getInstance().add(new leftscalerightside(westCoast));
     		}
     	case 2:
     		if(FMS.teamSwitch()){
     			System.out.println("2;1");
         		//middle to left side
+    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, joystickL));
     			Scheduler.getInstance().add(new middleleftside(westCoast));
         	}else{
         		System.out.println("2;2");
         		//middle to right side
+        		Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, joystickL));
         		Scheduler.getInstance().add(new middlerightside(westCoast));
         	}
     	case 3:
     		if(!FMS.scale()){
     			System.out.println("3;1");
     			//go for scale right side
+    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, joystickL));
     			Scheduler.getInstance().add(new rightscaleright(westCoast));
     		}else if(!FMS.teamSwitch()){
     			System.out.println("3;2");
     			//go for switch on right side
+    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, joystickL));
     			Scheduler.getInstance().add(new rightswitchright(westCoast));
     		}else{
     			System.out.println("3;3");
     			//go for switch on left side
+    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator,  Constants.CASCADE_UPPER_SCALE, joystickL));
     			Scheduler.getInstance().add(new rightscaleleft(westCoast));
     		}
 		default:

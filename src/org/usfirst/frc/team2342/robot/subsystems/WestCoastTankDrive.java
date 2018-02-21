@@ -121,8 +121,8 @@ public class WestCoastTankDrive extends Subsystem {
 			right = right * (1 + pidc.getCorrection());
 			leftA.set(ControlMode.Velocity,  left);
 			rightA.set(ControlMode.Velocity, right);
-//			if (this.debug)
-//				printGDebug(left, right);
+			if (this.debug)
+				printGDebug(left, right);
 		}
 	}
 
@@ -155,15 +155,12 @@ public class WestCoastTankDrive extends Subsystem {
 		rightA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
 	}
 
-	// Turn setup
+	// Turn setup for rotating the robot
 	public void turnSet(double angle) {
 //		this.pidc.setP(Constants.tKp);
 //		this.pidc.setI(Constants.tKi);
 //		this.pidc.setD(Constants.tKd);
 		this.updatePID();
-//		SmartDashboard.putString("DB/String 7", String.valueOf(pidc.getP()));
-//		SmartDashboard.putString("DB/String 8", String.valueOf(pidc.getI()));
-//		SmartDashboard.putString("DB/String 9", String.valueOf(pidc.getD()));
 		this.pidc.updateAngle(angle);
 	}
 
@@ -180,19 +177,11 @@ public class WestCoastTankDrive extends Subsystem {
 				SmartDashboard.putString("DB/String 0", String.valueOf(this.pidc.getCurAngle()));
 				SmartDashboard.putString("DB/String 2", String.valueOf(lspeed));
 				SmartDashboard.putString("DB/String 3", String.valueOf(rspeed));
-				//printGDebug(lspeed, rspeed);
+				printGDebug(lspeed, rspeed);
 			}
 			leftA.set(ControlMode.Velocity,  lspeed);
 			rightA.set(ControlMode.Velocity, rspeed);
 		}
-	}
-	
-	// Check to see if the gyro is done
-	public boolean reachedAngle(double tangle, double cangle) {
-		double threashold = 1.0d;
-		if ((Math.abs(tangle) - Math.abs(cangle) >= threashold))
-				return true;
-		return false;
 	}
 
 	public boolean isDistanceFinished(){

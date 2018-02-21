@@ -82,9 +82,9 @@ public class Constants {
 	
 	// PID for Gyro TIP (Turn In Place)
 	public static final double tKp = 0.02d;
-	public static final double tKi = 0.0001d;
+	public static final double tKi = 0.0002d;
 	public static final double tKd = 0.0d;
-	
+	public static final double tSpeed = 4.5d;
 	
 	public static final double CASCADE_DEADZONE = 0.1;
 }

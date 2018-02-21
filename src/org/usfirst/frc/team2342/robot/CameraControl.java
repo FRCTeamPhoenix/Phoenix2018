@@ -57,13 +57,13 @@ public class CameraControl{
 	
 	private Camera[] cameras;
 	
-	private int currentCamera;
+	//private int currentCamera;
 	
-	private CvSink in;
+	//private CvSink in;
 	
 	//private CvSource out;
 	
-	private Mat source;
+	//private Mat source;
 	
 	//Initialize all the cameras
 	public CameraControl(int[] cameraIndexes,  int resolutionX, int resolutionY){
@@ -72,7 +72,7 @@ public class CameraControl{
 		/*out = CameraServer.getInstance().putVideo("CameraMain", resolutionX, resolutionY);
 		out.setFPS(30);*/
 		
-		source = new Mat(resolutionX, resolutionY, CvType.CV_32FC3);
+		//source = new Mat(resolutionX, resolutionY, CvType.CV_32FC3);
 		
 		cameras = new Camera[cameraIndexes.length];
 		
@@ -81,18 +81,18 @@ public class CameraControl{
 			cameras[i] = new Camera(resolutionX, resolutionY, ("Camera " + i), cameraIndexes[i]);
 		}
 		
-		currentCamera = 0;
+		//currentCamera = 0;
 		
-		in = CameraServer.getInstance().getVideo(cameras[currentCamera].getCamera());
+		//in = CameraServer.getInstance().getVideo(cameras[currentCamera].getCamera());
 		
 	}
 	
-	public void switchTo(int i){
+	/*public void switchTo(int i){
 		currentCamera = i;
 		in.setSource(cameras[i].getCamera());
-	}
+	}*/
 	
-	public void run(){
+	/*public void run(){
 		
 		new Thread(() -> {
 			
@@ -109,5 +109,5 @@ public class CameraControl{
 	        in.setEnabled(false);
 	        
 		}).start();
-	}
+	}*/
 }

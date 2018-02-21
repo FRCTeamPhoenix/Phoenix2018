@@ -55,11 +55,11 @@ public class Robot extends IterativeRobot {
 	
 	public void robotInit(){
 		
-		int[] indexes = {0, 1, 2};
+		int[] indexes = {0};
 		System.out.println("hi ho");
 		CameraControl cameras = new CameraControl(indexes, 640, 480);
 		System.out.println("hi ho hi ho");
-		cameras.run();
+		//cameras.run();
 		System.out.println("its off to work we go");
 	}
 	

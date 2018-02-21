@@ -59,12 +59,12 @@ public class Camera{
 		
 		camera = CameraServer.getInstance().startAutomaticCapture(cameraName, cameraIndex);
 	    camera.setResolution(resolutionX, resolutionY);
-	    camera.setFPS(30);
+	    camera.setFPS(60);
 	    
 	    //cvSink = CameraServer.getInstance().getVideo(camera);
 	}
 	
-	public UsbCamera getCamera(){
+	/*public UsbCamera getCamera(){
 		return camera;
-	}
+	}*/
 }

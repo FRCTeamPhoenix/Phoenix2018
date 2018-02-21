@@ -2,6 +2,8 @@ package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
+import org.usfirst.frc.team2342.commands.PullBox;
+import org.usfirst.frc.team2342.commands.PushBox;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
@@ -62,18 +64,29 @@ public class Robot extends IterativeRobot {
 
 	public void teleopInit() {
 		System.out.println("TELEOP MODE INIT");
-		PCM.turnOn();
-		Command driveJoystick = new DriveGamepad(gamepad, westCoast);
+		//PCM.turnOn();
+		/*Command driveJoystick = new DriveGamepad(gamepad, westCoast);
 		Scheduler.getInstance().add(driveJoystick);
 		westCoast.setGyroControl(false);
-		westCoast.debug = true;
+		westCoast.debug = true;*/
 	}
 
 	public void teleopPeriodic() {
+		if (gamepad.getRawButton(5)) {
+			PullBox pullBox = new PullBox(boxManipulator, gamepad);
+			Scheduler.getInstance().add(pullBox);
+		}
+		
+		if (gamepad.getRawButton(6)) {
+			PushBox pushBox = new PushBox(boxManipulator, gamepad);
+			Scheduler.getInstance().add(pushBox);
+		}
+		
+		Scheduler.getInstance().run();
 		//Drive with joystick control in velocity mode
 		//westCoast.outputToSmartDashboard();
 		//Buttons 8 & 9 or (gamepad) 5 & 6 are Low & High gear, respectively
-		if (gamepad.getRawButton(5))
+		/*if (gamepad.getRawButton(5))
 			westCoast.setLowGear();
 		else if (gamepad.getRawButton(6))
 			westCoast.setHighGear();
@@ -144,13 +157,13 @@ public class Robot extends IterativeRobot {
 		// boxManipulator = new BoxManipulator(talon1, talon2, PCM);
 		// cascadeElevator = new CascadeElevator(talon1, talon2);
 		 */	
-		Scheduler.getInstance().run();
+		/*Scheduler.getInstance().run();
 		try {
 			Thread.sleep(10);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 	}
 
@@ -168,14 +181,14 @@ public class Robot extends IterativeRobot {
 		//DriveDistance driveDistance = new DriveDistance(westCoast, 8);
 		//Scheduler.getInstance().add(driveDistance);
 		//westCoast.goArc(4, 90, -1.0d, -1.0d, false);
-		westCoast.setGyroControl(true);
+		/*westCoast.setGyroControl(true);
 		westCoast.pidc.gyroReset();
 		westCoast.zeroSensors();
 		westCoast.debug = true;
 		westCoast.turnSet(-90.0d);
 		System.out.println(String.valueOf(westCoast.pidc.getTargetAngle()));
 		westCoast.updatePID();
-		this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
+		this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);*/
 		//TalonNWT.updateGyroPID(westCoast.pidc);
 	}
 
@@ -183,7 +196,7 @@ public class Robot extends IterativeRobot {
 		/*westCoast.arcLoop(false);
 		//Scheduler.getInstance().run();
 		PCM.compressorRegulate();*/
-		try {
+		/*try {
 			this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
 			westCoast.updatePID();
 			//TalonNWT.updateGyroPID(westCoast.pidc);
@@ -197,7 +210,7 @@ public class Robot extends IterativeRobot {
 			
 		}
 		//cascadeElevator.outputToSmartDashboard();
-		Scheduler.getInstance().add(new CascadePosition(cascadeElevator, 42, joystickL));
+		Scheduler.getInstance().add(new CascadePosition(cascadeElevator, 42, joystickL));*/
 	}
 	
 	@Override

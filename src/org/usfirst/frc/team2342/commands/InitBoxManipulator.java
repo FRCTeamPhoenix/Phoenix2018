@@ -28,7 +28,7 @@ public class InitBoxManipulator extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if (Math.abs(boxManipulator.talonTip.getSelectedSensorPosition(0) - position * Constants.INCHES_TO_TICKS_CASCADE) < 500)
+    	if (Math.abs(boxManipulator.talonTip.getSelectedSensorPosition(0) - position) < 100)
     		boxManipulator.holdPosition();
     	else 
     		boxManipulator.goToPosition(position);

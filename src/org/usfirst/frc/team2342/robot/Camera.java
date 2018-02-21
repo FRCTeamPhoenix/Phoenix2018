@@ -53,7 +53,7 @@ public class Camera{
 	
 	private UsbCamera camera;
     
-	private CvSink cvSink;
+	//private CvSink cvSink;
 	
 	public Camera(int resolutionX, int resolutionY, String cameraName, int cameraIndex){
 		

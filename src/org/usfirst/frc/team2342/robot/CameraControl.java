@@ -57,13 +57,13 @@ public class CameraControl{
 	
 	private Camera[] cameras;
 	
-	//private int currentCamera;
+	/*private int currentCamera;
 	
-	//private CvSink in;
+	private CvSink in;
 	
-	//private CvSource out;
+	private CvSource out;
 	
-	//private Mat source;
+	private Mat source;*/
 	
 	//Initialize all the cameras
 	public CameraControl(int[] cameraIndexes,  int resolutionX, int resolutionY){

@@ -55,12 +55,13 @@ public class Robot extends IterativeRobot {
 	
 	public void robotInit(){
 		
+		//Camera indexes
 		int[] indexes = {0};
-		System.out.println("hi ho");
+		
+		//Start up cameras
 		CameraControl cameras = new CameraControl(indexes, 640, 480);
-		System.out.println("hi ho hi ho");
+		
 		//cameras.run();
-		System.out.println("its off to work we go");
 	}
 	
 	public void teleopInit() {

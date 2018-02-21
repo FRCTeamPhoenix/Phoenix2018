@@ -11,6 +11,6 @@ public class rightscaleright extends CommandGroup {
 	public rightscaleright(WestCoastTankDrive westCoast){
 		addSequential(new DriveDistance(westCoast, 22));
 		//turn 90 degrees to the left
-		addSequential(new TurnAngle(Constants.WESTCOAST_MAX_SPEED, -90, westCoast));
+		addSequential(new TurnAngle(1350, -90, westCoast));
 	}
 }

@@ -21,7 +21,7 @@ public class TurnAngle extends Command {
 		m_westCoast.pidc.gyroReset();
 		this.angle = angle;
 		this.cangle = westCoast.pidc.getCurAngle();
-		this.vel = velocity;
+		this.vel = -velocity;
 	}
 
 	protected void initialize(){

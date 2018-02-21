@@ -301,10 +301,6 @@ public class Robot extends IterativeRobot {
 		}
 		try {
 			westCoast.updatePID();
-			if (!westCoast.reachAngle(tangle, westCoast.pidc.getCurAngle()))
-				westCoast.rotateAuto(-300 * speed);
-			else
-				westCoast.setVelocity(0, 0);
 			Thread.sleep(100);
 		} catch(Exception e) {
 			//DONOTHING

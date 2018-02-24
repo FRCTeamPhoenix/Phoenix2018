@@ -8,19 +8,27 @@ import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
 /*
+ * By: Joshua Calzadillas
+ * 
+ * Class GyroPIDController
+ * 
+ * Parameters: GyroPIDController(Kp, Ki, Kd);
+ * 
+ * Example: GyroPIDController(0.02, 0.0, 0.0);
+ * 
+ * GyroPIDController is a gyro PID loop controller that utilizes the PIDController to correct the robot from straying off the path.
+ * It takes in the PID constants to be able to stabilize the correction.
+ * The class initializes the ADIS1664 Gyro to access the gyro and the angle along with PIDController, current angle, target angle, and the correction.
  * 
  */
 
 // must implement the velocity PID control into the Gyro
 public class GyroPIDController implements PIDSource, PIDOutput {
 	private ADIS16448_IMU gyro; 		// gyro instance
-//	private double Kp = 0.0d;   		// P value of PID
-//	private double Ki = 0.0d;   		// I value of PID
-//	private double Kd = 0.0d;   		// D value of PID
+	private PIDController pc;           // PID Controller
 	private double curAngle = 0.0d;     // Current angle
 	private double targetAngle = 0.0d;  // Target angle
 	private double correction = 0.0d;   // PID Correction
-	private PIDController pc;           // PID Controller
 
 
 	// CONSTRUCTOR
@@ -28,9 +36,6 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 		// Gyro and PIDController setup
 		if (gyro == null)
 			gyro = new ADIS16448_IMU();
-//		this.Kp = p;
-//		this.Ki = i;
-//		this.Kd = d;
 		pc = new PIDController(p, i, d, 0.0d, this, this);
 		pc.disable();
 		reset();
@@ -41,7 +46,7 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 		pc.reset();
 		pc.setOutputRange(-1, 1);
 	}
-	
+
 	// update the angle and the target thing
 	public void updateAngle(double angle) {
 		this.targetAngle = angle;
@@ -127,7 +132,7 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 	public PIDController getPC() {
 		return this.pc;
 	}
-	
+
 	public void gyroReset() {
 		this.gyro.reset();
 	}

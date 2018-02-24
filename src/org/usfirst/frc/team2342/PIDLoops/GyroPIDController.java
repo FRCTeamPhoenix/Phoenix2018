@@ -7,12 +7,16 @@ import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
+/*
+ * 
+ */
+
 // must implement the velocity PID control into the Gyro
 public class GyroPIDController implements PIDSource, PIDOutput {
 	private ADIS16448_IMU gyro; 		// gyro instance
-	private double Kp = 0.0d;   		// P value of PID
-	private double Ki = 0.0d;   		// I value of PID
-	private double Kd = 0.0d;   		// D value of PID
+//	private double Kp = 0.0d;   		// P value of PID
+//	private double Ki = 0.0d;   		// I value of PID
+//	private double Kd = 0.0d;   		// D value of PID
 	private double curAngle = 0.0d;     // Current angle
 	private double targetAngle = 0.0d;  // Target angle
 	private double correction = 0.0d;   // PID Correction
@@ -24,59 +28,56 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 		// Gyro and PIDController setup
 		if (gyro == null)
 			gyro = new ADIS16448_IMU();
-		this.Kp = p;
-		this.Ki = i;
-		this.Kd = d;
-		pc = new PIDController(this.Kp, this.Ki, this.Kd, 0.0d, this, this);
-		pc.enable();
+//		this.Kp = p;
+//		this.Ki = i;
+//		this.Kd = d;
+		pc = new PIDController(p, i, d, 0.0d, this, this);
+		pc.disable();
 		reset();
 	}
 
 	// reset the options for PID Controller
 	public void reset() {
-		pc.setP(this.Kp);
-		pc.setI(this.Ki);
-		pc.setD(this.Kd);
+		pc.reset();
 		pc.setOutputRange(-1, 1);
-		if (this.targetAngle == 0.0d) {
-			pc.setSetpoint(this.targetAngle);
-		}
-		else {
-			updateCurAngle();
-			pc.setSetpoint(this.curAngle);
-			this.targetAngle = this.curAngle;
-		}		
+	}
+	
+	// update the angle and the target thing
+	public void updateAngle(double angle) {
+		this.targetAngle = angle;
+		this.reset();
+		pc.setSetpoint(this.targetAngle);
 		pc.enable();
 	}
 
 	// get the p value
 	public double getP() {
-		return Kp;
+		return pc.getP();
 	}
 
 	// set the p value
 	public void setP(double p) {
-		this.Kp = p;
+		pc.setP(p);
 	}
 
 	// get the i value
 	public double getI() {
-		return this.Ki;
+		return pc.getI();
 	}
 
 	// set the i value
 	public void setI(double i) {
-		this.Ki = i;
+		pc.setI(i);
 	}
 
 	// get the d value
 	public double getD() {
-		return this.Kd;
+		return pc.getD();
 	}
 
 	// set the d value
 	public void setD(double d) {
-		this.Kd = d;
+		pc.setD(d);;
 	}
 
 	// calculate angle error
@@ -125,6 +126,10 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 	// get the PID Controller
 	public PIDController getPC() {
 		return this.pc;
+	}
+	
+	public void gyroReset() {
+		this.gyro.reset();
 	}
 
 	@Override

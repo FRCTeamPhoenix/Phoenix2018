@@ -9,45 +9,41 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TurnAngle extends Command {
 	WestCoastTankDrive m_westCoast;
-	Gyro m_gyro;
-	double angleDeadzone = 6.0;
-	double acceptableDeadzone = 1.0;
-	
-	public TurnAngle(Gyro gyro, int time, double goalAngle, WestCoastTankDrive westCoast){
+	private double cangle = 0.0d;
+	private double angle = 0.0d;
+	private double vel = 0.0d;
+	private double deadZone = 1.0d;
+
+	public TurnAngle(double velocity, double angle, WestCoastTankDrive westCoast){
 		requires(westCoast);
-		m_gyro = gyro;
-		m_gyro.setGoal(goalAngle);
 		m_westCoast = westCoast;
+		m_westCoast.setGyroControl(true);
+		m_westCoast.pidc.gyroReset();
+		this.angle = angle;
+		this.cangle = westCoast.pidc.getCurAngle();
+		this.vel = velocity;
+	}
+
+	protected void initialize(){
+		m_westCoast.turnSet(this.angle);
 	}
 	
-	protected void initialize(){
-		if(m_gyro.angleFromGoal() > angleDeadzone){
-			m_westCoast.setVelocity(Constants.WESTCOAST_MAX_SPEED, -Constants.WESTCOAST_MAX_SPEED);
-		}else if (m_gyro.angleFromGoal() < -angleDeadzone){
-			m_westCoast.setVelocity(-Constants.WESTCOAST_MAX_SPEED, Constants.WESTCOAST_MAX_SPEED);
-		}else if(m_gyro.angleFromGoal() > acceptableDeadzone){
-			m_westCoast.setVelocity(Constants.TALON_SPEED_RPS*(m_gyro.angleFromGoal()/angleDeadzone)*0.5, -Constants.TALON_SPEED_RPS*(m_gyro.angleFromGoal()/angleDeadzone)*0.5);
-		}else if (m_gyro.angleFromGoal() < -acceptableDeadzone){
-			m_westCoast.setVelocity(-Constants.TALON_SPEED_RPS*(m_gyro.angleFromGoal()/angleDeadzone)*0.5, Constants.TALON_SPEED_RPS*(m_gyro.angleFromGoal()/angleDeadzone)*0.5);
-		}
-	}
 	@Override
 	protected void execute(){
-		SmartDashboard.putString("DB/String 0", ""+m_gyro.angleFromGoal());
-		if(m_gyro.angleFromGoal() > angleDeadzone){
-			m_westCoast.setVelocity(Constants.WESTCOAST_MAX_SPEED, -Constants.WESTCOAST_MAX_SPEED);
-		}else if (m_gyro.angleFromGoal() < -angleDeadzone){
-			m_westCoast.setVelocity(-Constants.WESTCOAST_MAX_SPEED, Constants.WESTCOAST_MAX_SPEED);
-		}else if(m_gyro.angleFromGoal() > acceptableDeadzone){
-			m_westCoast.setVelocity(Constants.TALON_SPEED_RPS*(m_gyro.angleFromGoal()/angleDeadzone)*0.5, -Constants.TALON_SPEED_RPS*(m_gyro.angleFromGoal()/angleDeadzone)*0.5);
-		}else if (m_gyro.angleFromGoal() < -acceptableDeadzone){
-			m_westCoast.setVelocity(-Constants.TALON_SPEED_RPS*(m_gyro.angleFromGoal()/angleDeadzone)*0.5, Constants.TALON_SPEED_RPS*(m_gyro.angleFromGoal()/angleDeadzone)*0.5);
-		}
+		//SmartDashboard.putString("DB/String 0", ""+ String.valueOf(m_westCoast.pidc.calculateAE()));
+		System.out.println("ROTATE");
+		m_westCoast.rotateAuto(this.vel);
+		this.cangle = m_westCoast.pidc.getCurAngle();
 	}
-	
+
 	@Override
+	// Check to see if the gyro is done
 	protected boolean isFinished() {
-		return Math.abs(m_gyro.angleFromGoal()) < acceptableDeadzone;
+		double dist = (Math.abs(this.angle) - Math.abs(this.cangle));
+		if (dist <= this.deadZone)
+			return true;
+		else
+			return false;
 	}
 	@Override
 	protected void interrupted() {
@@ -55,5 +51,6 @@ public class TurnAngle extends Command {
 	}
 	protected void end() {
 		m_westCoast.setVelocity(0, 0);
+		m_westCoast.setGyroControl(false);
 	}
 }

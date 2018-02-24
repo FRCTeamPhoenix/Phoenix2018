@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2342.robot;
 
+import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.util.Constants;
 import org.usfirst.frc.team2342.util.NetworkTableInterface;
@@ -25,6 +26,32 @@ public class TalonNWT {
 	private static boolean getMaskOnLong(int position){
 		long mask = (long)Math.pow(2, position);
 		return (initial & mask) != 0;
+	}
+	
+	public static boolean isUpdatePID() {
+		int id = 100;
+		String boolTable = Constants.TALON_TABLE_LOCATION + "/" + id;
+		return NetworkTableInterface.getBoolean(boolTable, "UpdatePID");
+	}
+	
+	public static void populateGyroPID(GyroPIDController gyro) {
+		int id = 100;
+		String pidTable = Constants.TALON_TABLE_LOCATION + "/" + id + "/pid-0";
+//		String angleTable = Constants.TALON_TABLE_LOCATION + "/" + id + "/Angle";
+//		String errorTable = Constants.TALON_TABLE_LOCATION + "/" + id + "/Error";
+		gyro.setP(NetworkTableInterface.getDouble(pidTable, "/P"));
+		gyro.setI(NetworkTableInterface.getDouble(pidTable, "/I"));
+		gyro.setD(NetworkTableInterface.getDouble(pidTable, "/D"));
+	}
+	
+	public static void updateGyroPID(GyroPIDController gyro) {
+		int id = 100;
+		String talonTable = Constants.TALON_TABLE_LOCATION + "/" + id;
+		NetworkTableInterface.setValue(talonTable, "P", gyro.getP());
+		NetworkTableInterface.setValue(talonTable, "I", gyro.getI());
+		NetworkTableInterface.setValue(talonTable, "D", gyro.getD());
+		NetworkTableInterface.setValue(talonTable, "Current Angle", gyro.getCurAngle());
+		NetworkTableInterface.setValue(talonTable, "Angle Error", gyro.calculateAE());
 	}
 	
 	public static void updateTalon(TalonSRX talon){
@@ -56,5 +83,9 @@ public class TalonNWT {
 		NetworkTableInterface.setValue(talonTable, "FF", talon.configGetParameter(ParamEnum.eProfileParamSlot_F, idx, 0));
 		NetworkTableInterface.setValue(talonTable, "IZone", talon.configGetParameter(ParamEnum.eProfileParamSlot_IZone, idx, 0));
 		//NetworkTableInterface.setValue(talonTable, "inverted", talon);
+	}
+	
+	public static void getPIDValue(int idx, TalonSRX talon) {
+		//Donothing
 	}
 }

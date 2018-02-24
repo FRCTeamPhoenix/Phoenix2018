@@ -60,8 +60,6 @@ public class Robot extends IterativeRobot {
 		
 		//Start up cameras
 		CameraControl cameras = new CameraControl(indexes, 640, 480);
-		
-		//cameras.run();
 	}
     
     public void teleopPeriodic() {

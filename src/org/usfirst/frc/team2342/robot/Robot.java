@@ -54,6 +54,14 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().add(driveJoystick);
 		westCoast.setGyroControl(false);
 		westCoast.debug = false;
+		
+		//Camera indexes
+		int[] indexes = {0, 1, 2};
+		
+		//Start up cameras
+		CameraControl cameras = new CameraControl(indexes, 640, 480);
+		
+		//cameras.run();
 	}
     
     public void teleopPeriodic() {

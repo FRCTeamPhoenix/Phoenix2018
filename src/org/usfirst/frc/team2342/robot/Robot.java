@@ -49,7 +49,7 @@ public class Robot extends IterativeRobot {
 	Solenoid solenoid1 = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_BOX_MANIPULATOR);
 	WestCoastTankDrive westCoast = new WestCoastTankDrive(PCM, talonFL, talonFR, talonBL, talonBR);
 	Joystick joystickR = new Joystick(2);
-	Joystick joystickL = new Joystick(1);
+	Joystick XBOX = new Joystick(1);
 	CascadeElevator cascadeElevator = new CascadeElevator(talonCascade);
 	BoxManipulator boxManipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, solenoid1);
 	double speed = 0.0d;
@@ -83,40 +83,40 @@ public class Robot extends IterativeRobot {
 		//Drive with joystick control in velocity mode
 		//westCoast.outputToSmartDashboard();
 		//Buttons 8 & 9 or (gamepad) 5 & 6 are Low & High gear, respectively
-		if (gamepad.getRawButton(5))
+		if (gamepad.getRawButton(Constants.LOGITECH_LEFTBUMPER))
 			westCoast.setLowGear();
-		else if (gamepad.getRawButton(6))
+		else if (gamepad.getRawButton(Constants.LOGITECH_RIGHTBUMPER))
 			westCoast.setHighGear();
 		else
 			westCoast.setNoGear();
 		
-		if (Math.abs(joystickL.getRawAxis(3)) > Constants.CASCADE_DEADZONE) {
-			double s = joystickL.getRawAxis(3);
+		if (Math.abs(XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS)) > Constants.CASCADE_DEADZONE) {
+			double s = XBOX.getRawAxis(3);
 			double max = s < 0 ? 600 : 400;
 			System.out.println(s);
 			cascadeElevator.setVelocity(s * max);
 		}
-		else if(joystickL.getRawButton(1))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, joystickL));
-		else if(joystickL.getRawButton(2))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, joystickL));
-		else if(joystickL.getRawButton(3))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, joystickL));
-		else if(joystickL.getRawButton(4))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, joystickL));
+		else if(XBOX.getRawButton(Constants.XBOX_A))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
+		else if(XBOX.getRawButton(Constants.XBOX_X))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
+		else if(XBOX.getRawButton(Constants.XBOX_B))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, XBOX));
+		else if(XBOX.getRawButton(Constants.XBOX_Y))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
 		else
 			cascadeElevator.setVelocity(0);
 		
-		if(joystickL.getRawButton(5))
+		if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER))
 			solenoid1.set(true);
 		else
 			solenoid1.set(false);
 		
-		if(joystickL.getRawButton(7)) {
+		if(Math.abs(XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER)) > 0.1) {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0.5);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -0.5);
 		}
-		else if(joystickL.getRawButton(8)) {
+		else if(Math.abs(XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER)) > 0.1) {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, -0.5);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0.5);
 		} else {
@@ -187,46 +187,46 @@ public class Robot extends IterativeRobot {
     		if(FMS.scale()){
     			System.out.println("1;1");
     			//go for scale left side
-    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, joystickL));
+    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
     			Scheduler.getInstance().add(new leftscaleleftside(westCoast));
     		}else if(FMS.teamSwitch()){
     			System.out.println("1;2");
     			//go for switch on left side
-    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, joystickL));
+    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
     			Scheduler.getInstance().add(new leftswitchleft(westCoast));
     		}else{
     			System.out.println("1;3");
     			//go for switch on right side
-    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, joystickL));
+    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
     			Scheduler.getInstance().add(new leftscalerightside(westCoast));
     		}
     	case 2:
     		if(FMS.teamSwitch()){
     			System.out.println("2;1");
         		//middle to left side
-    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, joystickL));
+    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
     			Scheduler.getInstance().add(new middleleftside(westCoast));
         	}else{
         		System.out.println("2;2");
         		//middle to right side
-        		Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, joystickL));
+        		Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
         		Scheduler.getInstance().add(new middlerightside(westCoast));
         	}
     	case 3:
     		if(!FMS.scale()){
     			System.out.println("3;1");
     			//go for scale right side
-    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, joystickL));
+    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
     			Scheduler.getInstance().add(new rightscaleright(westCoast));
     		}else if(!FMS.teamSwitch()){
     			System.out.println("3;2");
     			//go for switch on right side
-    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, joystickL));
+    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
     			Scheduler.getInstance().add(new rightswitchright(westCoast));
     		}else{
     			System.out.println("3;3");
     			//go for switch on left side
-    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator,  Constants.CASCADE_UPPER_SCALE, joystickL));
+    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator,  Constants.CASCADE_UPPER_SCALE, XBOX));
     			Scheduler.getInstance().add(new rightscaleleft(westCoast));
     		}
 		default:
@@ -284,18 +284,18 @@ public class Robot extends IterativeRobot {
 		System.out.println(String.valueOf(westCoast.pidc.getTargetAngle()));
 		this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
 		
-		talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
+		talonCascade.set(ControlMode.PercentOutput, XBOX.getRawAxis(3));
 
-		//talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
+		//talonCascade.set(ControlMode.PercentOutput, XBOX.getRawAxis(3));
 	}
 
 	@Override
 	public void testPeriodic() {
 		// Limit for the current velocity for the robot without cascade is 3000
-		//talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
+		//talonCascade.set(ControlMode.PercentOutput, XBOX.getRawAxis(3));
 		
-		if (Math.abs(joystickL.getRawAxis(3)) > Constants.CASCADE_DEADZONE) {
-			double s = joystickL.getRawAxis(3);
+		if (Math.abs(XBOX.getRawAxis(3)) > Constants.CASCADE_DEADZONE) {
+			double s = XBOX.getRawAxis(3);
 			if(s < 0) s /= 2;
 			talonCascade.set(ControlMode.PercentOutput,s);
 		}
@@ -310,7 +310,7 @@ public class Robot extends IterativeRobot {
 		try {
 			TalonNWT.updateGyroPID(westCoast.pidc);
 			westCoast.rotateAuto(-2000.0d);
-			talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
+			talonCascade.set(ControlMode.PercentOutput, XBOX.getRawAxis(3));
 		}
 		catch (Exception e) {
 			//NOTHING

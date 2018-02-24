@@ -20,15 +20,15 @@ public class WestCoastTankDrive extends Subsystem {
 	private WPI_TalonSRX leftA, rightA, leftB, rightB;
 	private PCMHandler m_PCM;
 	public DistancePIDController dpidc;
-	public GyroPIDController pidc;
+	public GyroPIDController pidc;       // GyroPIDController
 	public SingleTalonDistancePIDController leftpidc;
 	public SingleTalonDistancePIDController rightpidc;
-	public boolean debug = false; // debug messages
+	public boolean debug = false;        // debug messages
 	private boolean gyroControl = false; // gyro Control
-	private boolean isLeftInner = false;
+	private boolean isLeftInner = false; // is the left wheel inner
 
 	public WestCoastTankDrive(PCMHandler PCM, WPI_TalonSRX leftFR, WPI_TalonSRX rightFR, WPI_TalonSRX leftBA, WPI_TalonSRX rightBA) {
-		/*Json config = JsonHelpe.getConfig();*/
+		//Json config = JsonHelpe.getConfig();
 		m_PCM = PCM;
 		leftA = leftFR;
 		rightA = rightFR;
@@ -104,6 +104,7 @@ public class WestCoastTankDrive extends Subsystem {
 		rightB.set(ControlMode.PercentOutput, right);
 	}
 
+	// Set the velocity for the tank drive
 	public void setVelocity(double left, double right) {
 		if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
 			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
@@ -121,8 +122,11 @@ public class WestCoastTankDrive extends Subsystem {
 			right = right * (1 + pidc.getCorrection());
 			leftA.set(ControlMode.Velocity,  left);
 			rightA.set(ControlMode.Velocity, right);
-			if (this.debug)
-				printGDebug(left, right);
+			if (this.debug) {
+				//printGDebug(left, right);
+				SmartDashboard.putString("DB/String 3", String.valueOf(left));
+				SmartDashboard.putString("DB/String 4", String.valueOf(right));
+			}
 		}
 	}
 
@@ -141,26 +145,38 @@ public class WestCoastTankDrive extends Subsystem {
 		if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
 			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
 		}
-
-		leftA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
-		rightA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
+		double vel = Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection();
+		if (!this.gyroControl) {
+			leftA.set(ControlMode.Velocity,  vel);
+			rightA.set(ControlMode.Velocity, vel);
+		}
+		else {
+			SmartDashboard.putString("DB/String 2", String.valueOf(vel));
+			this.setVelocity(vel, vel);
+		}
 	}
 
 	public void distanceLoop(){
 		if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
 			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
 		}
-
-		leftA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED  * dpidc.getCorrection());
-		rightA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
+		double vel = Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection();
+		if (!this.gyroControl) {
+			leftA.set(ControlMode.Velocity,  vel);
+			rightA.set(ControlMode.Velocity, vel);
+		}
+		else {
+			SmartDashboard.putString("DB/String 2", String.valueOf(vel));
+			this.setVelocity(vel, vel);
+		}
 	}
 
 	// Turn setup for rotating the robot
 	public void turnSet(double angle) {
-//		this.pidc.setP(Constants.tKp);
-//		this.pidc.setI(Constants.tKi);
-//		this.pidc.setD(Constants.tKd);
-		this.updatePID();
+		//		this.pidc.setP(Constants.tKp);
+		//		this.pidc.setI(Constants.tKi);
+		//		this.pidc.setD(Constants.tKd);
+		this.updateGyroPID();
 		this.pidc.updateAngle(angle);
 	}
 
@@ -287,13 +303,20 @@ public class WestCoastTankDrive extends Subsystem {
 		talon.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 0);
 	}
 
-	private static void loadGains(WPI_TalonSRX talon, int slotIdx, PIDGains gains) {
-		talon.config_kP(slotIdx, gains.p, 0);
-		talon.config_kI(slotIdx, gains.i, 0);
-		talon.config_kD(slotIdx, gains.d, 0);
-		talon.config_kF(slotIdx, gains.ff, 0);
-		talon.config_IntegralZone(slotIdx, gains.izone, 0);
+	private void loadGains(WPI_TalonSRX talon, int slotIdx, PIDGains talonPID) {
+		talon.config_kP(slotIdx, talonPID.p, 0);
+		talon.config_kI(slotIdx, talonPID.i, 0);
+		talon.config_kD(slotIdx, talonPID.d, 0);
+		talon.config_kF(slotIdx, talonPID.ff, 0);
+		talon.config_IntegralZone(slotIdx, talonPID.izone, 0);
 		TalonNWT.setPIDValues(slotIdx, talon);
+	}
+
+	public void updateTalonPID(int slotIdx, PIDGains talonPID) {
+		this.loadGains(this.leftA, slotIdx, talonPID);
+		this.loadGains(this.leftB, slotIdx, talonPID);
+		this.loadGains(this.rightA, slotIdx, talonPID);
+		this.loadGains(this.rightB, slotIdx, talonPID);
 	}
 
 	protected void initDefaultCommand() {
@@ -302,7 +325,7 @@ public class WestCoastTankDrive extends Subsystem {
 	}
 
 	// updates the PID in gyro with the sliders or the networktables.
-	public void updatePID() {
+	public void updateGyroPID() {
 		//TalonNWT.populateGyroPID(this.pidc);
 		pidc.setP(SmartDashboard.getNumber("DB/Slider 0", 0));
 		pidc.setI(SmartDashboard.getNumber("DB/Slider 1", 0));

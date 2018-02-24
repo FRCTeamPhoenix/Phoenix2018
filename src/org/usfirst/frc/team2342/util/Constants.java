@@ -25,7 +25,7 @@ public class Constants {
 	public static final double WESTCOAST_HALF_SPEED = WESTCOAST_MAX_SPEED * 0.5d;
 
 	public static final int PCM_PORT = 11;
-	
+
 	public static final int LOWER_SENSOR_POSITION = 0;
 	public static final int UPPER_SENSOR_POSITION = -28000;
 	public static final int INCHES_TO_TICKS_CASCADE = -290;
@@ -62,7 +62,7 @@ public class Constants {
 	public static final int TALON_INTAKE_LEFT = 10;
 	public static final int TALON_TIP = 8;
 	public static final int TALON_CLIMBER = 0;
-	
+
 	//positions of important cascade heights
 	public static final int CASCADE_BASE = 0;
 	public static final int CASCADE_SWITCH = 24;
@@ -79,7 +79,7 @@ public class Constants {
 	public static final double Kp = 0.02d;
 	public static final double Ki = 0.0d;
 	public static final double Kd = 0.0d;
-	
+
 	// PID for Gyro TIP (Turn In Place)
 	public static final double tKp = 0.1d;
 	public static final double tKi = 0.001d;
@@ -124,5 +124,15 @@ public class Constants {
 	public static final int XBOX_SELECT = 8;
 	public static final int XBOX_START = 7;
 	
+	public static final double tSpeed = 4.5d;
+	
 	public static final double CASCADE_DEADZONE = 0.1;
+
+	// Drive Talon PID Constants
+	public static final double dtKp     = 1.5d;
+	public static final double dtKi     = 0.0d;
+	public static final double dtKd     = 0.0d;
+	public static final double dtKrr    = 0.0d;
+	public static final int dtKizone    = 0;
+	public static final double dtKff    = 0.15d;
 }

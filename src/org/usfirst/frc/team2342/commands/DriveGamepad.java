@@ -22,20 +22,18 @@ public class DriveGamepad extends Command {
 
 		m_westCoast = westCoast;
 		if(Math.abs(gamepad.getRawAxis(1)) > Constants.JOYSTICK_DEADZONE)
-			leftVelocity = gamepad.getRawAxis(1) * Constants.WESTCOAST_MAX_SPEED;
+			leftVelocity = gamepad.getRawAxis(1);
 		else
 			leftVelocity = 0.0;
 
-
-
 		if(Math.abs(gamepad.getRawAxis(3)) > Constants.JOYSTICK_DEADZONE)
-			rightVelocity = gamepad.getRawAxis(3) * Constants.WESTCOAST_MAX_SPEED;
+			rightVelocity = gamepad.getRawAxis(3);
 		else
 			rightVelocity = 0.0;
 	}
 
 	protected void initialize() {
-		m_westCoast.setVelocity(leftVelocity, rightVelocity);
+		m_westCoast.setPercentage(leftVelocity, rightVelocity);
 	}
 
 	@Override
@@ -47,12 +45,11 @@ public class DriveGamepad extends Command {
 
 		//		System.out.println(axis1);
 		if(Math.abs(axis1) > Constants.JOYSTICK_DEADZONE)
-			leftVelocity = axis1 * Constants.WESTCOAST_MAX_SPEED; // velocity maybe
+			leftVelocity = axis1; // velocity maybe
 
 		if(Math.abs(axis3) > Constants.JOYSTICK_DEADZONE)
-			rightVelocity = axis3 * Constants.WESTCOAST_MAX_SPEED; // velocity maybe
-		m_westCoast.setVelocity(leftVelocity, rightVelocity);
-//		m_westCoast.setPercentage(leftVelocity, rightVelocity);
+			rightVelocity = axis3; // velocity maybe
+		m_westCoast.setPercentage(leftVelocity, rightVelocity);
 	}
 
 	protected boolean isFinished(){

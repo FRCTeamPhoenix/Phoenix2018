@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -13,6 +14,7 @@ public class BoxManipulator extends Subsystem {
 	public WPI_TalonSRX talonIntakeLeft;
 	private WPI_TalonSRX talonTip;
 	private Solenoid solenoid1;
+	Timer timer = new Timer();
 	
 	public static final int PULL = 0;
 	public static final int PUSH = 1;
@@ -75,11 +77,14 @@ public class BoxManipulator extends Subsystem {
 	}
 	
 	public void pullBox() {
-		goToPosition(PULL);
+		talonIntakeRight.set(ControlMode.PercentOutput, 1);
+		talonIntakeLeft.set(ControlMode.PercentOutput, -1);
+		
 	}
 	
 	public void pushBox() {
-		goToPosition(PUSH);
+		talonIntakeRight.set(ControlMode.PercentOutput, -1);
+		talonIntakeLeft.set(ControlMode.PercentOutput, 1);
 	}
 	
 	public void outputToSmartDashboard() {
@@ -96,8 +101,8 @@ public class BoxManipulator extends Subsystem {
 	}
 
 	public void stop() {
-		talonIntakeRight.set(ControlMode.Current, 0.0);
-		this.solenoid1.set(false);
+		talonIntakeRight.set(ControlMode.PercentOutput, 0.0);
+		talonIntakeLeft.set(ControlMode.PercentOutput, 0.0);
 	}
 
 	protected void initDefaultCommand() {

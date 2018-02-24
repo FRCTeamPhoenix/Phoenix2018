@@ -12,7 +12,7 @@ public class rightswitchright extends CommandGroup {
 		//move forward 10.5 feet
 		addSequential(new DriveDistance(westCoast, 10.5));
 		//turn 90 degrees to the left
-		addSequential(new TurnAngle(1000.0, 90, westCoast));
+		addSequential(new TurnAngle(1350.0, 90, westCoast));
 		//move forward 2.5 feet
 		addSequential(new DriveDistance(westCoast, -2.5));
 	}

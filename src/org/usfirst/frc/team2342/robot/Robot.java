@@ -11,12 +11,13 @@ import org.usfirst.frc.team2342.automodes.rightswitchright;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveDistance;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
+import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 import org.usfirst.frc.team2342.util.FMS;
-
+import edu.wpi.first.wpilibj.command.Scheduler;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -24,7 +25,6 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -34,36 +34,59 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
-	Joystick gamepad = new Joystick(0);
-	PCMHandler PCM = new PCMHandler(11);
-	WPI_TalonSRX talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
-	WPI_TalonSRX talonFL = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
-	WPI_TalonSRX talonBR = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
-	WPI_TalonSRX talonBL = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
-	WPI_TalonSRX talonCascade = new WPI_TalonSRX(Constants.TALON_CASCADE);
-	WPI_TalonSRX talonIntakeRight = new WPI_TalonSRX(Constants.TALON_INTAKE_RIGHT);
-	WPI_TalonSRX talonIntakeLeft = new WPI_TalonSRX(Constants.TALON_INTAKE_LEFT);
-	WPI_TalonSRX talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
+	Joystick gamepad;
+	PCMHandler PCM;
+	WPI_TalonSRX talonFR;
+	WPI_TalonSRX talonFL;
+	WPI_TalonSRX talonBR;
+	WPI_TalonSRX talonBL;
+	WPI_TalonSRX talonCascade;
+	WPI_TalonSRX talonIntakeRight;
+	WPI_TalonSRX talonIntakeLeft;
+	WPI_TalonSRX talonTip;
 	//Solenoid solenoidLowGear = new Solenoid(Constants.PCM_CAN_ID ,Constants.PCM_SLOT_LOWGEAR);
 	//Solenoid solenoidHighGear = new Solenoid(Constants.PCM_CAN_ID ,Constants.PCM_SLOT_HIGHGEAR);
-	Solenoid solenoid1 = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_BOX_MANIPULATOR);
-	WestCoastTankDrive westCoast = new WestCoastTankDrive(PCM, talonFL, talonFR, talonBL, talonBR);
-	Joystick joystickR = new Joystick(2);
-	Joystick XBOX = new Joystick(1);
-	CascadeElevator cascadeElevator = new CascadeElevator(talonCascade);
-	BoxManipulator boxManipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, solenoid1);
+	Solenoid solenoid1;
+	WestCoastTankDrive westCoast;
+	Joystick joystickR;
+	Joystick XBOX;
+	CascadeElevator cascadeElevator;
+	BoxManipulator boxManipulator;
+	PIDGains talonPID;
 	double speed = 0.0d;
 	double tangle = 0.0d;
 
 	public Robot() {
-		//PCM.turnOn();
-		//WPI_TalonSRX talon1 = new WPI_TalonSRX(0);
-		//WPI_TalonSRX talon2 = new WPI_TalonSRX(1);
-		//boxManipulator = new BoxManipulator(talon1, talon2, PCM);
-		//cascadeElevator = new CascadeElevator(talonCascade);
-		
+		gamepad = new Joystick(0);
+		PCM = new PCMHandler(11);
+		talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
+		talonFL = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
+		talonBR = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
+		talonBL = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
+		talonCascade = new WPI_TalonSRX(Constants.TALON_CASCADE);
+		talonIntakeRight = new WPI_TalonSRX(Constants.TALON_INTAKE_RIGHT);
+		talonIntakeLeft = new WPI_TalonSRX(Constants.TALON_INTAKE_LEFT);
+		talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
+		//Solenoid solenoidLowGear = new Solenoid(Constants.PCM_CAN_ID ,Constants.PCM_SLOT_LOWGEAR);
+		//Solenoid solenoidHighGear = new Solenoid(Constants.PCM_CAN_ID ,Constants.PCM_SLOT_HIGHGEAR);
+		solenoid1 = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_BOX_MANIPULATOR);
+		westCoast = new WestCoastTankDrive(PCM, talonFL, talonFR, talonBL, talonBR);
+		joystickR = new Joystick(2);
+		XBOX = new Joystick(1);
+		cascadeElevator = new CascadeElevator(talonCascade);
+		boxManipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, solenoid1);
+		talonPID = new PIDGains();
+
+		// set TalonPid
+		talonPID.p     = Constants.dtKp;
+		talonPID.i     = Constants.dtKi;
+		talonPID.d     = Constants.dtKd;
+		talonPID.ff    = Constants.dtKff;
+		talonPID.rr    = Constants.dtKrr;
+		talonPID.izone = Constants.dtKizone;
+		westCoast.updateTalonPID(0, talonPID);
 	}
-	
+
 	@Override
 	public void robotInit() {
 		if(!cascadeElevator.lowerLimit.get())
@@ -74,12 +97,30 @@ public class Robot extends IterativeRobot {
 		System.out.println("TELEOP MODE INIT");
 		PCM.turnOn();
 		Command driveJoystick = new DriveGamepad(gamepad, westCoast);
-		Scheduler.getInstance().add(driveJoystick);
+		edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(driveJoystick);
 		westCoast.setGyroControl(false);
-		westCoast.debug = true;
+		this.updatePID();
+		//		//Camera indexes
+		//		int[] indexes = {0, 1, 2};
+		//
+		//		//Start up cameras
+		//		CameraControl cameras = new CameraControl(indexes, 640, 480);
+
+		//westCoast.debug = true;
 	}
 
 	public void teleopPeriodic() {
+		//		if (gamepad.getRawButton(5)) {
+		//			PullBox pullBox = new PullBox(boxManipulator, gamepad);
+		//			Scheduler.getInstance().add(pullBox);
+		//		}
+		//		
+		//		if (gamepad.getRawButton(6)) {
+		//			PushBox pushBox = new PushBox(boxManipulator, gamepad);
+		//			Scheduler.getInstance().add(pushBox);
+		//		}
+		this.updatePID();
+		edu.wpi.first.wpilibj.command.Scheduler.getInstance().run();
 		//Drive with joystick control in velocity mode
 		//westCoast.outputToSmartDashboard();
 		//Buttons 8 & 9 or (gamepad) 5 & 6 are Low & High gear, respectively
@@ -97,16 +138,15 @@ public class Robot extends IterativeRobot {
 			cascadeElevator.setVelocity(s * max);
 		}
 		else if(XBOX.getRawButton(Constants.XBOX_A))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
+			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
 		else if(XBOX.getRawButton(Constants.XBOX_X))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
+			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
 		else if(XBOX.getRawButton(Constants.XBOX_B))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, XBOX));
+			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, XBOX));
 		else if(XBOX.getRawButton(Constants.XBOX_Y))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
+			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
 		else
 			cascadeElevator.setVelocity(0);
-		
 		if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER))
 			solenoid1.set(true);
 		else
@@ -155,20 +195,20 @@ public class Robot extends IterativeRobot {
 		// cascadeElevator = new CascadeElevator(talon1, talon2);
 
 		 */	
-		Scheduler.getInstance().run();
+		/*Scheduler.getInstance().run();
 		try {
 			Thread.sleep(10);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
+		}*/
+
 	}
 
 	public void disabledInit() {
 		westCoast.setVelocity(0.0d, 0.0d);
 		westCoast.zeroSensors();
-		Scheduler.getInstance().removeAll();
+		edu.wpi.first.wpilibj.command.Scheduler.getInstance().removeAll();
 	}
 
 	public void autonomousInit() {
@@ -187,52 +227,52 @@ public class Robot extends IterativeRobot {
     		if(FMS.scale()){
     			System.out.println("1;1");
     			//go for scale left side
-    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
-    			Scheduler.getInstance().add(new leftscaleleftside(westCoast));
+    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
+    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new leftscaleleftside(westCoast));
     		}else if(FMS.teamSwitch()){
     			System.out.println("1;2");
     			//go for switch on left side
-    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
-    			Scheduler.getInstance().add(new leftswitchleft(westCoast));
+    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
+    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new leftswitchleft(westCoast));
     		}else{
     			System.out.println("1;3");
     			//go for switch on right side
-    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
-    			Scheduler.getInstance().add(new leftscalerightside(westCoast));
+    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
+    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new leftscalerightside(westCoast));
     		}
     	case 2:
     		if(FMS.teamSwitch()){
     			System.out.println("2;1");
         		//middle to left side
-    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
-    			Scheduler.getInstance().add(new middleleftside(westCoast));
+    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
+    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new middleleftside(westCoast));
         	}else{
         		System.out.println("2;2");
         		//middle to right side
-        		Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
-        		Scheduler.getInstance().add(new middlerightside(westCoast));
+        		edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
+        		edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new middlerightside(westCoast));
         	}
     	case 3:
     		if(!FMS.scale()){
     			System.out.println("3;1");
     			//go for scale right side
-    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
-    			Scheduler.getInstance().add(new rightscaleright(westCoast));
+    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
+    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new rightscaleright(westCoast));
     		}else if(!FMS.teamSwitch()){
     			System.out.println("3;2");
     			//go for switch on right side
-    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
-    			Scheduler.getInstance().add(new rightswitchright(westCoast));
+    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
+    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new rightswitchright(westCoast));
     		}else{
     			System.out.println("3;3");
     			//go for switch on left side
-    			Scheduler.getInstance().add(new CascadePosition(cascadeElevator,  Constants.CASCADE_UPPER_SCALE, XBOX));
-    			Scheduler.getInstance().add(new rightscaleleft(westCoast));
+    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator,  Constants.CASCADE_UPPER_SCALE, XBOX));
+    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new rightscaleleft(westCoast));
     		}
 		default:
 			System.out.println("Default called!");
 			//just drive forward 10 ft if a glitch occurs
-			Scheduler.getInstance().add(new DriveDistance(westCoast, 10));
+			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new DriveDistance(westCoast, 10));
 			break;
     	}
 		//Command cascadeGo = new CascadePosition(cascadeElevator, 35);
@@ -247,8 +287,14 @@ public class Robot extends IterativeRobot {
 		//westCoast.setGyroControl(true);
 		//westCoast.pidc.gyroReset();
 		//westCoast.zeroSensors();
-		westCoast.debug = false;
+		//westCoast.debug = false;
 		//westCoast.turnSet(-90.0d);
+		//this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
+		westCoast.debug = true;
+		//westCoast.updateGyroPID();
+		//double vel = -300 * speed;
+		//westCoast.setVelocity(vel, vel);
+		this.updatePID();
 		//TalonNWT.updateGyroPID(westCoast.pidc);
 	}
 
@@ -256,52 +302,48 @@ public class Robot extends IterativeRobot {
 		/*westCoast.arcLoop(false);
 		//Scheduler.getInstance().run();
 		PCM.compressorRegulate();*/
-			/*this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
-			westCoast.updatePID();
+		this.updatePID();
+		/*try {
+			this.updatePID();
+			double vel = -300 * speed;
+			this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
+			westCoast.setVelocity(vel, vel);
+			//westCoast.updateGyroPID();
+			//Scheduler.getInstance().run();
+			//westCoast.updateGyroPID();
 			//TalonNWT.updateGyroPID(westCoast.pidc);
-			westCoast.rotateAuto(-300 * speed);
-//			System.out.println(String.valueOf(westCoast.pidc.getCorrection()));
-			//SmartDashboard.putString("DB/String 1", String.valueOf(westCoast.pidc.getCorrection()));
-//			System.out.println(talonCascade.getSelectedSensorPosition(0));
 			Thread.sleep(10);
 		}
 		catch (Exception e) {
-			
+
 		}*/
-		//cascadeElevator.outputToSmartDashboard();
 		Scheduler.getInstance().run();
 	}
-	
+
 	@Override
 	public void testInit() {
 		System.out.println("TEST MODE INIT");
-		westCoast.setGyroControl(true);
-		westCoast.pidc.gyroReset();
-		westCoast.zeroSensors();
-		westCoast.debug = true;
-		this.tangle = 90.0d;
-		westCoast.turnSet(this.tangle);
-		System.out.println(String.valueOf(westCoast.pidc.getTargetAngle()));
 		this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
 		
 		talonCascade.set(ControlMode.PercentOutput, XBOX.getRawAxis(3));
-
-		//talonCascade.set(ControlMode.PercentOutput, XBOX.getRawAxis(3));
+		westCoast.debug = true;
+		this.updatePID();
 	}
 
 	@Override
 	public void testPeriodic() {
 		// Limit for the current velocity for the robot without cascade is 3000
-		//talonCascade.set(ControlMode.PercentOutput, XBOX.getRawAxis(3));
-		
-		if (Math.abs(XBOX.getRawAxis(3)) > Constants.CASCADE_DEADZONE) {
-			double s = XBOX.getRawAxis(3);
-			if(s < 0) s /= 2;
-			talonCascade.set(ControlMode.PercentOutput,s);
-		}
+		//talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));
+
+		//		if (Math.abs(joystickL.getRawAxis(3)) > Constants.CASCADE_DEADZONE) {
+		//			double s = joystickL.getRawAxis(3);
+		//			if(s < 0) s /= 2;
+		//			talonCascade.set(ControlMode.PercentOutput,s);
+		//		}
 		try {
-			westCoast.updatePID();
-			Thread.sleep(100);
+			this.updatePID();
+			Scheduler.getInstance().run();
+			Thread.sleep(10);
 		} catch(Exception e) {
 			//DONOTHING
 		}
@@ -315,7 +357,21 @@ public class Robot extends IterativeRobot {
 		catch (Exception e) {
 			//NOTHING
 		}
-		
+
 		System.out.println(cascadeElevator.lowerLimit.get() + "   " + cascadeElevator.upperLimit.get());*/
+	}
+
+	// updates the PID in gyro with the sliders or the networktables.
+	public void updatePID() {
+		//TalonNWT.populateGyroPID(this.pidc);
+		this.talonPID.p = SmartDashboard.getNumber("DB/Slider 0", 0);
+		this.talonPID.i = SmartDashboard.getNumber("DB/Slider 1", 0);
+		//this.talonPID.d = SmartDashboard.getNumber("DB/Slider 2", 0);
+		this.talonPID.ff = SmartDashboard.getNumber("DB/Slider 2", 0);
+		westCoast.updateTalonPID(0, talonPID);
+		SmartDashboard.putString("DB/String 6", String.valueOf(this.talonPID.p));
+		SmartDashboard.putString("DB/String 7", String.valueOf(this.talonPID.i));
+		SmartDashboard.putString("DB/String 8", String.valueOf(this.talonPID.d));
+		SmartDashboard.putString("DB/String 9", String.valueOf(this.talonPID.ff));
 	}
 }

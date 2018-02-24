@@ -57,7 +57,7 @@ public class Constants {
 	public static final int UPPER_LIMIT_SWITCH = 0;
 
 	//boxmanipulator talon constants
-	public static final int TALON_CASCADE = 5;
+	public static final int TALON_CASCADE = 6;
 	public static final int TALON_INTAKE_RIGHT = 9;
 	public static final int TALON_INTAKE_LEFT = 10;
 	public static final int TALON_TIP = 8;
@@ -85,6 +85,44 @@ public class Constants {
 	public static final double tKi = 0.001d;
 	public static final double tKd = 0.0d;
 	
+	
+	//logitech controller
+	public static final int LOGITECH_LEFTSTICK_XAXIS = 0;
+	public static final int LOGITECH_LEFTSTICK_YAXIS = 1;
+	public static final int LOGITECH_RIGHTSTICK_XAXIS = 2;
+	public static final int LOGITECH_RIGHTSTICK_YAXIS = 3;
+	
+	public static final int LOGITECH_X = 1;
+	public static final int LOGITECH_A = 2;
+	public static final int LOGITECH_B = 3;
+	public static final int LOGITECH_Y = 4;
+	
+	public static final int LOGITECH_LEFTBUMPER = 5;
+	public static final int LOGITECH_RIGHTBUMPER = 6;
+	public static final int LOGITECH_LEFTTRIGGER = 7;
+	public static final int LOGITECH_RIGHTTRIGGER = 8;
+	
+	public static final int LOGITECH_BACK = 9;
+	public static final int LOGITECH_START = 10;
+	
+	//xbox controller
+	public static final int XBOX_LEFTSTICK_XAXIS = 0;
+	public static final int XBOX_LEFTSTICK_YAXIS = 1;
+	public static final int XBOX_LEFTTRIGGER = 2;
+	public static final int XBOX_RIGHTTRIGGER = 3;
+	public static final int XBOX_RIGHTSTICK_XAXIS = 4;
+	public static final int XBOX_RIGHTSTICK_YAXIS = 5;
+	
+	public static final int XBOX_X = 3;
+	public static final int XBOX_A = 1;
+	public static final int XBOX_B = 2;
+	public static final int XBOX_Y = 4;
+	
+	public static final int XBOX_LEFTBUMPER = 5;
+	public static final int XBOX_RIGHTBUMPER = 6;
+	
+	public static final int XBOX_SELECT = 8;
+	public static final int XBOX_START = 7;
 	
 	public static final double CASCADE_DEADZONE = 0.1;
 }

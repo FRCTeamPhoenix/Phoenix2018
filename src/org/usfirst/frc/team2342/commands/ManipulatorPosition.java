@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class InitBoxManipulator extends Command {
+public class ManipulatorPosition extends Command {
 
 	BoxManipulator boxManipulator;
 	int position;
-    public InitBoxManipulator(BoxManipulator boxManipulator, int degrees) {
+    public ManipulatorPosition(BoxManipulator boxManipulator, int degrees) {
         requires(boxManipulator);
         this.boxManipulator = boxManipulator;
         this.position = (int) (degrees * Constants.MANIP_DEGTOTICKS);

@@ -63,21 +63,7 @@ public class CascadeElevator extends Subsystem {
 		talonCascade.set(ControlMode.Velocity, 0);
 	}
 
-	public void goToBase() {
-		goToPosition(BASE);
-	}
 
-	public void goToSwitch() {
-		goToPosition(SWITCH);
-	}
-
-	public void goToScale() {
-		goToPosition(SCALE);
-	}
-
-	public void goToTop() {
-		goToPosition(TOP);
-	}
 
 	public void setVelocity(double speed) {
 

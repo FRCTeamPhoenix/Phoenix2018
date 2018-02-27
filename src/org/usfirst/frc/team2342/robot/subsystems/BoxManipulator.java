@@ -1,6 +1,6 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
-import org.usfirst.frc.team2342.commands.InitBoxManipulator;
+import org.usfirst.frc.team2342.commands.ManipulatorPosition;
 import org.usfirst.frc.team2342.util.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -92,13 +92,7 @@ public class BoxManipulator extends Subsystem {
 		talonTip.set(ControlMode.Velocity, 0);
 	}
 	
-	public void pullBox() {
-		goToPosition(PULL);
-	}
 	
-	public void pushBox() {
-		goToPosition(PUSH);
-	}
 	
 	public void setTiltVelocity(double speed) {
 

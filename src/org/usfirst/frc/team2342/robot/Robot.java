@@ -2,7 +2,7 @@ package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
-import org.usfirst.frc.team2342.commands.InitBoxManipulator;
+import org.usfirst.frc.team2342.commands.ManipulatorPosition;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
@@ -114,7 +114,7 @@ public class Robot extends IterativeRobot {
 		}
 		
 		if(joystickL.getRawButton(9)) {
-			Scheduler.getInstance().add(new InitBoxManipulator(boxManipulator, 0));
+			Scheduler.getInstance().add(new ManipulatorPosition(boxManipulator, 0));
 		}
 
 		/*Scheduler.getInstance().run();
@@ -215,7 +215,7 @@ public class Robot extends IterativeRobot {
 		
 		//talonCascade.setSelectedSensorPosition(0, 0, 10);
 		
-		Scheduler.getInstance().add(new InitBoxManipulator(boxManipulator, 1000));
+		Scheduler.getInstance().add(new ManipulatorPosition(boxManipulator, 1000));
 	}
 
 	@Override

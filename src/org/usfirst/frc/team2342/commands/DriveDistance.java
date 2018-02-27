@@ -16,6 +16,7 @@ public class DriveDistance extends Command {
 	}
 	
 	protected void initialize() {
+		//called on command adding to scheduler
 		if(m_westCoast.debug)
 			System.out.println("started distance: "+m_distance+" ft");
 		//sets distance when created
@@ -33,6 +34,7 @@ public class DriveDistance extends Command {
     }
 	
 	protected void end() {
+		//called at end of command
 		if(m_westCoast.debug)
 			System.out.println("finished distance");
 		//stop moving
@@ -40,6 +42,7 @@ public class DriveDistance extends Command {
 	}
 	
 	protected void interrupted() {
+		//called if command stopped
 		if(m_westCoast.debug)
 			System.out.println("distance interrupted");
 		end();

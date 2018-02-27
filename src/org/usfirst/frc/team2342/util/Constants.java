@@ -87,4 +87,6 @@ public class Constants {
 	
 	
 	public static final double CASCADE_DEADZONE = 0.1;
+	
+	public static final int BOXMANIPTIP_BOTTOM = -2150;
 }

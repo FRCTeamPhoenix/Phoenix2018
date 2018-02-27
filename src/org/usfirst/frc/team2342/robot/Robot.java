@@ -213,7 +213,9 @@ public class Robot extends IterativeRobot {
 		westCoast.turnSet(90.0d);		
 		talonCascade.set(ControlMode.PercentOutput, joystickL.getRawAxis(3));*/
 		
-		talonCascade.setSelectedSensorPosition(0, 0, 10);
+		//talonCascade.setSelectedSensorPosition(0, 0, 10);
+		
+		Scheduler.getInstance().add(new InitBoxManipulator(boxManipulator, 0));
 	}
 
 	@Override
@@ -243,6 +245,7 @@ public class Robot extends IterativeRobot {
 		}
 		
 		*/
+		Scheduler.getInstance().run();
 		System.out.println(talonTip.getSelectedSensorPosition(0));
 		
 		//System.out.println(cascadeElevator.lowerLimit.get() + "   " + cascadeElevator.upperLimit.get());

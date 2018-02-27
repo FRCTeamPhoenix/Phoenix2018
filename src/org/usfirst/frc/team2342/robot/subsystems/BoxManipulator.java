@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
+import org.usfirst.frc.team2342.commands.InitBoxManipulator;
 import org.usfirst.frc.team2342.util.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -44,6 +45,11 @@ public class BoxManipulator extends Subsystem {
 		talonIntakeRight.config_kI(PidLoopIndex, 0.0, PidTimeOutMs);
 		talonIntakeRight.config_kD(PidLoopIndex, 0.0, PidTimeOutMs);
 		
+		talonTip.config_kF(PidLoopIndex, 0.5, PidTimeOutMs);
+		talonTip.config_kP(PidLoopIndex, 0.02, PidTimeOutMs);
+		talonTip.config_kI(PidLoopIndex, 0.001, PidTimeOutMs);
+		talonTip.config_kD(PidLoopIndex, 50, PidTimeOutMs);
+		
 		talonIntakeRight.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 		talonIntakeLeft.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 		this.talonIntakeLeft.follow(this.talonIntakeRight);
@@ -72,9 +78,9 @@ public class BoxManipulator extends Subsystem {
 	}
 	
 	public void goToPosition(double position) {
-		double speed = -0.3;
+		double speed = 100;
 
-		if (talonTip.getSelectedSensorPosition(PidLoopIndex) < position * Constants.INCHES_TO_TICKS_CASCADE) {
+		if (talonTip.getSelectedSensorPosition(PidLoopIndex) > position) {
 			speed *= -1;
 		}
 
@@ -82,6 +88,7 @@ public class BoxManipulator extends Subsystem {
 	}
 	
 	public void holdPosition() {
+		System.out.println("Holding");
 		talonTip.set(ControlMode.Velocity, 0);
 	}
 	
@@ -95,17 +102,23 @@ public class BoxManipulator extends Subsystem {
 	
 	public void setTiltVelocity(double speed) {
 
-		if (talonTip.getSelectedSensorPosition(PidLoopIndex) < 0) {
+		if (talonTip.getSelectedSensorPosition(PidLoopIndex) > 0) {
 			System.out.println("ABOVE");
-			speed = Math.max(speed, 0);	
+			speed = Math.min(speed, 0);
+		} 
+		
+		if (talonTip.getSelectedSensorPosition(PidLoopIndex) < -2150) {
+			System.out.println("BELOW");
+			speed = Math.max(speed, 0);
 		} 
 			
-		if (talonTip.getSensorCollection().isFwdLimitSwitchClosed()) {
+		/*if (talonTip.getSensorCollection().isFwdLimitSwitchClosed()) {
 			System.out.println("UPPER LIMIT REACHED");
 				talonTip.setSelectedSensorPosition(0,
 				PidLoopIndex, PidTimeOutMs);
-		}
-		talonTip.set(ControlMode.Velocity, -speed);
+		}*/
+		System.out.println("speed: " + speed+ "    talon velocity: " + talonTip.getSelectedSensorVelocity(0));
+		talonTip.set(ControlMode.Velocity, speed);
 	}
 	
 	public void outputToSmartDashboard() {

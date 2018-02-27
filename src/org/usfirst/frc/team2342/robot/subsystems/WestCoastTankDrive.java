@@ -309,6 +309,7 @@ public class WestCoastTankDrive extends Subsystem {
 		talon.config_kD(slotIdx, talonPID.d, 0);
 		talon.config_kF(slotIdx, talonPID.ff, 0);
 		talon.config_IntegralZone(slotIdx, talonPID.izone, 0);
+		talon.configOpenloopRamp(talonPID.rr, 0);
 		TalonNWT.setPIDValues(slotIdx, talon);
 	}
 

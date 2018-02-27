@@ -16,6 +16,8 @@ public class DriveDistance extends Command {
 	}
 	
 	protected void initialize() {
+		if(m_westCoast.debug)
+			System.out.println("started distance: "+m_distance+" ft");
 		//sets distance when created
 		m_westCoast.goDistance(m_distance);
 	}
@@ -31,11 +33,15 @@ public class DriveDistance extends Command {
     }
 	
 	protected void end() {
+		if(m_westCoast.debug)
+			System.out.println("finished distance");
 		//stop moving
 		m_westCoast.setVelocity(0, 0);
 	}
 	
 	protected void interrupted() {
+		if(m_westCoast.debug)
+			System.out.println("distance interrupted");
 		end();
 	}
 	

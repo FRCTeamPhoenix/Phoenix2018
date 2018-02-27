@@ -18,6 +18,8 @@ import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 import org.usfirst.frc.team2342.util.FMS;
 import edu.wpi.first.wpilibj.command.Scheduler;
+
+import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -94,7 +96,17 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopInit() {
+		westCoast.debug = false;
+		talonPID.p     = Constants.dtKp;
+		talonPID.i     = Constants.dtKi;
+		talonPID.d     = Constants.dtKd;
+		talonPID.ff    = Constants.dtKff;
+		talonPID.rr    = 0;
+		talonPID.izone = Constants.dtKizone;
+		westCoast.updateTalonPID(0, talonPID);
 		System.out.println("TELEOP MODE INIT");
+		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
+		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		PCM.turnOn();
 		Command driveJoystick = new DriveGamepad(gamepad, westCoast);
 		edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(driveJoystick);
@@ -107,6 +119,9 @@ public class Robot extends IterativeRobot {
 		//		CameraControl cameras = new CameraControl(indexes, 640, 480);
 
 		//westCoast.debug = true;
+
+		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
+		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 	}
 
 	public void teleopPeriodic() {
@@ -163,7 +178,6 @@ public class Robot extends IterativeRobot {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0);
 		}
-
 		/*Scheduler.getInstance().run();
     	//Drive with joystick control in velocity mode
 		westCoast.outputToSmartDashboard();
@@ -212,6 +226,16 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousInit() {
+		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 1.0, 1, 0, 0);
+		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 1.0, 1, 0, 0);
+		// set TalonPid
+		talonPID.p     = Constants.dtKp;
+		talonPID.i     = Constants.dtKi;
+		talonPID.d     = Constants.dtKd;
+		talonPID.ff    = Constants.dtKff;
+		talonPID.rr    = Constants.dtKrr;
+		talonPID.izone = Constants.dtKizone;
+		westCoast.updateTalonPID(0, talonPID);
 		System.out.println("AUTOMODE INIT");
 		//Command goForward = new DriveForward(20, westCoast, 6.0 * Constants.TALON_SPEED_RPS);
 		//Scheduler.getInstance().add(goForward);
@@ -221,62 +245,72 @@ public class Robot extends IterativeRobot {
 //		westCoast.goArc(4, 90, -1.0d, -1.0d, false);
 		//westCoast.updatePID();
 		FMS.init();
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     	//calculate auto mode
     	switch(FMS.getPosition()){
     	case 1:
     		if(FMS.scale()){
     			System.out.println("1;1");
     			//go for scale left side
-    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
-    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new leftscaleleftside(westCoast));
+    			//edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
+    			Scheduler.getInstance().add(new leftscaleleftside(westCoast));
     		}else if(FMS.teamSwitch()){
     			System.out.println("1;2");
     			//go for switch on left side
-    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
-    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new leftswitchleft(westCoast));
+    			//edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
+    			Scheduler.getInstance().add(new leftswitchleft(westCoast));
     		}else{
     			System.out.println("1;3");
     			//go for switch on right side
-    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
-    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new leftscalerightside(westCoast));
+    			//edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
+    			Scheduler.getInstance().add(new leftscalerightside(westCoast));
     		}
+    		break;
     	case 2:
     		if(FMS.teamSwitch()){
     			System.out.println("2;1");
         		//middle to left side
-    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
-    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new middleleftside(westCoast));
+    			//edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
+    			Scheduler.getInstance().add(new middleleftside(westCoast));
         	}else{
         		System.out.println("2;2");
         		//middle to right side
-        		edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
-        		edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new middlerightside(westCoast));
+        		//edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
+        		Scheduler.getInstance().add(new middlerightside(westCoast));
         	}
+    		break;
     	case 3:
     		if(!FMS.scale()){
     			System.out.println("3;1");
     			//go for scale right side
-    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
-    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new rightscaleright(westCoast));
+    			//edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
+    			Scheduler.getInstance().add(new rightscaleright(westCoast));
     		}else if(!FMS.teamSwitch()){
     			System.out.println("3;2");
     			//go for switch on right side
-    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
-    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new rightswitchright(westCoast));
+    			//edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
+    			Scheduler.getInstance().add(new rightswitchright(westCoast));
     		}else{
     			System.out.println("3;3");
     			//go for switch on left side
-    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator,  Constants.CASCADE_UPPER_SCALE, XBOX));
-    			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new rightscaleleft(westCoast));
+    			//edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator,  Constants.CASCADE_UPPER_SCALE, XBOX));
+    			Scheduler.getInstance().add(new rightscaleleft(westCoast));
     		}
+    		break;
 		default:
 			System.out.println("Default called!");
 			//just drive forward 10 ft if a glitch occurs
-			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new DriveDistance(westCoast, 10));
+			Scheduler.getInstance().add(new DriveDistance(westCoast, 10));
 			break;
     	}
 		//Command cascadeGo = new CascadePosition(cascadeElevator, 35);
 		//Scheduler.getInstance().add(cascadeGo);
+		//edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new rightswitchright(westCoast));
 		try {
 			Thread.sleep(10);
 		} catch (InterruptedException e) {
@@ -290,7 +324,7 @@ public class Robot extends IterativeRobot {
 		//westCoast.debug = false;
 		//westCoast.turnSet(-90.0d);
 		//this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
-		westCoast.debug = true;
+		westCoast.debug = false;
 		//westCoast.updateGyroPID();
 		//double vel = -300 * speed;
 		//westCoast.setVelocity(vel, vel);

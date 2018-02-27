@@ -132,7 +132,7 @@ public class Constants {
 	public static final double dtKp     = 1.5d;
 	public static final double dtKi     = 0.0d;
 	public static final double dtKd     = 0.0d;
-	public static final double dtKrr    = 0.0d;
+	public static final double dtKrr    = 2.0d;
 	public static final int dtKizone    = 0;
 	public static final double dtKff    = 0.15d;
 }

@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class rightswitchright extends CommandGroup {
 	public rightswitchright(WestCoastTankDrive westCoast){
 		//move forward 10.5 feet
-		addSequential(new DriveDistance(westCoast, 10.5));
+		addSequential(new DriveDistance(westCoast, 11));
 		//turn 90 degrees to the left
-		addSequential(new TurnAngle(1350.0, 90, westCoast));
+		addSequential(new TurnAngle(300.0, 90, westCoast));
 		//move forward 2.5 feet
-		addSequential(new DriveDistance(westCoast, -2.5));
+		addSequential(new DriveDistance(westCoast, 2));
 	}
 }

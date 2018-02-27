@@ -28,7 +28,7 @@ public class CascadeElevator extends Subsystem {
 
 	public CascadeElevator(WPI_TalonSRX talonCascade) {
 		this.talonCascade = talonCascade;
-
+		this.talonCascade.setInverted(false);
 		talonCascade.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PidLoopIndex, PidTimeOutMs);
 		talonCascade.setSensorPhase(SensorPhase);
 		talonCascade.setInverted(InvertMotor);

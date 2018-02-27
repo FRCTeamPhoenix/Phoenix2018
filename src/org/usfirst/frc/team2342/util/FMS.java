@@ -4,11 +4,17 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 public class FMS {
 	static String gameData = "LLL";
+	//1 2 or 3
+	static int position = 1;
 	
 	public static void init(){
+		position = DriverStation.getInstance().getLocation();
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 	}
 	
+	public static int getPosition(){
+		return position;
+	}
 	
 	/*
 	 * true == left

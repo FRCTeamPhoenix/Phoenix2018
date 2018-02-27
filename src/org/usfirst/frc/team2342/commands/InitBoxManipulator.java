@@ -12,10 +12,10 @@ public class InitBoxManipulator extends Command {
 
 	BoxManipulator boxManipulator;
 	int position;
-    public InitBoxManipulator(BoxManipulator boxManipulator, int position) {
+    public InitBoxManipulator(BoxManipulator boxManipulator, int degrees) {
         requires(boxManipulator);
         this.boxManipulator = boxManipulator;
-        this.position = position;
+        this.position = (int) (degrees * Constants.MANIP_DEGTOTICKS);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         System.out.println("constructor");

@@ -24,6 +24,7 @@ public class ManipulatorPosition extends Command {
     // Called once when the command executes
     protected void initialize() {
     	System.out.println("Init");
+    	boxManipulator.talonTip.setSelectedSensorPosition(0, 0, 10);
     	boxManipulator.goToPosition(position);
     }
 

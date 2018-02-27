@@ -215,7 +215,7 @@ public class Robot extends IterativeRobot {
 		
 		//talonCascade.setSelectedSensorPosition(0, 0, 10);
 		
-		Scheduler.getInstance().add(new ManipulatorPosition(boxManipulator, 1000));
+		Scheduler.getInstance().add(new ManipulatorPosition(boxManipulator, 45));
 	}
 
 	@Override

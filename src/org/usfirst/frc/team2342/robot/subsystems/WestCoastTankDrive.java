@@ -3,6 +3,8 @@ package org.usfirst.frc.team2342.robot.subsystems;
 import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
 import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
 import org.usfirst.frc.team2342.PIDLoops.SingleTalonDistancePIDController;
+import org.usfirst.frc.team2342.json.Json;
+import org.usfirst.frc.team2342.json.JsonHelper;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.robot.PCMHandler;
 import org.usfirst.frc.team2342.robot.TalonNWT;
@@ -28,7 +30,7 @@ public class WestCoastTankDrive extends Subsystem {
 	private boolean isLeftInner = false; // is the left wheel inner
 
 	public WestCoastTankDrive(PCMHandler PCM, WPI_TalonSRX leftFR, WPI_TalonSRX rightFR, WPI_TalonSRX leftBA, WPI_TalonSRX rightBA) {
-		//Json config = JsonHelpe.getConfig();
+		//Json config = JsonHelper.getConfig();
 		m_PCM = PCM;
 		leftA = leftFR;
 		rightA = rightFR;

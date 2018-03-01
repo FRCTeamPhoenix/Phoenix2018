@@ -22,6 +22,8 @@ public class CascadeElevator extends Subsystem {
 	private final int PidTimeOutMs = 10;
 	private final boolean SensorPhase = true;
 	private final boolean InvertMotor = false;
+	
+	private boolean runningPreset = false;
 
 	public DigitalInput lowerLimit;
 	public DigitalInput upperLimit;
@@ -48,9 +50,19 @@ public class CascadeElevator extends Subsystem {
 		lowerLimit = new DigitalInput(Constants.LOWER_LIMIT_SWITCH);
 		upperLimit = new DigitalInput(Constants.UPPER_LIMIT_SWITCH);
 	}
+	
+	
+
+	public boolean isRunningPreset() {
+		return runningPreset;
+	}
+
+	public void setRunningPreset(boolean runningPreset) {
+		this.runningPreset = runningPreset;
+	}
 
 	public void goToPosition(double position) {
-		double speed = -600;
+		double speed = -800;
 
 		if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < position * Constants.INCHES_TO_TICKS_CASCADE) {
 			speed *= -1;
@@ -83,24 +95,24 @@ public class CascadeElevator extends Subsystem {
 
 		try {
 			if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < Constants.UPPER_SENSOR_POSITION) {
-				System.out.println("ABOVE");
+				//System.out.println("ABOVE");
 				speed = Math.max(speed, 0);	
 			} 
 			
 			if (talonCascade.getSelectedSensorPosition(PidLoopIndex) > Constants.LOWER_SENSOR_POSITION) {
-				System.out.println("BELOW");
+				//System.out.println("BELOW");
 				speed = Math.min(speed, 0);
 			}
 		
 			if (!talonCascade.getSensorCollection().isFwdLimitSwitchClosed()) { // switches are NC so true if tripped
-				System.out.println("LOWER LIMIT REACHED");
+				//System.out.println("LOWER LIMIT REACHED");
 				speed = Math.min(speed, 0);
 				// talonCascade.setSelectedSensorPosition(Constants.LOWER_SENSOR_POSITION,
 				// PidLoopIndex, PidTimeOutMs);
 			}
 			
 			if (!talonCascade.getSensorCollection().isRevLimitSwitchClosed()) {
-				System.out.println("UPPER LIMIT REACHED");
+				//System.out.println("UPPER LIMIT REACHED");
 				speed = Math.max(speed, 0);
 				// talonCascade.setSelectedSensorPosition(Constants.UPPER_SENSOR_POSITION,
 				// PidLoopIndex, PidTimeOutMs);
@@ -123,7 +135,7 @@ public class CascadeElevator extends Subsystem {
 	}
 
 	public void stop() {
-		talonCascade.set(ControlMode.Current, 0.0);
+		talonCascade.set(ControlMode.PercentOutput, 0.0);
 	}
 
 	public void zeroSensors() {

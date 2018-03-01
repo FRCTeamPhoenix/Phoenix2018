@@ -25,6 +25,7 @@ public class CascadePosition extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	cascade.setRunningPreset(true);
     	cascade.goToPosition(position);
     }
 
@@ -38,11 +39,12 @@ public class CascadePosition extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Math.abs(gamepad.getRawAxis(3)) > Constants.CASCADE_DEADZONE;
+        return Math.abs(gamepad.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS)) > Constants.CASCADE_DEADZONE;
     }
 
     // Called once after isFinished returns true
     protected void end() {
+    	cascade.setRunningPreset(false);
     	cascade.stop();
     }
 

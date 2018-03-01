@@ -6,8 +6,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PCMHandler {
 	Compressor compressor; 
-	Solenoid highgearSol = new Solenoid(11,0);
-	Solenoid lowgearSol = new Solenoid(11,1);
+	Solenoid highgearSol1 = new Solenoid(11,0);
+	Solenoid lowgearSol1 = new Solenoid(11,1);
+	Solenoid highgearSol2 = new Solenoid(11,2);
+	Solenoid lowgearSol2 = new Solenoid(11,3);
 
 	public PCMHandler(int port) {
 		
@@ -24,11 +26,12 @@ public class PCMHandler {
 	}
 	
 	public void setLowGear(boolean value) {
-		lowgearSol.set(value);
-		
+		lowgearSol1.set(value);
+		lowgearSol2.set(value);
 	}
 	public void setHighGear(boolean value) {
-		highgearSol.set(value);
+		highgearSol1.set(value);
+		highgearSol2.set(value);
 	}
 	
 	

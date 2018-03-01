@@ -174,7 +174,7 @@ public class Robot extends IterativeRobot {
 		
 		if (Math.abs(XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS)) > Constants.CASCADE_DEADZONE) {
 			double s = XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS);
-			double max = s < 0 ? 600 : 400;
+			double max = s < 0 ? 800 : 600;
 			System.out.println(s);
 			
 			cascadeElevator.setVelocity(s * max);
@@ -187,7 +187,7 @@ public class Robot extends IterativeRobot {
 			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, XBOX));
 		else if(XBOX.getRawButton(Constants.XBOX_Y))
 			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
-		else
+		else if(!cascadeElevator.isRunningPreset())
 			cascadeElevator.setVelocity(0);
 		
 		if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER))
@@ -237,13 +237,13 @@ public class Robot extends IterativeRobot {
 		// cascadeElevator = new CascadeElevator(talon1, talon2);
 
 		 */	
-		/*Scheduler.getInstance().run();
+		//Scheduler.getInstance().run();
 		try {
 			Thread.sleep(10);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 
 	}
 

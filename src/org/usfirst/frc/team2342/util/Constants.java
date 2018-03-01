@@ -72,7 +72,7 @@ public class Constants {
 	public static final int PCM_CAN_ID = 11;
 	public static final int PCM_SLOT_LOWGEAR = 0;
 	public static final int PCM_SLOT_HIGHGEAR = 1;
-	public static final int PCM_BOX_MANIPULATOR = 2;
+	public static final int PCM_BOX_MANIPULATOR = 7;
 
 	// PID for Gyro Forward
 	public static final double Kp = 0.02d;

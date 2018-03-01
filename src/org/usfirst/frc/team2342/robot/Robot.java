@@ -77,6 +77,12 @@ public class Robot extends IterativeRobot {
 		boxManipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, solenoidManipulator);
 		talonPID = new PIDGains();
 		
+		//		Camera indexes
+		//		int[] indexes = {0, 1, 2};
+		//
+		//		//Start up cameras
+		//		CameraControl cameras = new CameraControl(indexes, 640, 480);
+		
 		// initialize PID gains for west coast drive
 		talonPID.p     = Constants.dtKp;
 		talonPID.i     = Constants.dtKi;

@@ -1,18 +1,17 @@
 package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
-import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.util.Constants;
 import org.usfirst.frc.team2342.util.NetworkTableInterface;
 
 import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class TalonNWT {
 	private static long initial = 0;
 	
 	//compaction for bandwidth errors
+	@SuppressWarnings("unused")
 	private static void setMaskOnLong(int position, boolean value){
 		long mask = (long)Math.pow(2, position);
 		if(!value){
@@ -23,6 +22,7 @@ public class TalonNWT {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private static boolean getMaskOnLong(int position){
 		long mask = (long)Math.pow(2, position);
 		return (initial & mask) != 0;

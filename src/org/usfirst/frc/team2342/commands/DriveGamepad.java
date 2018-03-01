@@ -5,7 +5,6 @@ import org.usfirst.frc.team2342.util.Constants;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveGamepad extends Command {
 

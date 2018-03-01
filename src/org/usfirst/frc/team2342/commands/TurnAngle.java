@@ -1,9 +1,8 @@
 package org.usfirst.frc.team2342.commands;
 
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
-import org.usfirst.frc.team2342.util.Constants;
+
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /*
  * By: Joshua Calzadillas

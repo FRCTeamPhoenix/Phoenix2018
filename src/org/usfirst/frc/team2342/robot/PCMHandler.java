@@ -41,11 +41,6 @@ public class PCMHandler {
 	
 	public void compressorRegulate () {
 		SmartDashboard.putString("DB/String 4", ""+compressor.getPressureSwitchValue());
-		/*if (compressor.getPressureSwitchValue()) {
-			compressor.start();
-		} else {
-			compressor.stop();
-		}*/
 	}
 	
 }

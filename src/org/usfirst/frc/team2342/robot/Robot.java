@@ -17,16 +17,19 @@ import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 import org.usfirst.frc.team2342.util.FMS;
-import edu.wpi.first.wpilibj.command.Scheduler;
 
 import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSink;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -57,6 +60,9 @@ public class Robot extends IterativeRobot {
 	PIDGains talonPID;
 	double speed = 0.0d;
 	double tangle = 0.0d;
+	UsbCamera camera0;
+	UsbCamera camera1;
+	VideoSink server;
 
 	public Robot() {
 		gamepad = new Joystick(0);
@@ -78,7 +84,11 @@ public class Robot extends IterativeRobot {
 		cascadeElevator = new CascadeElevator(talonCascade);
 		boxManipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, solenoid1);
 		talonPID = new PIDGains();
-
+		//camera0 = CameraServer.getInstance().startAutomaticCapture(0);
+		//camera1 = CameraServer.getInstance().startAutomaticCapture(1);
+		//server = CameraServer.getInstance().getServer();
+		//server.setSource(camera0);
+		
 		// set TalonPid
 		talonPID.p     = Constants.dtKp;
 		talonPID.i     = Constants.dtKi;
@@ -122,6 +132,7 @@ public class Robot extends IterativeRobot {
 
 		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
+		talonTip.setSelectedSensorPosition(0, 0, 10);
 	}
 
 	public void teleopPeriodic() {
@@ -139,6 +150,12 @@ public class Robot extends IterativeRobot {
 		//Drive with joystick control in velocity mode
 		//westCoast.outputToSmartDashboard();
 		//Buttons 8 & 9 or (gamepad) 5 & 6 are Low & High gear, respectively
+		
+		if(gamepad.getRawButton(1))
+			server.setSource(camera0);
+		if(gamepad.getRawButton(2))
+			server.setSource(camera1);
+		
 		if (gamepad.getRawButton(Constants.LOGITECH_LEFTBUMPER))
 			westCoast.setLowGear();
 		else if (gamepad.getRawButton(Constants.LOGITECH_RIGHTBUMPER))
@@ -146,10 +163,20 @@ public class Robot extends IterativeRobot {
 		else
 			westCoast.setNoGear();
 		
+		if(Math.abs(XBOX.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS)) > 0.1) {
+			double speed = XBOX.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS);
+			if(speed < 0)
+				speed /= 10;
+			talonTip.set(ControlMode.PercentOutput, -XBOX.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS));
+		}
+		else
+			talonTip.set(ControlMode.PercentOutput, 0);
+		
 		if (Math.abs(XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS)) > Constants.CASCADE_DEADZONE) {
-			double s = XBOX.getRawAxis(3);
+			double s = XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS);
 			double max = s < 0 ? 600 : 400;
 			System.out.println(s);
+			
 			cascadeElevator.setVelocity(s * max);
 		}
 		else if(XBOX.getRawButton(Constants.XBOX_A))
@@ -162,9 +189,10 @@ public class Robot extends IterativeRobot {
 			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
 		else
 			cascadeElevator.setVelocity(0);
+		
 		if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER))
 			solenoid1.set(true);
-		else
+		else if(XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER))
 			solenoid1.set(false);
 		
 		if(Math.abs(XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER)) > 0.1) {

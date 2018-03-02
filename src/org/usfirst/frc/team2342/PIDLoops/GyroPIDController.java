@@ -44,6 +44,7 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 	// reset the options for PID Controller
 	public void reset() {
 		pc.reset();
+		pc.setP(0.2);
 		pc.setOutputRange(-1, 1);
 	}
 

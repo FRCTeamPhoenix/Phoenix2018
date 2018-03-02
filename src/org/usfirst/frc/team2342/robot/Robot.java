@@ -203,7 +203,9 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 1.0, 1, 0, 0);
 		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 1.0, 1, 0, 0);
-		
+		westCoast.setGyroControl(true);
+		westCoast.updateGyroPID();
+		System.out.println(westCoast.pidc.getP() + "   " + westCoast.pidc.getI() + "   " + westCoast.pidc.getD());
 		FMS.init();
 		
     	//calculate auto mode
@@ -264,26 +266,28 @@ public class Robot extends IterativeRobot {
 			break;
     	}
 		
-		try {
-			Thread.sleep(10);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
+		
 	}
 
 	public void autonomousPeriodic(){
-		this.updatePID();
+		//this.updatePID();
 		Scheduler.getInstance().run();
+		
+		try {
+			Thread.sleep(10);
+		} catch (InterruptedException e1) {
+			//e1.printStackTrace();
+		}
 	}
 
 	@Override
 	public void testInit() {
-		System.out.println("TEST MODE INIT");
+		/*System.out.println("TEST MODE INIT");
 		this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
 		
 		talonCascade.set(ControlMode.PercentOutput, XBOX.getRawAxis(3));
 		westCoast.debug = true;
-		this.updatePID();
+		this.updatePID();*/
 	}
 
 	@Override
@@ -296,13 +300,13 @@ public class Robot extends IterativeRobot {
 		//			if(s < 0) s /= 2;
 		//			talonCascade.set(ControlMode.PercentOutput,s);
 		//		}
-		try {
+		/*try {
 			this.updatePID();
 			Scheduler.getInstance().run();
 			Thread.sleep(10);
 		} catch(Exception e) {
 			//DONOTHING
-		}
+		}*/
 		/*if (TalonNWT.isUpdatePID())
 			westCoast.updatePID();
 		try {
@@ -315,6 +319,7 @@ public class Robot extends IterativeRobot {
 		}
 
 		System.out.println(cascadeElevator.lowerLimit.get() + "   " + cascadeElevator.upperLimit.get());*/
+		System.out.println(talonTip.getSensorCollection().isFwdLimitSwitchClosed() + "    " + talonTip.getSensorCollection().isRevLimitSwitchClosed());
 	}
 
 	// updates the PID in gyro with the sliders or the networktables.

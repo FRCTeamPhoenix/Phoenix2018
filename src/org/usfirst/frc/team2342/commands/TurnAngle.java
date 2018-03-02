@@ -49,6 +49,7 @@ public class TurnAngle extends Command {
 	protected void execute(){
 		//SmartDashboard.putString("DB/String 0", ""+ String.valueOf(m_westCoast.pidc.calculateAE()));
 		m_westCoast.rotateAuto(this.vel);
+		//System.out.println(m_westCoast.pidc.getP() + "   " + m_westCoast.pidc.getI() + "   " + m_westCoast.pidc.getD());
 		this.cangle = m_westCoast.pidc.getCurAngle();
 	}
 
@@ -56,8 +57,9 @@ public class TurnAngle extends Command {
 	// Check to see if the gyro is done
 	protected boolean isFinished() {
 		double dist = (Math.abs(this.angle) - Math.abs(this.cangle));
-		if (dist <= this.deadZone)
+		if (dist <= this.deadZone) {
 			return true;
+		}
 		else
 			return false;
 	}
@@ -72,9 +74,10 @@ public class TurnAngle extends Command {
 	
 	// stop the robot from turning when done
 	protected void end() {
-		if(m_westCoast.debug)
+		//if(m_westCoast.debug)
 			System.out.println("finished turn angle");
 		m_westCoast.setVelocity(0, 0);
 		m_westCoast.setGyroControl(false);
+		m_westCoast.pidc.reset();
 	}
 }

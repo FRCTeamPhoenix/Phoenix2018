@@ -120,6 +120,7 @@ public class WestCoastTankDrive extends Subsystem {
 		else {
 			left = left  * (1 - pidc.getCorrection());
 			right = right * (1 + pidc.getCorrection());
+			System.out.println("sides    " + left + "    " + right + "    " + pidc.getCorrection());
 			leftA.set(ControlMode.Velocity,  left);
 			rightA.set(ControlMode.Velocity, right);
 			if (this.debug) {
@@ -142,6 +143,7 @@ public class WestCoastTankDrive extends Subsystem {
 	public void goDistance(double distanceInFeet){
 		double distance = distanceInFeet/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
 		dpidc.setGoal(distance);
+		this.setGyroControl(false);
 		if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
 			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
 		}
@@ -149,6 +151,7 @@ public class WestCoastTankDrive extends Subsystem {
 		if (!this.gyroControl) {
 			leftA.set(ControlMode.Velocity,  vel);
 			rightA.set(ControlMode.Velocity, vel);
+			System.out.println("not gyro controlled " + vel);
 		}
 		else {
 			SmartDashboard.putString("DB/String 2", String.valueOf(vel));
@@ -164,6 +167,7 @@ public class WestCoastTankDrive extends Subsystem {
 		if (!this.gyroControl) {
 			leftA.set(ControlMode.Velocity,  vel);
 			rightA.set(ControlMode.Velocity, vel);
+			System.out.println("not gyro controlled " + vel);
 		}
 		else {
 			SmartDashboard.putString("DB/String 2", String.valueOf(vel));
@@ -177,6 +181,7 @@ public class WestCoastTankDrive extends Subsystem {
 		//		this.pidc.setI(Constants.tKi);
 		//		this.pidc.setD(Constants.tKd);
 		this.updateGyroPID();
+		this.setGyroControl(true);
 		this.pidc.updateAngle(angle);
 	}
 
@@ -195,6 +200,7 @@ public class WestCoastTankDrive extends Subsystem {
 				SmartDashboard.putString("DB/String 3", String.valueOf(rspeed));
 				printGDebug(lspeed, rspeed);
 			}
+			System.out.println(lspeed + "    " + rspeed);
 			leftA.set(ControlMode.Velocity,  lspeed);
 			rightA.set(ControlMode.Velocity, rspeed);
 		}
@@ -310,7 +316,7 @@ public class WestCoastTankDrive extends Subsystem {
 		talon.config_kF(slotIdx, talonPID.ff, 0);
 		talon.config_IntegralZone(slotIdx, talonPID.izone, 0);
 		talon.configOpenloopRamp(talonPID.rr, 0);
-		TalonNWT.setPIDValues(slotIdx, talon);
+		//TalonNWT.setPIDValues(slotIdx, talon);
 	}
 
 	public void updateTalonPID(int slotIdx, PIDGains talonPID) {

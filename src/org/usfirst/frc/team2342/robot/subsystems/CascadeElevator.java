@@ -118,9 +118,9 @@ public class CascadeElevator extends Subsystem {
 				// PidLoopIndex, PidTimeOutMs);
 			}
 			
-			System.out.println("limit: " + talonCascade.getSensorCollection().isFwdLimitSwitchClosed() + 
+			/*System.out.println("limit: " + talonCascade.getSensorCollection().isFwdLimitSwitchClosed() + 
 					" limitupper: " + talonCascade.getSensorCollection().isRevLimitSwitchClosed() + 
-					" position: " + talonCascade.getSelectedSensorPosition(PidLoopIndex));
+					" position: " + talonCascade.getSelectedSensorPosition(PidLoopIndex));*/
 
 		} catch (Exception e) {
 

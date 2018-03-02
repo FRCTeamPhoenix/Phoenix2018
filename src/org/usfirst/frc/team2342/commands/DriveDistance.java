@@ -35,7 +35,7 @@ public class DriveDistance extends Command {
 	
 	protected void end() {
 		//called at end of command
-		if(m_westCoast.debug)
+		//if(m_westCoast.debug)
 			System.out.println("finished distance");
 		//stop moving
 		m_westCoast.setVelocity(0, 0);

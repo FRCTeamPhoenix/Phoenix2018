@@ -93,6 +93,14 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		if(!cascadeElevator.lowerLimit.get())
 			cascadeElevator.zeroSensors();
+		
+		
+		
+		//Camera indexes
+		int[] indexes = {0, 1, 2};
+		
+		//Start up cameras
+		CameraControl cameras = new CameraControl(640, 480, 30);
 	}
 
 	public void teleopInit() {
@@ -112,11 +120,7 @@ public class Robot extends IterativeRobot {
 		edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(driveJoystick);
 		westCoast.setGyroControl(false);
 		this.updatePID();
-		//		//Camera indexes
-		//		int[] indexes = {0, 1, 2};
-		//
-		//		//Start up cameras
-		//		CameraControl cameras = new CameraControl(indexes, 640, 480);
+		
 
 		//westCoast.debug = true;
 
@@ -216,6 +220,8 @@ public class Robot extends IterativeRobot {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
+		
+		
 
 	}
 
@@ -336,7 +342,11 @@ public class Robot extends IterativeRobot {
 		/*westCoast.arcLoop(false);
 		//Scheduler.getInstance().run();
 		PCM.compressorRegulate();*/
+		
+		
 		this.updatePID();
+		
+		
 		/*try {
 			this.updatePID();
 			double vel = -300 * speed;
@@ -351,7 +361,9 @@ public class Robot extends IterativeRobot {
 		catch (Exception e) {
 
 		}*/
+		
 		Scheduler.getInstance().run();
+		
 	}
 
 	@Override
@@ -393,6 +405,7 @@ public class Robot extends IterativeRobot {
 		}
 
 		System.out.println(cascadeElevator.lowerLimit.get() + "   " + cascadeElevator.upperLimit.get());*/
+		
 	}
 
 	// updates the PID in gyro with the sliders or the networktables.

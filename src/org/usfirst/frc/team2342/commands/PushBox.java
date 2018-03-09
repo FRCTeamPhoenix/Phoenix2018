@@ -2,12 +2,14 @@ package org.usfirst.frc.team2342.commands;
 
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class PushBox extends Command {
-	Timer timer;
+	long time;
 	BoxManipulator manipulator;
 	Joystick gamepad;
 	
@@ -17,22 +19,23 @@ public class PushBox extends Command {
     	requires(manipulator);
     	this.gamepad = gamepad;
     	this.manipulator = manipulator;
-    	timer = new Timer();
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	manipulator.pushBox();
-    	timer.start();
+    	time = System.currentTimeMillis();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	System.out.println("AUTO: PUSH BOX");
+    	manipulator.talonIntakeRight.set(ControlMode.PercentOutput, 1);
+    	manipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -1);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return timer.get() > 0.5;
+        return System.currentTimeMillis() - time > 2000;
     }
 
     // Called once after isFinished returns true

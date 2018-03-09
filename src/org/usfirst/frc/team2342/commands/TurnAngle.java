@@ -39,7 +39,7 @@ public class TurnAngle extends Command {
 	
 	// Initialize the setup for the target angle
 	protected void initialize(){
-		if(m_westCoast.debug)
+		//if(m_westCoast.debug)
 			System.out.println("turning angle "+angle+" degrees");
 		m_westCoast.turnSet(this.angle);
 	}
@@ -78,6 +78,5 @@ public class TurnAngle extends Command {
 			System.out.println("finished turn angle");
 		m_westCoast.setVelocity(0, 0);
 		m_westCoast.setGyroControl(false);
-		m_westCoast.pidc.reset();
 	}
 }

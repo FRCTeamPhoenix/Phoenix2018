@@ -20,7 +20,7 @@ public class CascadeElevator extends Subsystem {
 
 	private final int PidLoopIndex = 0;
 	private final int PidTimeOutMs = 10;
-	private final boolean SensorPhase = true;
+	private final boolean SensorPhase = false;
 	private final boolean InvertMotor = false;
 	
 	private boolean runningPreset = false;
@@ -42,7 +42,7 @@ public class CascadeElevator extends Subsystem {
 
 		talonCascade.config_kF(PidLoopIndex, 0.5, PidTimeOutMs);
 		talonCascade.config_kP(PidLoopIndex, 0.02, PidTimeOutMs);
-		talonCascade.config_kI(PidLoopIndex, 0.001, PidTimeOutMs);
+		talonCascade.config_kI(PidLoopIndex, 0.0005, PidTimeOutMs);
 		talonCascade.config_kD(PidLoopIndex, 50, PidTimeOutMs);
 
 		talonCascade.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
@@ -95,32 +95,33 @@ public class CascadeElevator extends Subsystem {
 
 		try {
 			if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < Constants.UPPER_SENSOR_POSITION) {
-				//System.out.println("ABOVE");
+				System.out.println("ABOVE");
 				speed = Math.max(speed, 0);	
 			} 
 			
 			if (talonCascade.getSelectedSensorPosition(PidLoopIndex) > Constants.LOWER_SENSOR_POSITION) {
-				//System.out.println("BELOW");
+				System.out.println("BELOW");
 				speed = Math.min(speed, 0);
 			}
 		
-			if (!talonCascade.getSensorCollection().isFwdLimitSwitchClosed()) { // switches are NC so true if tripped
-				//System.out.println("LOWER LIMIT REACHED");
+			if (!lowerLimit.get()) { // switches are NC so true if tripped
+				System.out.println("LOWER LIMIT REACHED");
 				speed = Math.min(speed, 0);
-				// talonCascade.setSelectedSensorPosition(Constants.LOWER_SENSOR_POSITION,
-				// PidLoopIndex, PidTimeOutMs);
+				//talonCascade.setSelectedSensorPosition(0, 0, 10);
 			}
 			
-			if (!talonCascade.getSensorCollection().isRevLimitSwitchClosed()) {
-				//System.out.println("UPPER LIMIT REACHED");
+			if (!upperLimit.get()) {
+				System.out.println("UPPER LIMIT REACHED");
 				speed = Math.max(speed, 0);
 				// talonCascade.setSelectedSensorPosition(Constants.UPPER_SENSOR_POSITION,
 				// PidLoopIndex, PidTimeOutMs);
 			}
 			
-			/*System.out.println("limit: " + talonCascade.getSensorCollection().isFwdLimitSwitchClosed() + 
-					" limitupper: " + talonCascade.getSensorCollection().isRevLimitSwitchClosed() + 
-					" position: " + talonCascade.getSelectedSensorPosition(PidLoopIndex));*/
+			SmartDashboard.putString("DB/String 7", "limit: " + talonCascade.getSensorCollection().isFwdLimitSwitchClosed() + 
+					" limitupper: " + talonCascade.getSensorCollection().isRevLimitSwitchClosed());
+			SmartDashboard.putString("DB/String 8", "position: " + talonCascade.getSelectedSensorPosition(PidLoopIndex) +
+					" speed: " + speed);
+			
 
 		} catch (Exception e) {
 

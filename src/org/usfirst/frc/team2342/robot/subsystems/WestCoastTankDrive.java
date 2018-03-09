@@ -120,7 +120,6 @@ public class WestCoastTankDrive extends Subsystem {
 		else {
 			left = left  * (1 - pidc.getCorrection());
 			right = right * (1 + pidc.getCorrection());
-			System.out.println("sides    " + left + "    " + right + "    " + pidc.getCorrection());
 			leftA.set(ControlMode.Velocity,  left);
 			rightA.set(ControlMode.Velocity, right);
 			if (this.debug) {
@@ -151,11 +150,12 @@ public class WestCoastTankDrive extends Subsystem {
 		if (!this.gyroControl) {
 			leftA.set(ControlMode.Velocity,  vel);
 			rightA.set(ControlMode.Velocity, vel);
-			System.out.println("not gyro controlled " + vel);
+			System.out.println("MOVING NO GYRO " + vel);
 		}
 		else {
 			SmartDashboard.putString("DB/String 2", String.valueOf(vel));
 			this.setVelocity(vel, vel);
+			System.out.println("MOVING GYRO " + vel);
 		}
 	}
 
@@ -167,11 +167,12 @@ public class WestCoastTankDrive extends Subsystem {
 		if (!this.gyroControl) {
 			leftA.set(ControlMode.Velocity,  vel);
 			rightA.set(ControlMode.Velocity, vel);
-			System.out.println("not gyro controlled " + vel);
+			System.out.println("MOVING NO GYRO " + vel);
 		}
 		else {
 			SmartDashboard.putString("DB/String 2", String.valueOf(vel));
 			this.setVelocity(vel, vel);
+			System.out.println("MOVING GYRO " + vel);
 		}
 	}
 
@@ -200,7 +201,7 @@ public class WestCoastTankDrive extends Subsystem {
 				SmartDashboard.putString("DB/String 3", String.valueOf(rspeed));
 				printGDebug(lspeed, rspeed);
 			}
-			System.out.println(lspeed + "    " + rspeed);
+			System.out.println("ROTATING " + lspeed + "    " + rspeed);
 			leftA.set(ControlMode.Velocity,  lspeed);
 			rightA.set(ControlMode.Velocity, rspeed);
 		}

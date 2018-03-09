@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class BoxManipulator extends Subsystem {
 	public WPI_TalonSRX talonIntakeRight;
 	public WPI_TalonSRX talonIntakeLeft;
-	private WPI_TalonSRX talonTip;
+	public WPI_TalonSRX talonTip;
 	private Solenoid solenoid1;
 	Timer timer = new Timer();
 	

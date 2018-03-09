@@ -43,11 +43,12 @@ public class DriveGamepad extends Command {
 		double axis3 = m_gamepad.getRawAxis(3);
 
 		//		System.out.println(axis1);
-		if(Math.abs(axis1) > Constants.JOYSTICK_DEADZONE)
+		//if(Math.abs(axis1) > Constants.JOYSTICK_DEADZONE)
 			leftVelocity = axis1; // velocity maybe
 
-		if(Math.abs(axis3) > Constants.JOYSTICK_DEADZONE)
+		//if(Math.abs(axis3) > Constants.JOYSTICK_DEADZONE)
 			rightVelocity = axis3; // velocity maybe
+		//System.out.println("left: " + leftVelocity + "    right:   " + rightVelocity);
 		m_westCoast.setPercentage(leftVelocity, rightVelocity);
 	}
 

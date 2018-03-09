@@ -1,22 +1,13 @@
 package org.usfirst.frc.team2342.robot;
 
-import org.usfirst.frc.team2342.automodes.leftscaleleftside;
-import org.usfirst.frc.team2342.automodes.leftscalerightside;
-import org.usfirst.frc.team2342.automodes.leftswitchleft;
-import org.usfirst.frc.team2342.automodes.middleleftside;
-import org.usfirst.frc.team2342.automodes.middlerightside;
-import org.usfirst.frc.team2342.automodes.rightscaleleft;
-import org.usfirst.frc.team2342.automodes.rightscaleright;
-import org.usfirst.frc.team2342.automodes.rightswitchright;
+import org.usfirst.frc.team2342.automodes.AutoGroup;
 import org.usfirst.frc.team2342.commands.CascadePosition;
-import org.usfirst.frc.team2342.commands.DriveDistance;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
-import org.usfirst.frc.team2342.util.FMS;
 
 import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -24,6 +15,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSink;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -97,6 +89,9 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		if(!cascadeElevator.lowerLimit.get())
 			cascadeElevator.zeroSensors();
+		
+		@SuppressWarnings("unused")
+		CameraControl cameras = new CameraControl(640, 480, 30);
 	}
 
 	public void teleopInit() {
@@ -120,12 +115,6 @@ public class Robot extends IterativeRobot {
 		//uncomment to load PID values from network tables/sliders
 		//this.updatePID();
 		
-		//change camera source
-		if(taranis.getRawButton(1))
-			server.setSource(camera0);
-		if(taranis.getRawButton(2))
-			server.setSource(camera1);
-		
 		//shift gears based on taranis input
 		if (taranis.getRawButton(Constants.LOGITECH_LEFTBUMPER))
 			westCoast.setLowGear();
@@ -139,8 +128,10 @@ public class Robot extends IterativeRobot {
 		if(Math.abs(XBOX.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS)) > 0.1) {
 			double speed = XBOX.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS);
 			if(speed < 0)
-				speed /= 10;
-			talonTip.set(ControlMode.PercentOutput, XBOX.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS));
+				speed /= 2;
+			else
+				speed /= 7;
+			talonTip.set(ControlMode.PercentOutput, speed);
 		}
 		else
 			talonTip.set(ControlMode.PercentOutput, 0);
@@ -148,35 +139,50 @@ public class Robot extends IterativeRobot {
 		//control cascade according to joystick input
 		if (Math.abs(XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS)) > Constants.CASCADE_DEADZONE) {
 			double s = XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS);
-			double max = s < 0 ? 800 : 600;
+			double max = s < 0 ? 1200 : 1000;
 			cascadeElevator.setVelocity(s * max);
 		}
 		//control cascade from preset positions
-		else if(XBOX.getRawButton(Constants.XBOX_A))
-			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
 		else if(XBOX.getRawButton(Constants.XBOX_X))
 			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
 		else if(XBOX.getRawButton(Constants.XBOX_B))
 			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, XBOX));
 		else if(XBOX.getRawButton(Constants.XBOX_Y))
 			edu.wpi.first.wpilibj.command.Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
-		else if(!cascadeElevator.isRunningPreset())
+		else if(!cascadeElevator.isRunningPreset()) {
+			//System.out.println("stopping it");
 			cascadeElevator.setVelocity(0);
+		}
+		
+		if(XBOX.getRawButton(Constants.XBOX_A)) {
+			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 1);
+			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -1);
+		}
+		
+		//dont hit these unless you know what youre doing.
+		if(XBOX.getRawButton(7))
+			talonCascade.setSelectedSensorPosition(Constants.UPPER_SENSOR_POSITION, 0, 10);
+		else if(XBOX.getRawButton(8))
+			talonCascade.setSelectedSensorPosition(Constants.LOWER_SENSOR_POSITION, 0, 10);
 		
 		//open and close box manipulator
-		if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER))
+		/*if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) || XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER))
 			solenoidManipulator.set(true);
-		else if(XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER))
-			solenoidManipulator.set(false);
+		else// if(XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER))
+			solenoidManipulator.set(false);*/
+		
+		boolean solenoidButtons = taranis.getRawButton(7) || XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) || XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER);
+		if(solenoidManipulator.get() != solenoidButtons)
+			solenoidManipulator.set(solenoidButtons);
 		
 		//run intake wheels
 		if(Math.abs(XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER)) > 0.1) {
-			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0.5);
-			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -0.5);
-		}
-		else if(Math.abs(XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER)) > 0.1) {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, -0.5);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0.5);
+		}
+		else if(Math.abs(XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER)) > 0.1) {
+			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0.5);
+			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -0.5);
 		} else {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0);
@@ -195,15 +201,14 @@ public class Robot extends IterativeRobot {
 
 	public void disabledInit() {
 		//upon disabling, kill west coast and remove commands from Scheduler
-		westCoast.setVelocity(0.0d, 0.0d);
-		westCoast.zeroSensors();
+		//westCoast.setVelocity(0.0d, 0.0d);
+		//westCoast.zeroSensors();
 		Scheduler.getInstance().removeAll();
 	}
 
 	public void autonomousInit() {
-		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 1.0, 1, 0, 0);
+		/*talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 1.0, 1, 0, 0);
 		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 1.0, 1, 0, 0);
-		westCoast.setGyroControl(true);
 		westCoast.updateGyroPID();
 		System.out.println(westCoast.pidc.getP() + "   " + westCoast.pidc.getI() + "   " + westCoast.pidc.getD());
 		FMS.init();
@@ -264,17 +269,27 @@ public class Robot extends IterativeRobot {
 			//just drive forward 10 ft if a glitch occurs
 			Scheduler.getInstance().add(new DriveDistance(westCoast, 10));
 			break;
-    	}
-		
-		
+    	}*/
+		/*Scheduler.getInstance().add(new DriveDistance(westCoast, 7));
+		Scheduler.getInstance().add(new CascadePosition(cascadeElevator, 2*Constants.CASCADE_SWITCH, XBOX));
+		Scheduler.getInstance().add(new PushBox(boxManipulator, XBOX));*/
+		//Scheduler.getInstance().add(new TurnAngle(90, Constants.WESTCOAST_MAX_SPEED, westCoast));
+		//Scheduler.getInstance().add(new AutoGroup(westCoast, cascadeElevator, XBOX));
+		//boolean switchLeft = DriverStation.getInstance().getGameSpecificMessage().startsWith("L");
+		//SmartDashboard.putString("DB/String 7", "Switch: " + DriverStation.getInstance().getGameSpecificMessage().substring(0, 1));
+		Scheduler.getInstance().add(new AutoGroup(westCoast, cascadeElevator, boxManipulator, XBOX, SmartDashboard.getBoolean("DB/Button 1", false)));
 	}
 
 	public void autonomousPeriodic(){
 		//this.updatePID();
 		Scheduler.getInstance().run();
+		SmartDashboard.putString("DB/String 0", "Gyro: " + westCoast.pidc.getCurAngle());
+		SmartDashboard.putString("DB/String 1", "Distance avg: " + westCoast.dpidc.getPositionAverage());
+		SmartDashboard.putString("DB/String 2", "Gyro correction: " + westCoast.pidc.getCorrection());
+		SmartDashboard.putString("DB/String 3", "Distance correction: " + westCoast.dpidc.getCorrection());
 		
 		try {
-			Thread.sleep(10);
+			Thread.sleep(25);
 		} catch (InterruptedException e1) {
 			//e1.printStackTrace();
 		}
@@ -317,9 +332,10 @@ public class Robot extends IterativeRobot {
 		catch (Exception e) {
 			//NOTHING
 		}
-
+	
 		System.out.println(cascadeElevator.lowerLimit.get() + "   " + cascadeElevator.upperLimit.get());*/
-		System.out.println(talonTip.getSensorCollection().isFwdLimitSwitchClosed() + "    " + talonTip.getSensorCollection().isRevLimitSwitchClosed());
+		//System.out.println(talonTip.getSensorCollection().isFwdLimitSwitchClosed() + "    " + talonTip.getSensorCollection().isRevLimitSwitchClosed());
+		cascadeElevator.setVelocity(0);
 	}
 
 	// updates the PID in gyro with the sliders or the networktables.

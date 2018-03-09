@@ -35,11 +35,13 @@ public class CascadePosition extends Command {
     		cascade.holdPosition();
     	else 
     		cascade.goToPosition(position);
+    	System.out.println("AUTO: CASCADE POSITION");
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Math.abs(gamepad.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS)) > Constants.CASCADE_DEADZONE;
+        return (Math.abs(gamepad.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS)) > Constants.CASCADE_DEADZONE) ||
+        		Math.abs(cascade.talonCascade.getSelectedSensorPosition(0) - position * Constants.INCHES_TO_TICKS_CASCADE) < 500;
     }
 
     // Called once after isFinished returns true

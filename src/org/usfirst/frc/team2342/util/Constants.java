@@ -20,13 +20,13 @@ public class Constants {
 	public static final double JOYSTICK_DEADZONE = 0.025;
 
 	// Scales the speed of velocity mode (in rps)
-	public static final double WESTCOAST_MAX_SPEED = TALON_SPEED_RPS * 5.95d; // It is set for the tuning of the controller manuverablility
+	public static final double WESTCOAST_MAX_SPEED = TALON_SPEED_RPS * 4d; // It is set for the tuning of the controller manuverablility
 	public static final double WESTCOAST_HALF_SPEED = WESTCOAST_MAX_SPEED * 0.5d;
 
 	public static final int PCM_PORT = 11;
 
 	public static final int LOWER_SENSOR_POSITION = 0;
-	public static final int UPPER_SENSOR_POSITION = -28000;
+	public static final int UPPER_SENSOR_POSITION = -40000;
 	public static final int INCHES_TO_TICKS_CASCADE = -290;
 
 	//where on the smartdashboard talons go
@@ -131,7 +131,7 @@ public class Constants {
 	public static final double dtKp     = 1.5d;
 	public static final double dtKi     = 0.0d;
 	public static final double dtKd     = 0.0d;
-	public static final double dtKrr    = 2.0d;
+	public static final double dtKrr    = 0;
 	public static final int dtKizone    = 0;
 	public static final double dtKff    = 0.15d;
 }

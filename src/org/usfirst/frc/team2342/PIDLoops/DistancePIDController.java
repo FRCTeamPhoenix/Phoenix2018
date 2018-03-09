@@ -25,7 +25,7 @@ public class DistancePIDController implements PIDOutput, PIDSource {
 		this.Ki = i;
 		this.Kd = d;
 		this.Kff = ff;
-		pc = new PIDController(this.Kp, 0.0d, 0.0d, 0.0d, this, this);
+		pc = new PIDController(this.Kp, 0.2d, 0.0d, 0.0d, this, this);
 		pc.setOutputRange(-1.0, 1.0);
 		pc.enable();
 	}
@@ -42,7 +42,7 @@ public class DistancePIDController implements PIDOutput, PIDSource {
 		return this.correction;
 	}
 	
-	private double getPositionAverage(){
+	public double getPositionAverage(){
 		return (left.getSelectedSensorPosition(0)+right.getSelectedSensorPosition(0))/2;
 	}
 	

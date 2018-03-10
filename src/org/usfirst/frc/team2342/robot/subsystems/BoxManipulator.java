@@ -1,20 +1,25 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
+
+import org.usfirst.frc.team2342.robot.PCMHandler;
 import org.usfirst.frc.team2342.util.SmartTalon;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class BoxManipulator extends Subsystem {
+
 	public SmartTalon talonIntakeRight;
 	public SmartTalon talonIntakeLeft;
 	private SmartTalon talonTip;
-	private Solenoid solenoid1;
+	
+
+	private PCMHandler pcm;
+
 	Timer timer = new Timer();
 	
 	public static final int PULL = 0;
@@ -26,7 +31,9 @@ public class BoxManipulator extends Subsystem {
 	private final boolean InvertMotor = false;
 	
 	
-	public BoxManipulator(SmartTalon talonIntakeRight, SmartTalon talonIntakeLeft, SmartTalon talonTip, Solenoid solenoid1) {
+
+	public BoxManipulator(SmartTalon talonIntakeRight, SmartTalon talonIntakeLeft, SmartTalon talonTip, PCMHandler pCM2) {
+
 		this.talonIntakeRight = talonIntakeRight;
 		this.talonIntakeLeft = talonIntakeLeft;
 		this.talonTip = talonTip;
@@ -49,28 +56,24 @@ public class BoxManipulator extends Subsystem {
 		talonIntakeLeft.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 		this.talonIntakeLeft.follow(this.talonIntakeRight);
 		//Need equivalent for solenoids
-		
-	}
-	
-	public BoxManipulator() {
+		this.pcm = pcm;
 		
 	}
 	
 	public void initialize() {
 		talonTip.set(ControlMode.PercentOutput, 0.1);
 	}
+	
 	public void setTipToZero() {
 		talonIntakeRight.set(ControlMode.Current, 0.0);
 	}
 	
-	
-	
 	public void closeManipulator() {
-		this.solenoid1.set(true);
+		pcm.closeManipulator();
 	}
 	
 	public void openManipulator() {
-		this.solenoid1.set(false);
+		pcm.openManipulator();
 	}
 	
 	public void goToPosition(double position) {

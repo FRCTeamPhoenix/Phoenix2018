@@ -21,8 +21,6 @@ public class WestCoastTankDrive extends Subsystem {
 	private PCMHandler m_PCM;
 	public DistancePIDController dpidc;
 	public GyroPIDController pidc;       // GyroPIDController
-	public SingleTalonDistancePIDController leftpidc;
-	public SingleTalonDistancePIDController rightpidc;
 	public boolean debug = false;        // debug messages
 	private boolean gyroControl = false; // gyro Control
 	private boolean isLeftInner = false; // is the left wheel inner
@@ -35,9 +33,7 @@ public class WestCoastTankDrive extends Subsystem {
 		leftB = leftBA;
 		rightB = rightBA;
 		dpidc = new DistancePIDController(0.0008d, 0.0d, 0.0d, 0.0d, leftA, rightA);
-		leftpidc = new SingleTalonDistancePIDController(0.00095d, 0.0d, 0.0d, 0.0d, leftA);
-		rightpidc = new SingleTalonDistancePIDController(0.00095d, 0.0d, 0.0d, 0.0d, rightA);
-
+		
 		leftA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
 		rightA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
 

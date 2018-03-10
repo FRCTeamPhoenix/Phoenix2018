@@ -83,32 +83,32 @@ public class CascadeElevator extends Subsystem {
 
 		try {
 			if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < Constants.UPPER_SENSOR_POSITION) {
-				System.out.println("ABOVE");
+				//System.out.println("ABOVE");
 				speed = Math.max(speed, 0);	
 			} 
 			
 			if (talonCascade.getSelectedSensorPosition(PidLoopIndex) > Constants.LOWER_SENSOR_POSITION) {
-				System.out.println("BELOW");
+				//System.out.println("BELOW");
 				speed = Math.min(speed, 0);
 			}
 		
-			if (lowerLimit.get()) { // switches are NC so true if tripped
-				System.out.println("LOWER LIMIT REACHED");
+			if (!talonCascade.getSensorCollection().isFwdLimitSwitchClosed()) { // switches are NC so true if tripped
+				//System.out.println("LOWER LIMIT REACHED");
 				speed = Math.min(speed, 0);
 				// talonCascade.setSelectedSensorPosition(Constants.LOWER_SENSOR_POSITION,
 				// PidLoopIndex, PidTimeOutMs);
-			} 
+			}
 			
-			if (upperLimit.get()) {
-				System.out.println("UPPER LIMIT REACHED");
+			if (!talonCascade.getSensorCollection().isRevLimitSwitchClosed()) {
+				//System.out.println("UPPER LIMIT REACHED");
 				speed = Math.max(speed, 0);
 				// talonCascade.setSelectedSensorPosition(Constants.UPPER_SENSOR_POSITION,
 				// PidLoopIndex, PidTimeOutMs);
 			}
 			
-			System.out.println("limit: " + lowerLimit.get() + 
-					" limitupper: " + upperLimit.get() + 
-					" position: " + talonCascade.getSelectedSensorPosition(PidLoopIndex));
+			/*System.out.println("limit: " + talonCascade.getSensorCollection().isFwdLimitSwitchClosed() + 
+					" limitupper: " + talonCascade.getSensorCollection().isRevLimitSwitchClosed() + 
+					" position: " + talonCascade.getSelectedSensorPosition(PidLoopIndex));*/
 
 		} catch (Exception e) {
 

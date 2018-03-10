@@ -11,7 +11,6 @@ public class Constants {
 	public static final int TALON_VELOCITY_SLOT_IDX = 0;
 	public static final int TALON_DISTANCE_SLOT_IDX = 1;
 
-
 	public static final double TALON_TICKS_PER_REV = 4096.0;
 	public static final double TALON_SPEED_RPS = TALON_TICKS_PER_REV / 10;
 	//public static final double TALON_RPM_TO_VELOCITY = 1;//TALON_TICKS_PER_REV / 600.0;
@@ -58,8 +57,8 @@ public class Constants {
 
 	//boxmanipulator talon constants
 	public static final int TALON_CASCADE = 6;
-	public static final int TALON_INTAKE_RIGHT = 9;
-	public static final int TALON_INTAKE_LEFT = 10;
+	public static final int TALON_INTAKE_RIGHT = 7;
+	public static final int TALON_INTAKE_LEFT = 5;
 	public static final int TALON_TIP = 8;
 	public static final int TALON_CLIMBER = 0;
 
@@ -71,8 +70,8 @@ public class Constants {
 
 	//solenoid constants
 	public static final int PCM_CAN_ID = 11;
-	public static final int PCM_SLOT_LOWGEAR = 0;
-	public static final int PCM_SLOT_HIGHGEAR = 1;
+	public static final int PCM_SLOT_HIGHGEAR = 0;
+	public static final int PCM_SLOT_LOWGEAR = 1;
 	public static final int PCM_BOX_MANIPULATOR = 2;
 
 	// PID for Gyro Forward

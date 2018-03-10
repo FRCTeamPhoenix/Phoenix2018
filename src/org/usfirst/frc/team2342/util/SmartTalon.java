@@ -1,6 +1,9 @@
 package org.usfirst.frc.team2342.util;
 
+import org.usfirst.frc.team2342.json.Talon;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 /*
@@ -19,6 +22,16 @@ public class SmartTalon {
 	//WPI_TalonSRX compared to TalonSRX for network table interface
 	WPI_TalonSRX talon;
 	
+	public SmartTalon(Talon jsonTalon){
+		this(jsonTalon.deviceNumber, jsonTalon.inverted);
+		this.pidGains.setP(jsonTalon.velocityGains.p);
+		this.pidGains.setI(jsonTalon.velocityGains.i);
+		this.pidGains.setD(jsonTalon.velocityGains.d);
+		this.pidGains.setRr(jsonTalon.velocityGains.rr);
+		this.pidGains.setFf(jsonTalon.velocityGains.ff);
+		this.pidGains.setIzone(jsonTalon.velocityGains.izone);
+	}
+	
 	public SmartTalon(int deviceNumber){
 		this(deviceNumber, false);
 	}
@@ -27,7 +40,11 @@ public class SmartTalon {
 		this(deviceNumber, inverted, ControlMode.PercentOutput);
 	}
 	
-	public SmartTalon(int deviceNumber, boolean inverted, ControlMode mode){
+	public SmartTalon(int deviceNumber,boolean inverted,ControlMode mode){
+		this(deviceNumber, inverted, mode ,FeedbackDevice.CTRE_MagEncoder_Relative);
+	}
+	
+	public SmartTalon(int deviceNumber, boolean inverted, ControlMode mode, FeedbackDevice feedback){
 		//set variables
 		this.deviceNumber = deviceNumber;
 		this.inverted = inverted;
@@ -35,6 +52,8 @@ public class SmartTalon {
 		
 		//create talon
 		this.talon = new WPI_TalonSRX(this.deviceNumber);
+		setFeedBackDevice(feedback);
+		this.talon.configAllowableClosedloopError(0, Constants.TALON_DISTANCE_SLOT_IDX, 0);
 		
 		//set pid gains to default
 		this.pidGains = new PIDGains(0.0,0.0,0.0,0.0,0.0,0);
@@ -43,9 +62,14 @@ public class SmartTalon {
 		zeroEncoder();
 	}
 	
+	//change device type
+	public void setFeedBackDevice(FeedbackDevice feedback){
+		this.talon.configSelectedFeedbackSensor(feedback, 0, 0);
+	}
+	
 	//set encoder position to 0
 	public void zeroEncoder(){
-		this.talon.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 0);
+		this.talon.setSelectedSensorPosition(0, 0, 0);
 	}
 	
 	//load in gains to selected talon

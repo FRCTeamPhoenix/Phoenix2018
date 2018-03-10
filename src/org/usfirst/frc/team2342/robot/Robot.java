@@ -17,16 +17,16 @@ import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 import org.usfirst.frc.team2342.util.FMS;
-import edu.wpi.first.wpilibj.command.Scheduler;
+import org.usfirst.frc.team2342.util.SmartTalon;
 
 import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -38,14 +38,14 @@ public class Robot extends IterativeRobot {
 
 	Joystick gamepad;
 	PCMHandler PCM;
-	WPI_TalonSRX talonFR;
-	WPI_TalonSRX talonFL;
-	WPI_TalonSRX talonBR;
-	WPI_TalonSRX talonBL;
-	WPI_TalonSRX talonCascade;
-	WPI_TalonSRX talonIntakeRight;
-	WPI_TalonSRX talonIntakeLeft;
-	WPI_TalonSRX talonTip;
+	SmartTalon talonFR;
+	SmartTalon talonFL;
+	SmartTalon talonBR;
+	SmartTalon talonBL;
+	SmartTalon talonCascade;
+	SmartTalon talonIntakeRight;
+	SmartTalon talonIntakeLeft;
+	SmartTalon talonTip;
 	//Solenoid solenoidLowGear = new Solenoid(Constants.PCM_CAN_ID ,Constants.PCM_SLOT_LOWGEAR);
 	//Solenoid solenoidHighGear = new Solenoid(Constants.PCM_CAN_ID ,Constants.PCM_SLOT_HIGHGEAR);
 	Solenoid solenoid1;
@@ -61,14 +61,14 @@ public class Robot extends IterativeRobot {
 	public Robot() {
 		gamepad = new Joystick(0);
 		PCM = new PCMHandler(11);
-		talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
-		talonFL = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
-		talonBR = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
-		talonBL = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
-		talonCascade = new WPI_TalonSRX(Constants.TALON_CASCADE);
-		talonIntakeRight = new WPI_TalonSRX(Constants.TALON_INTAKE_RIGHT);
-		talonIntakeLeft = new WPI_TalonSRX(Constants.TALON_INTAKE_LEFT);
-		talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
+		talonFR = new SmartTalon(Constants.RIGHT_MASTER_TALON_ID);
+		talonFL = new SmartTalon(Constants.LEFT_MASTER_TALON_ID);
+		talonBR = new SmartTalon(Constants.RIGHT_SLAVE_TALON_ID);
+		talonBL = new SmartTalon(Constants.LEFT_SLAVE_TALON_ID);
+		talonCascade = new SmartTalon(Constants.TALON_CASCADE);
+		talonIntakeRight = new SmartTalon(Constants.TALON_INTAKE_RIGHT);
+		talonIntakeLeft = new SmartTalon(Constants.TALON_INTAKE_LEFT);
+		talonTip = new SmartTalon(Constants.TALON_TIP);
 		//Solenoid solenoidLowGear = new Solenoid(Constants.PCM_CAN_ID ,Constants.PCM_SLOT_LOWGEAR);
 		//Solenoid solenoidHighGear = new Solenoid(Constants.PCM_CAN_ID ,Constants.PCM_SLOT_HIGHGEAR);
 		solenoid1 = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_BOX_MANIPULATOR);
@@ -207,8 +207,8 @@ public class Robot extends IterativeRobot {
 		}
 
 		// PCM.turnOn();
-		// WPI_TalonSRX talon1 = new WPI_TalonSRX(0);
-		// WPI_TalonSRX talon2 = new WPI_TalonSRX(1);
+		// SmartTalon talon1 = new SmartTalon(0);
+		// SmartTalon talon2 = new oO(1);
 		// boxManipulator = new BoxManipulator(talon1, talon2, PCM);
 		// cascadeElevator = new CascadeElevator(talon1, talon2);
 

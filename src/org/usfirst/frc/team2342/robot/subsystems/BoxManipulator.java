@@ -1,8 +1,9 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
+import org.usfirst.frc.team2342.util.SmartTalon;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
@@ -10,9 +11,9 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class BoxManipulator extends Subsystem {
-	public WPI_TalonSRX talonIntakeRight;
-	public WPI_TalonSRX talonIntakeLeft;
-	private WPI_TalonSRX talonTip;
+	public SmartTalon talonIntakeRight;
+	public SmartTalon talonIntakeLeft;
+	private SmartTalon talonTip;
 	private Solenoid solenoid1;
 	Timer timer = new Timer();
 	
@@ -25,7 +26,7 @@ public class BoxManipulator extends Subsystem {
 	private final boolean InvertMotor = false;
 	
 	
-	public BoxManipulator(WPI_TalonSRX talonIntakeRight, WPI_TalonSRX talonIntakeLeft, WPI_TalonSRX talonTip, Solenoid solenoid1) {
+	public BoxManipulator(SmartTalon talonIntakeRight, SmartTalon talonIntakeLeft, SmartTalon talonTip, Solenoid solenoid1) {
 		this.talonIntakeRight = talonIntakeRight;
 		this.talonIntakeLeft = talonIntakeLeft;
 		this.talonTip = talonTip;

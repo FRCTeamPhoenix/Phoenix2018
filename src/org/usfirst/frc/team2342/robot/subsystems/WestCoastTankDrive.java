@@ -7,17 +7,17 @@ import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.robot.PCMHandler;
 import org.usfirst.frc.team2342.robot.TalonNWT;
 import org.usfirst.frc.team2342.util.Constants;
+import org.usfirst.frc.team2342.util.SmartTalon;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WestCoastTankDrive extends Subsystem {
 
-	private WPI_TalonSRX leftA, rightA, leftB, rightB;
+	private SmartTalon leftA, rightA, leftB, rightB;
 	private PCMHandler m_PCM;
 	public DistancePIDController dpidc;
 	public GyroPIDController pidc;       // GyroPIDController
@@ -27,7 +27,7 @@ public class WestCoastTankDrive extends Subsystem {
 	private boolean gyroControl = false; // gyro Control
 	private boolean isLeftInner = false; // is the left wheel inner
 
-	public WestCoastTankDrive(PCMHandler PCM, WPI_TalonSRX leftFR, WPI_TalonSRX rightFR, WPI_TalonSRX leftBA, WPI_TalonSRX rightBA) {
+	public WestCoastTankDrive(PCMHandler PCM, SmartTalon leftFR, SmartTalon rightFR, SmartTalon leftBA, SmartTalon rightBA) {
 		//Json config = JsonHelpe.getConfig();
 		m_PCM = PCM;
 		leftA = leftFR;
@@ -299,11 +299,11 @@ public class WestCoastTankDrive extends Subsystem {
 		this.pidc.reset();
 	}
 
-	private static void zeroEncoders(WPI_TalonSRX talon) {
+	private static void zeroEncoders(SmartTalon talon) {
 		talon.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 0);
 	}
 
-	private void loadGains(WPI_TalonSRX talon, int slotIdx, PIDGains talonPID) {
+	private void loadGains(SmartTalon talon, int slotIdx, PIDGains talonPID) {
 		talon.config_kP(slotIdx, talonPID.p, 0);
 		talon.config_kI(slotIdx, talonPID.i, 0);
 		talon.config_kD(slotIdx, talonPID.d, 0);

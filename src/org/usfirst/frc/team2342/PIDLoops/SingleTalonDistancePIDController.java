@@ -1,6 +1,6 @@
 package org.usfirst.frc.team2342.PIDLoops;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import org.usfirst.frc.team2342.util.SmartTalon;
 
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
 public class SingleTalonDistancePIDController implements PIDOutput, PIDSource {
-	private WPI_TalonSRX talon;
+	private SmartTalon talon;
 	private double Kp = 0.0d;
 	private double Ki = 0.0d;
 	private double Kd = 0.0d;
@@ -17,7 +17,7 @@ public class SingleTalonDistancePIDController implements PIDOutput, PIDSource {
 	private PIDSourceType type = PIDSourceType.kDisplacement;
 	private double correction = 0.0d;
 	
-	public SingleTalonDistancePIDController(double p, double i, double d, double ff, WPI_TalonSRX talon){
+	public SingleTalonDistancePIDController(double p, double i, double d, double ff, SmartTalon talon){
 		this.talon= talon;
 		this.Kp = p;
 		this.Ki = i;

@@ -9,7 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 /*
  * Generic smart talon class for use with devices
  */
-public class SmartTalon {
+public class SmartTalon extends WPI_TalonSRX {
 
 	//basic talon information
 	private int deviceNumber;
@@ -20,7 +20,7 @@ public class SmartTalon {
 	private double currentModeValue;
 	
 	//WPI_TalonSRX compared to TalonSRX for network table interface
-	WPI_TalonSRX talon;
+	SmartTalon talon;
 	
 	public SmartTalon(Talon jsonTalon){
 		this(jsonTalon.deviceNumber, jsonTalon.inverted);
@@ -45,13 +45,14 @@ public class SmartTalon {
 	}
 	
 	public SmartTalon(int deviceNumber, boolean inverted, ControlMode mode, FeedbackDevice feedback){
+		super(deviceNumber);
 		//set variables
 		this.deviceNumber = deviceNumber;
 		this.inverted = inverted;
 		this.mode = mode;
 		
 		//create talon
-		this.talon = new WPI_TalonSRX(this.deviceNumber);
+		this.talon = new SmartTalon(this.deviceNumber);
 		setFeedBackDevice(feedback);
 		this.talon.configAllowableClosedloopError(0, Constants.TALON_DISTANCE_SLOT_IDX, 0);
 		

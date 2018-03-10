@@ -63,6 +63,54 @@
       },
       "distanceGains": null,
       "deviceNumber": 4
+    },
+    {
+      "inverted": false,
+      "maxForwardSpeed": 0.0,
+      "maxReverseSpeed": 0.0,
+      "mode": 0,
+      "velocityGains": {
+        "p": 0.0,
+        "i": 0.0,
+        "d": 0.0,
+        "ff": 0.0,
+        "rr": 0.0,
+        "izone": 0
+      },
+      "distanceGains": null,
+      "deviceNumber": 5
+    },
+    {
+      "inverted": false,
+      "maxForwardSpeed": 0.0,
+      "maxReverseSpeed": 0.0,
+      "mode": 0,
+      "velocityGains": {
+        "p": 0.0,
+        "i": 0.0,
+        "d": 0.0,
+        "ff": 0.0,
+        "rr": 0.0,
+        "izone": 0
+      },
+      "distanceGains": null,
+      "deviceNumber": 6
+    },
+    {
+      "inverted": false,
+      "maxForwardSpeed": 0.0,
+      "maxReverseSpeed": 0.0,
+      "mode": 0,
+      "velocityGains": {
+        "p": 0.0,
+        "i": 0.0,
+        "d": 0.0,
+        "ff": 0.0,
+        "rr": 0.0,
+        "izone": 0
+      },
+      "distanceGains": null,
+      "deviceNumber": 7
     }
   ]
 }

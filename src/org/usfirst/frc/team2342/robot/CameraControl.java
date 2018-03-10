@@ -117,4 +117,5 @@ public void switchTo(int i){
 	cameras[i].start();
 }
 
+<<<<<<< HEAD
 }*/

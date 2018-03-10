@@ -14,12 +14,11 @@ public class Camera{
 		/*camera = CameraServer.getInstance().startAutomaticCapture(cameraName, cameraIndex);
 	    camera.setResolution(resolutionX, resolutionY);
 	    camera.setFPS(60);*/
-		
-		camera = server.startAutomaticCapture();
+		camera = server.startAutomaticCapture(cameraIndex);
+
 		camera.setResolution(resolutionX, resolutionY);
 		camera.setFPS(fps);
 		camera.setExposureAuto();
-		
 		
 	    //cvSink = CameraServer.getInstance().getVideo(camera);
 	}

@@ -15,7 +15,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSink;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -90,6 +89,7 @@ public class Robot extends IterativeRobot {
 		if(!cascadeElevator.lowerLimit.get())
 			cascadeElevator.zeroSensors();
 		
+		//Start up cameras
 		@SuppressWarnings("unused")
 		CameraControl cameras = new CameraControl(640, 480, 30);
 	}
@@ -196,7 +196,7 @@ public class Robot extends IterativeRobot {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
+		
 	}
 
 	public void disabledInit() {
@@ -282,6 +282,29 @@ public class Robot extends IterativeRobot {
 
 	public void autonomousPeriodic(){
 		//this.updatePID();
+		/*westCoast.arcLoop(false);
+		//Scheduler.getInstance().run();
+		PCM.compressorRegulate();*/
+		
+		
+		this.updatePID();
+		
+		
+		/*try {
+			this.updatePID();
+			double vel = -300 * speed;
+			this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
+			westCoast.setVelocity(vel, vel);
+			//westCoast.updateGyroPID();
+			//Scheduler.getInstance().run();
+			//westCoast.updateGyroPID();
+			//TalonNWT.updateGyroPID(westCoast.pidc);
+			Thread.sleep(10);
+		}
+		catch (Exception e) {
+
+		}*/
+
 		Scheduler.getInstance().run();
 		SmartDashboard.putString("DB/String 0", "Gyro: " + westCoast.pidc.getCurAngle());
 		SmartDashboard.putString("DB/String 1", "Distance avg: " + westCoast.dpidc.getPositionAverage());
@@ -293,6 +316,7 @@ public class Robot extends IterativeRobot {
 		} catch (InterruptedException e1) {
 			//e1.printStackTrace();
 		}
+		
 	}
 
 	@Override

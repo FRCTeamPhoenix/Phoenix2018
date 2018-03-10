@@ -60,7 +60,7 @@ public class Constants {
 	public static final int TALON_INTAKE_RIGHT = 7;
 	public static final int TALON_INTAKE_LEFT = 5;
 	public static final int TALON_TIP = 8;
-	public static final int TALON_CLIMBER = 0;
+	public static final int TALON_CLIMBER = 10;
 
 	//positions of important cascade heights
 	public static final int CASCADE_BASE = 0;

@@ -335,9 +335,7 @@ public class Robot extends IterativeRobot {
 		
 		Scheduler.getInstance().run();
 		
-		try {	
-			Thread.sleep(25);
-		}
+		try { Thread.sleep(25); }
 		catch (Exception e) { }
 	}
 

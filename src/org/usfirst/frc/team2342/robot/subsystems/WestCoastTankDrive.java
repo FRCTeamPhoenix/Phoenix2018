@@ -141,14 +141,12 @@ public class WestCoastTankDrive extends Subsystem {
 
 	public void goDistance(double distanceInFeet){
 		double distance = distanceInFeet/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
-		dpidc.setGoal(distance);
-		if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
-			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
-		}
+		dpidc.setGoal(distance);		
+		
 		double vel = Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection();
 		if (!this.gyroControl) {
-			leftA.set(ControlMode.Velocity,  vel);
-			rightA.set(ControlMode.Velocity, vel);
+			leftA.setMode(ControlMode.Velocity,  vel);
+			rightA.setMode(ControlMode.Velocity, vel);
 		}
 		else {
 			SmartDashboard.putString("DB/String 2", String.valueOf(vel));
@@ -162,8 +160,8 @@ public class WestCoastTankDrive extends Subsystem {
 		}
 		double vel = Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection();
 		if (!this.gyroControl) {
-			leftA.set(ControlMode.Velocity,  vel);
-			rightA.set(ControlMode.Velocity, vel);
+			leftA.ControlModeLoop(dpidc.getCorrection());
+			rightA.ControlModeLoop(dpidc.getCorrection());
 		}
 		else {
 			SmartDashboard.putString("DB/String 2", String.valueOf(vel));

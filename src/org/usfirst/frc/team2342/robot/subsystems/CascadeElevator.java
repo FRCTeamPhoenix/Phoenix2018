@@ -1,17 +1,17 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
 import org.usfirst.frc.team2342.util.Constants;
+import org.usfirst.frc.team2342.util.SmartTalon;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CascadeElevator extends Subsystem {
-	public WPI_TalonSRX talonCascade;
+	public SmartTalon talonCascade;
 
 	public static final int BASE = 0;
 	public static final int SWITCH = 1;
@@ -26,7 +26,7 @@ public class CascadeElevator extends Subsystem {
 	public DigitalInput lowerLimit;
 	public DigitalInput upperLimit;
 
-	public CascadeElevator(WPI_TalonSRX talonCascade) {
+	public CascadeElevator(SmartTalon talonCascade) {
 		this.talonCascade = talonCascade;
 		this.talonCascade.setInverted(false);
 		talonCascade.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PidLoopIndex, PidTimeOutMs);

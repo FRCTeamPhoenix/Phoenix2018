@@ -20,7 +20,7 @@ public class SmartTalon extends WPI_TalonSRX {
 	private double currentModeValue;
 	
 	//WPI_TalonSRX compared to TalonSRX for network table interface
-	SmartTalon talon;
+
 	
 	public SmartTalon(Talon jsonTalon){
 		this(jsonTalon.deviceNumber, jsonTalon.inverted);

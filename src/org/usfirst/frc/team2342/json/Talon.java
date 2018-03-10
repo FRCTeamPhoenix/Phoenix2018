@@ -9,4 +9,5 @@ public class Talon {
 		public int mode;
 		public PIDGains velocityGains;
 		public PIDGains distanceGains;
+		public int deviceNumber;
 }

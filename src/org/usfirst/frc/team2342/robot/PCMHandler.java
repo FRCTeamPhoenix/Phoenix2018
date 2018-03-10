@@ -1,18 +1,25 @@
 package org.usfirst.frc.team2342.robot;
 
+import org.usfirst.frc.team2342.util.Constants;
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PCMHandler {
 	Compressor compressor; 
-	Solenoid highgearSol = new Solenoid(11,0);
-	Solenoid lowgearSol = new Solenoid(11,1);
+	Solenoid highgearSol;
+	Solenoid lowgearSol; 
+	Solenoid clawSol;
 
 	public PCMHandler(int port) {
 		
 		compressor = new Compressor(port);
 		compressor.setClosedLoopControl(true);
+		
+		highgearSol = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_SLOT_HIGHGEAR);
+		lowgearSol = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_SLOT_LOWGEAR);
+		clawSol = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_BOX_MANIPULATOR);
 	}
 	
 	public void turnOn(){
@@ -43,6 +50,14 @@ public class PCMHandler {
 		} else {
 			compressor.stop();
 		}*/
+	}
+
+	public void openManipulator() {
+		clawSol.set(false);
+	}
+	
+	public void closeManipulator() {
+		clawSol.set(true);
 	}
 	
 }

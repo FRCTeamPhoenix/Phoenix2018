@@ -130,7 +130,7 @@ public class Robot extends IterativeRobot {
 
 	public void teleopPeriodic() {
 		
-		this.updatePID();
+		//this.updatePID();
 		Scheduler.getInstance().run();
 		
 		//Drive with joystick control in velocity mode
@@ -153,25 +153,27 @@ public class Robot extends IterativeRobot {
 		
 		if (Math.abs(XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS)) > Constants.CASCADE_DEADZONE) {
 			double s = XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS);
-			double max = s < 0 ? 600 : 400;
-			System.out.println(s);
+			double max = s < 0 ? 800 : 600;
 			
 			cascadeElevator.setVelocity(s * max);
 		}
 		else if(XBOX.getRawButton(Constants.XBOX_A))
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
-		else if(XBOX.getRawButton(Constants.XBOX_X))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
 		else if(XBOX.getRawButton(Constants.XBOX_B))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
+		else if(XBOX.getRawButton(Constants.XBOX_X))
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, XBOX));
 		else if(XBOX.getRawButton(Constants.XBOX_Y))
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
-		else
+		else if(!cascadeElevator.runningPreset) {
 			cascadeElevator.setVelocity(0);
+			//System.out.println("setting 0 no preset");
+		}
+			
 		
-		if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER))
+		if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) || XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER) || gamepad.getRawButton(7))
 			boxManipulator.closeManipulator();
-		else if(XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER))
+		else
 			boxManipulator.openManipulator();
 		
 		if(Math.abs(XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER)) > 0.1) {

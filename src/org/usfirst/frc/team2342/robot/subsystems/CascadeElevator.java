@@ -25,6 +25,8 @@ public class CascadeElevator extends Subsystem {
 
 	public DigitalInput lowerLimit;
 	public DigitalInput upperLimit;
+	
+	public boolean runningPreset = false;
 
 	public CascadeElevator(WPI_TalonSRX talonCascade) {
 		this.talonCascade = talonCascade;
@@ -50,7 +52,7 @@ public class CascadeElevator extends Subsystem {
 	}
 
 	public void goToPosition(double position) {
-		double speed = -600;
+		double speed = -800;
 
 		if (talonCascade.getSelectedSensorPosition(PidLoopIndex) < position * Constants.INCHES_TO_TICKS_CASCADE) {
 			speed *= -1;
@@ -106,9 +108,9 @@ public class CascadeElevator extends Subsystem {
 				// PidLoopIndex, PidTimeOutMs);
 			}
 			
-			/*System.out.println("limit: " + talonCascade.getSensorCollection().isFwdLimitSwitchClosed() + 
-					" limitupper: " + talonCascade.getSensorCollection().isRevLimitSwitchClosed() + 
-					" position: " + talonCascade.getSelectedSensorPosition(PidLoopIndex));*/
+			/*System.out.println("preset: " + runningPreset + 
+					" position: " + talonCascade.getSelectedSensorPosition(PidLoopIndex) + 
+					" speed: " + speed);*/
 
 		} catch (Exception e) {
 

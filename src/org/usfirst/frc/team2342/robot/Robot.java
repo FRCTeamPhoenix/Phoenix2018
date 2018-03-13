@@ -176,11 +176,11 @@ public class Robot extends IterativeRobot {
 		else
 			boxManipulator.openManipulator();
 		
-		if(Math.abs(XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER)) > 0.1) {
+		if(XBOX.getRawButton(Constants.LOGITECH_LEFTTRIGGER)) {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0.5);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -0.5);
 		}
-		else if(Math.abs(XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER)) > 0.1) {
+		else if(XBOX.getRawButton(Constants.LOGITECH_RIGHTTRIGGER)) {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, -0.5);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0.5);
 		} else {

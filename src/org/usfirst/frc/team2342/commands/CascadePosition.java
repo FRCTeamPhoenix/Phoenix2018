@@ -21,12 +21,12 @@ public class CascadePosition extends Command {
     	this.cascade = cascade;
     	this.position = position;
     	this.gamepad = gamepad;
-    	cascade.runningPreset = true;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
     	cascade.goToPosition(position);
+    	cascade.runningPreset = true;
     }
 
     // Called repeatedly when this Command is scheduled to run

@@ -11,7 +11,6 @@ public class InitBoxManipulator extends Command {
 
 	BoxManipulator boxManipulator;
     public InitBoxManipulator(BoxManipulator boxManipulator) {
-        super();
         requires(boxManipulator);
         this.boxManipulator = boxManipulator;
         // Use requires() here to declare subsystem dependencies

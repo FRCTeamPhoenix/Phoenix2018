@@ -99,7 +99,7 @@ public class Robot extends IterativeRobot {
 			cascadeElevator.zeroSensors();
 		
 		//Start up cameras
-		CameraControl cameras = new CameraControl(640, 480, 30);
+		CameraControl cameras = new CameraControl(640, 480, 15);
 	}
 
 	public void teleopInit() {
@@ -176,11 +176,11 @@ public class Robot extends IterativeRobot {
 		else
 			boxManipulator.openManipulator();
 		
-		if(XBOX.getRawButton(Constants.LOGITECH_LEFTTRIGGER)) {
+		if(XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER) > 0.1) {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0.5);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -0.5);
 		}
-		else if(XBOX.getRawButton(Constants.LOGITECH_RIGHTTRIGGER)) {
+		else if(XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER) > 0.1) {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, -0.5);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0.5);
 		} else {

@@ -11,6 +11,7 @@ import org.usfirst.frc.team2342.automodes.rightswitchright;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveDistance;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
+import org.usfirst.frc.team2342.commands.Turn90;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
@@ -214,7 +215,7 @@ public class Robot extends IterativeRobot {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-    	//calculate auto mode
+    	/*//calculate auto mode
     	switch(FMS.getPosition()){
     	case 1:
     		if(FMS.scale()){
@@ -269,8 +270,8 @@ public class Robot extends IterativeRobot {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
+		}*/
+		Scheduler.getInstance().add(new Turn90(westCoast,"left"));
 	
 		westCoast.debug = false;
 

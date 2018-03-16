@@ -99,7 +99,7 @@ public class Robot extends IterativeRobot {
 			cascadeElevator.zeroSensors();
 		
 		//Start up cameras
-		CameraControl cameras = new CameraControl(640, 480, 30);
+		CameraControl cameras = new CameraControl(640, 480, 15);
 	}
 
 	public void teleopInit() {

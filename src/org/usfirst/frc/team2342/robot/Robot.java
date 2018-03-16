@@ -62,38 +62,10 @@ public class Robot extends IterativeRobot {
 	VideoSink server;
 	JsonHandler json;
 	TalonReader treader;
+	GyroReader greader;
 
 	public Robot() {
-		//		gamepad = new Joystick(0);
-		//		PCM = new PCMHandler(11);
-		//		talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
-		//		talonFL = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
-		//		talonBR = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
-		//		talonBL = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
-		//		talonCascade = new WPI_TalonSRX(Constants.TALON_CASCADE);
-		//		talonIntakeRight = new WPI_TalonSRX(Constants.TALON_INTAKE_RIGHT);
-		//		talonIntakeLeft = new WPI_TalonSRX(Constants.TALON_INTAKE_LEFT);
-		//		talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
-		////		
-		//		westCoast = new WestCoastTankDrive(PCM, talonFL, talonFR, talonBL, talonBR);
-		//		joystickR = new Joystick(2);
-		//		XBOX = new Joystick(1);
-		//		cascadeElevator = new CascadeElevator(talonCascade);
-		//		boxManipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, PCM);
-		//		talonPID = new PIDGains();
-		//camera0 = CameraServer.getInstance().startAutomaticCapture(0);
-		//camera1 = CameraServer.getInstance().startAutomaticCapture(1);
-		//server = CameraServer.getInstance().getServer();
-		//server.setSource(camera0);
-
-		// set TalonPid
-		//		talonPID.p     = Constants.dtKp;
-		//		talonPID.i     = Constants.dtKi;
-		//		talonPID.d     = Constants.dtKd;
-		//		talonPID.ff    = Constants.dtKff;
-		//		talonPID.rr    = Constants.dtKrr;
-		//		talonPID.izone = Constants.dtKizone;
-		//		westCoast.updateTalonPID(0, talonPID);
+		//ROBOT
 	}
 
 	@Override
@@ -118,28 +90,23 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousInit() {
-		json = new JsonHandler("/home/lvuser/config.json");
-		treader = new TalonReader();
+		//json = new JsonHandler("/home/lvuser/file.json");
+		// Object variable = new Object();
 		try {
 			if (json.getFileExisting()) {
-				treader = json.read(treader.getClass());
+				//variable = json.read(variable.getClass());
 			}
 			else {
-				json.write(treader);
+				//json.write(variable);
 			}
 		}
 		catch (Exception e) {
 			//DONOTHING
 		}
-		Talon t = treader.talons.get(0);
-		System.out.println(t.deviceNumber + "   " + t.maxForwardSpeed + "   " + t.maxReverseSpeed + "   " + t.mode);
 	}
 
 	public void autonomousPeriodic(){
 		try {
-			Talon t = treader.talons.get(0);
-			System.out.println(t.deviceNumber + "   " + t.maxForwardSpeed + "   " + t.maxReverseSpeed + "   " + t.mode);
-			//westCoast.setVelocity(-500, -500);
 			Thread.sleep(100);
 		}
 		catch (Exception e) {

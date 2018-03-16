@@ -1,15 +1,6 @@
 package org.usfirst.frc.team2342.robot;
 
-import org.usfirst.frc.team2342.automodes.leftscaleleftside;
-import org.usfirst.frc.team2342.automodes.leftscalerightside;
-import org.usfirst.frc.team2342.automodes.leftswitchleft;
-import org.usfirst.frc.team2342.automodes.middleleftside;
-import org.usfirst.frc.team2342.automodes.middlerightside;
-import org.usfirst.frc.team2342.automodes.rightscaleleft;
-import org.usfirst.frc.team2342.automodes.rightscaleright;
-import org.usfirst.frc.team2342.automodes.rightswitchright;
 import org.usfirst.frc.team2342.commands.CascadePosition;
-import org.usfirst.frc.team2342.commands.DriveDistance;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.commands.Turn90;
 import org.usfirst.frc.team2342.json.PIDGains;

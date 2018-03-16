@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Turn90 extends Command {
 
-	WestCoastTankDrive westCoast;
+	WestCoastTankDrive westCoast;	
 	String direction;
 	long startTime;
     public Turn90(WestCoastTankDrive westCoast,String direction) {
@@ -31,6 +31,7 @@ public class Turn90 extends Command {
     		speed *= -1;
     	startTime = System.currentTimeMillis();
     	westCoast.setVelocity(-speed, speed);
+    	
     }
 
     // Called repeatedly when this Command is scheduled to run

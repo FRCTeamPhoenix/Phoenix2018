@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2342.robot;
 
+import org.usfirst.frc.team2342.automodes.ScaleAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.commands.Turn90;
@@ -262,7 +263,7 @@ public class Robot extends IterativeRobot {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-		Scheduler.getInstance().add(new Turn90(westCoast,"left"));
+		Scheduler.getInstance().add(new ScaleAuto(PCM, westCoast,cascadeElevator, boxManipulator, XBOX));
 	
 		westCoast.debug = false;
 

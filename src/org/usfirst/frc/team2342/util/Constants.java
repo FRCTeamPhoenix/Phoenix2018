@@ -72,18 +72,7 @@ public class Constants {
 	public static final int PCM_CAN_ID = 11;
 	public static final int PCM_SLOT_HIGHGEAR = 0;
 	public static final int PCM_SLOT_LOWGEAR = 1;
-	public static final int PCM_BOX_MANIPULATOR = 2;
-
-	// PID for Gyro Forward
-	public static final double Kp = 0.02d;
-	public static final double Ki = 0.0d;
-	public static final double Kd = 0.0d;
-
-	// PID for Gyro TIP (Turn In Place)
-	public static final double tKp = 0.1d;
-	public static final double tKi = 0.001d;
-	public static final double tKd = 0.0d;
-	
+	public static final int PCM_BOX_MANIPULATOR = 2;	
 	
 	//logitech controller
 	public static final int LOGITECH_LEFTSTICK_XAXIS = 0;
@@ -134,4 +123,14 @@ public class Constants {
 	public static final double dtKrr    = 2.0d;
 	public static final int dtKizone    = 0;
 	public static final double dtKff    = 0.15d;
+	
+	// PID for Gyro Forward
+	public static final double Kp = 0.02d;
+	public static final double Ki = 0.0d;
+	public static final double Kd = 0.0d;
+
+	// PID for Gyro TIP (Turn In Place)
+	public static final double tKp = 0.1d;
+	public static final double tKi = 0.001d;
+	public static final double tKd = 0.0d;
 }

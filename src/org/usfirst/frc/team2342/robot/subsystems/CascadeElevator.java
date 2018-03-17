@@ -108,9 +108,9 @@ public class CascadeElevator extends Subsystem {
 				// PidLoopIndex, PidTimeOutMs);
 			}
 			
-			System.out.println("preset: " + runningPreset + 
+			/*System.out.println("preset: " + runningPreset + 
 					" position: " + talonCascade.getSelectedSensorPosition(PidLoopIndex) + 
-					" speed: " + speed);
+					" speed: " + speed + " llim: " + lowerLimit.get);*/
 
 		} catch (Exception e) {
 

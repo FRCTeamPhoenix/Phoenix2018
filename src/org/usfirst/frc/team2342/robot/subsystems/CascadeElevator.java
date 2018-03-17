@@ -100,7 +100,7 @@ public class CascadeElevator extends Subsystem {
 				 talonCascade.setSelectedSensorPosition(Constants.LOWER_SENSOR_POSITION,
 				 PidLoopIndex, PidTimeOutMs);
 			}
-			
+
 			if (upperLimit.get()) {
 				//System.out.println("UPPER LIMIT REACHED");
 				speed = Math.max(speed, 0);

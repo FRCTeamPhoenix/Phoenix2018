@@ -25,7 +25,7 @@ public class ScaleAuto extends CommandGroup {
 		addSequential(new DriveForward(2,westCoast, 100));
 		addSequential(new SwapGears(pcm, false));
 	
-		addSequential(new Turn90(westCoast,"right"));
+		//addSequential(new Turn90(westCoast,"right"));
 		addSequential(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, joystick));
 		addSequential(new PushBox(boxManipulator, joystick));
 	}

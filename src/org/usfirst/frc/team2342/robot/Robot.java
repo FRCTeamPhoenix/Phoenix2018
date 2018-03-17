@@ -217,7 +217,7 @@ public class Robot extends IterativeRobot {
 			e1.printStackTrace();
 		}
 
-		Scheduler.getInstance().add(new SwitchAuto(westCoast, cascadeElevator, boxManipulator, gamepad));
+		Scheduler.getInstance().add(new SwitchAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
     	//calculate auto mode
     	/*switch(FMS.getPosition()){
 
@@ -277,7 +277,7 @@ public class Robot extends IterativeRobot {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-		Scheduler.getInstance().add(new DriveVoltageTime(tankDrive,2000,0.5));
+		//Scheduler.getInstance().add(new DriveVoltageTime(tankDrive,2000,0.5));
 		westCoast.debug = false;
 
 		this.updatePID();

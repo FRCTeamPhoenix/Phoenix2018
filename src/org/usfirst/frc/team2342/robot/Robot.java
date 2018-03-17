@@ -1,16 +1,8 @@
 package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.automodes.SwitchAuto;
-import org.usfirst.frc.team2342.automodes.leftscaleleftside;
-import org.usfirst.frc.team2342.automodes.leftscalerightside;
-import org.usfirst.frc.team2342.automodes.leftswitchleft;
-import org.usfirst.frc.team2342.automodes.middleleftside;
-import org.usfirst.frc.team2342.automodes.middlerightside;
-import org.usfirst.frc.team2342.automodes.rightscaleleft;
-import org.usfirst.frc.team2342.automodes.rightscaleright;
-import org.usfirst.frc.team2342.automodes.rightswitchright;
 import org.usfirst.frc.team2342.commands.CascadePosition;
-import org.usfirst.frc.team2342.commands.DriveDistance;
+import org.usfirst.frc.team2342.commands.DriveForward;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
@@ -222,9 +214,13 @@ public class Robot extends IterativeRobot {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+
 		Scheduler.getInstance().add(new SwitchAuto(westCoast, cascadeElevator, boxManipulator, gamepad));
     	//calculate auto mode
     	/*switch(FMS.getPosition()){
+
+    	switch(FMS.getPosition()){
+>>>>>>> refs/remotes/origin/turn90
     	case 1:
     		if(FMS.scale()){
     			System.out.println("1;1");
@@ -279,8 +275,9 @@ public class Robot extends IterativeRobot {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-		
-	
+
+		Scheduler.getInstance().add(new DriveForward(2,westCoast,1200));
+
 		westCoast.debug = false;
 
 		this.updatePID();

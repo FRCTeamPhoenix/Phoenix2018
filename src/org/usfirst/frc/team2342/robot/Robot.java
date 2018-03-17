@@ -3,10 +3,11 @@ package org.usfirst.frc.team2342.robot;
 import org.usfirst.frc.team2342.automodes.ScaleAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
-import org.usfirst.frc.team2342.commands.Turn90;
+import org.usfirst.frc.team2342.commands.DriveVoltageTime;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
+import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 import org.usfirst.frc.team2342.util.FMS;
@@ -40,7 +41,8 @@ public class Robot extends IterativeRobot {
 	WPI_TalonSRX talonIntakeRight;
 	WPI_TalonSRX talonIntakeLeft;
 	WPI_TalonSRX talonTip;
-
+	
+	TankDrive tankDrive;
 	WestCoastTankDrive westCoast;
 	Joystick joystickR;
 	Joystick XBOX;
@@ -64,7 +66,7 @@ public class Robot extends IterativeRobot {
 		talonIntakeRight = new WPI_TalonSRX(Constants.TALON_INTAKE_RIGHT);
 		talonIntakeLeft = new WPI_TalonSRX(Constants.TALON_INTAKE_LEFT);
 		talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
-		
+		tankDrive = new TankDrive(PCM,talonFL,talonFR,talonBL,talonBR);
 		westCoast = new WestCoastTankDrive(PCM, talonFL, talonFR, talonBL, talonBR);
 		joystickR = new Joystick(2);
 		XBOX = new Joystick(1);
@@ -263,7 +265,7 @@ public class Robot extends IterativeRobot {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-		Scheduler.getInstance().add(new ScaleAuto(PCM, westCoast,cascadeElevator, boxManipulator, XBOX));
+		Scheduler.getInstance().add(new DriveVoltageTime(tankDrive,2000,0.5));
 	
 		westCoast.debug = false;
 

@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
+// Distance pid controller
 public class DistancePIDController implements PIDOutput, PIDSource {
 	private WPI_TalonSRX left;
 	private WPI_TalonSRX right;

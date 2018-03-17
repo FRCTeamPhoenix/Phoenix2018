@@ -1,50 +1,41 @@
 package org.usfirst.frc.team2342.commands;
 
 import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
+import org.usfirst.frc.team2342.util.Constants;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class DriveVoltageTime extends Command {
+public class DriveDistance2 extends Command {
 
     private TankDrive tankDrive;
-	private double voltage;
-	private int ms;
-	private long startTime;
-	public DriveVoltageTime(TankDrive tankDrive, int ms, double voltage) {
+	private double distance;
+
+	public DriveDistance2(TankDrive tankDrive, double distance) {
+    	requires(tankDrive);
     	this.tankDrive = tankDrive;
-    	this.ms = ms;
+    	this.distance = distance;
     	
-    	if (voltage > 0) {
-    		this.voltage = Math.min(voltage, 1);
-    	} else if (voltage < 0) {
-    		this.voltage = Math.max(voltage, -1);
-    	} else
-    		this.voltage = 0;
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	startTime = System.currentTimeMillis();
-    	tankDrive.setLowGear();
+    	tankDrive.zeroSensors();
+    	tankDrive.setHighGear();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if (System.currentTimeMillis() - startTime > ms - 1) {
-    		tankDrive.setPercentage(voltage / 2, voltage /2);
-    	} else {
-    		tankDrive.setPercentage(voltage, voltage);
-    	}
+    	tankDrive.goDistance(distance);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return System.currentTimeMillis() - startTime > ms;
+        return Math.abs(tankDrive.leftA.getSelectedSensorPosition(0) - distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV) < 100;
     }
 
     // Called once after isFinished returns true

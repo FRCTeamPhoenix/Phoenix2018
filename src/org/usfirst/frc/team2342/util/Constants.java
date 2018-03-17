@@ -110,7 +110,7 @@ public class Constants {
 	public static final int XBOX_LEFTTRIGGER = 2;
 	public static final int XBOX_RIGHTTRIGGER = 3;
 	public static final int XBOX_RIGHTSTICK_XAXIS = 4;
-	public static final int XBOX_RIGHTSTICK_YAXIS = 3;
+	public static final int XBOX_RIGHTSTICK_YAXIS = 5;
 	
 	public static final int XBOX_X = 1;
 	public static final int XBOX_A = 2;

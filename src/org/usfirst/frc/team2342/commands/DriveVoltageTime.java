@@ -36,6 +36,8 @@ public class DriveVoltageTime extends Command {
     protected void execute() {
     	if (System.currentTimeMillis() - startTime > ms - 1) {
     		tankDrive.setPercentage(voltage / 2, voltage /2);
+    	} else {
+    		tankDrive.setPercentage(voltage, voltage);
     	}
     }
 

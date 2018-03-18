@@ -30,16 +30,12 @@ public class DriveVoltageTime extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	startTime = System.currentTimeMillis();
-    	tankDrive.setLowGear();
+    	tankDrive.setHighGear();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if (System.currentTimeMillis() - startTime > ms - 1) {
-    		tankDrive.setPercentage(voltage / 2, voltage /2);
-    	} else {
-    		tankDrive.setPercentage(voltage, voltage);
-    	}
+    	tankDrive.setPercentage(voltage, voltage);
     }
 
     // Make this return true when this Command no longer needs to run execute()

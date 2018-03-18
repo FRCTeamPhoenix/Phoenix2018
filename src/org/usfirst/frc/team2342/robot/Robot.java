@@ -1,9 +1,8 @@
 package org.usfirst.frc.team2342.robot;
 
-import org.usfirst.frc.team2342.automodes.SwitchAuto;
+import org.usfirst.frc.team2342.automodes.ScaleAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
-import org.usfirst.frc.team2342.commands.DriveVoltageTime;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
@@ -54,6 +53,9 @@ public class Robot extends IterativeRobot {
 	UsbCamera camera0;
 	UsbCamera camera1;
 	VideoSink server;
+	
+	boolean intakeLowVoltage = false;
+	boolean pressed8 = false;
 
 	public Robot() {
 		gamepad = new Joystick(0);
@@ -121,6 +123,8 @@ public class Robot extends IterativeRobot {
 		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		talonTip.setSelectedSensorPosition(0, 0, 10);
+		
+		cascadeElevator.lastPosition = 0;
 	}
 
 	public void teleopPeriodic() {
@@ -137,6 +141,13 @@ public class Robot extends IterativeRobot {
 		else
 			westCoast.setNoGear();
 		
+		boolean p = XBOX.getRawButton(8);
+		if(p && !pressed8) {
+			intakeLowVoltage = !intakeLowVoltage;
+			pressed8 = p;
+		} else if(!p && pressed8)
+			pressed8 = p;
+		
 		if(Math.abs(XBOX.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS)) > 0.1) {
 			double speed = XBOX.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS);
 			if(speed < 0)
@@ -148,9 +159,10 @@ public class Robot extends IterativeRobot {
 		
 		if (Math.abs(XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS)) > Constants.CASCADE_DEADZONE) {
 			double s = XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS);
-			double max = s < 0 ? 800 : 600;
+			double max = s < 0 ? 1200 : 600;
 			
 			cascadeElevator.setVelocity(s * max);
+			cascadeElevator.lastPosition = cascadeElevator.talonCascade.getSelectedSensorPosition(0);
 		}
 		else if(XBOX.getRawButton(Constants.XBOX_A))
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
@@ -161,8 +173,11 @@ public class Robot extends IterativeRobot {
 		else if(XBOX.getRawButton(Constants.XBOX_Y))
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
 		else if(!cascadeElevator.runningPreset) {
-			cascadeElevator.setVelocity(0);
-			//System.out.println("setting 0 no preset");
+			if(Math.abs(cascadeElevator.talonCascade.getSelectedSensorPosition(0)) > 100 && !cascadeElevator.lowerLimit.get()) {
+				cascadeElevator.talonCascade.selectProfileSlot(1, 0);
+				cascadeElevator.talonCascade.set(ControlMode.Position, cascadeElevator.lastPosition);
+			}
+				//System.out.println("setting 0 no preset");
 		}
 			
 		
@@ -173,7 +188,7 @@ public class Robot extends IterativeRobot {
 		
 		double triggerL = XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER);
 		double triggerR = XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER);
-		
+	
 		if(triggerL > 0.9) {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, triggerL * triggerL);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -triggerL * triggerL);
@@ -185,10 +200,15 @@ public class Robot extends IterativeRobot {
 		else if(triggerR > 0.1) {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, -triggerR * triggerR / 2);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, triggerR * triggerR / 2);
-		} else {
+		}
+		else if(intakeLowVoltage) {
+			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, -0.1);
+			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0.1);
+		}
+		else {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0);
-		}
+		} 
 	}
 
 	public void disabledInit() {
@@ -216,8 +236,8 @@ public class Robot extends IterativeRobot {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
-		Scheduler.getInstance().add(new SwitchAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		
+		//Scheduler.getInstance().add(new ScaleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
     	//calculate auto mode
     	/*switch(FMS.getPosition()){
 

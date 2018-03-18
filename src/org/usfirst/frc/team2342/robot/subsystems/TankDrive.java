@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class TankDrive extends Subsystem{
 
 	public WPI_TalonSRX leftA;
-	private WPI_TalonSRX rightA;
+	public WPI_TalonSRX rightA;
 	private WPI_TalonSRX leftB;
 	private WPI_TalonSRX rightB;
 	private PCMHandler PCM;
@@ -94,14 +94,14 @@ public class TankDrive extends Subsystem{
 		rightA.set(ControlMode.PercentOutput,-right);
 	}
 	
-	public void setHighGear() {
+	public void setLowGear() {
 		PCM.setLowGear(false);
 		PCM.setHighGear(true);
 		PCM.compressorRegulate();
 		leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, PidLoopIndexHigh);
 	}
 
-	public void setLowGear() {
+	public void setHighGear() {
 		PCM.setHighGear(false);
 		PCM.setLowGear(true);
 		PCM.compressorRegulate();

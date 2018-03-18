@@ -12,12 +12,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Turn90 extends Command {
 
 	TankDrive westCoast;	
-	String direction;
+	boolean direction;
 	long startTime;
-    public Turn90(TankDrive westCoast,String direction) {
+    public Turn90(TankDrive westCoast,boolean direction) {
     	this.westCoast = westCoast;
-    	if (!direction.equalsIgnoreCase("left") && !direction.equalsIgnoreCase("right"))
-    		throw new IllegalArgumentException("invalid direction");
+    	
     	this.direction = direction;
     	
         // Use requires() here to declare subsystem dependencies
@@ -26,16 +25,21 @@ public class Turn90 extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	double speed = 0.2;
-    	if (direction.equalsIgnoreCase("left"))
-    		speed *= -1;
+    	
+    	
+    	westCoast.setLowGear();
     	startTime = System.currentTimeMillis();
-    	westCoast.setPercentage(-speed, speed);
+    	
+    	
     	
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	double speed = 0.4;
+    	if (direction)
+    		speed *= -1;
+    	westCoast.setPercentage(speed, -speed);
     }
 
     // Make this return true when this Command no longer needs to run execute()

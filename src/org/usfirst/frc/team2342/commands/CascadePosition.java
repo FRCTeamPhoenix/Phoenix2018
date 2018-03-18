@@ -39,13 +39,14 @@ public class CascadePosition extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Math.abs(gamepad.getRawAxis(3)) > Constants.CASCADE_DEADZONE || Math.abs(cascade.talonCascade.getSelectedSensorPosition(0) - position * Constants.INCHES_TO_TICKS_CASCADE) < 500;
+        return Math.abs(gamepad.getRawAxis(3)) > Constants.CASCADE_DEADZONE || Math.abs(cascade.talonCascade.getSelectedSensorPosition(0) + position) < 200;
     }
 
     // Called once after isFinished returns true
     protected void end() {
     	cascade.stop();
     	cascade.runningPreset = false;
+    	cascade.lastPosition = -position;
     }
 
     // Called when another command which requires one or more of the same

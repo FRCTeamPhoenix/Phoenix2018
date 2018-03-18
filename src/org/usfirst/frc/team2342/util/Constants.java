@@ -64,9 +64,9 @@ public class Constants {
 
 	//positions of important cascade heights
 	public static final int CASCADE_BASE = 0;
-	public static final int CASCADE_SWITCH = 24;
-	public static final int CASCADE_LOWER_SCALE = 72;
-	public static final int CASCADE_UPPER_SCALE = 72;
+	public static final int CASCADE_SWITCH = 9000;
+	public static final int CASCADE_LOWER_SCALE = 22000;
+	public static final int CASCADE_UPPER_SCALE = 25500;
 
 	//solenoid constants
 	public static final int PCM_CAN_ID = 11;
@@ -112,9 +112,9 @@ public class Constants {
 	public static final int XBOX_RIGHTSTICK_XAXIS = 4;
 	public static final int XBOX_RIGHTSTICK_YAXIS = 5;
 	
-	public static final int XBOX_X = 1;
-	public static final int XBOX_A = 2;
-	public static final int XBOX_B = 3;
+	public static final int XBOX_X = 3;
+	public static final int XBOX_A = 1;
+	public static final int XBOX_B = 2;
 	public static final int XBOX_Y = 4;
 	
 	public static final int XBOX_LEFTBUMPER = 5;

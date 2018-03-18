@@ -35,7 +35,7 @@ public class DriveDistance2 extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Math.abs(tankDrive.leftA.getSelectedSensorPosition(0) - distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV) < 100;
+        return Math.abs((tankDrive.leftA.getSelectedSensorPosition(0) + tankDrive.rightA.getSelectedSensorPosition(0))/2 - distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV) < 100;
     }
 
     // Called once after isFinished returns true

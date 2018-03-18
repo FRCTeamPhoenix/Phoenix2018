@@ -26,8 +26,8 @@ public class DriveGamepad extends Command {
 		else
 			leftVelocity = 0.0;
 
-		if(Math.abs(gamepad.getRawAxis(3)) > Constants.JOYSTICK_DEADZONE)
-			rightVelocity = gamepad.getRawAxis(3);
+		if(Math.abs(gamepad.getRawAxis(5)) > Constants.JOYSTICK_DEADZONE)
+			rightVelocity = gamepad.getRawAxis(5);
 		else
 			rightVelocity = 0.0;
 	}
@@ -41,7 +41,7 @@ public class DriveGamepad extends Command {
 		double leftVelocity = 0.0;
 		double rightVelocity = 0.0;
 		double axis1 = m_gamepad.getRawAxis(1);
-		double axis3 = m_gamepad.getRawAxis(3);
+		double axis3 = m_gamepad.getRawAxis(5);
 
 		//		System.out.println(axis1);
 		if(Math.abs(axis1) > Constants.JOYSTICK_DEADZONE)

@@ -7,13 +7,12 @@ boolean cascade0;
 boolean cascadeSwitch;
 boolean cascadeLowScale;
 boolean cascadeHighScale;
-int tipUp;
-int tipDown;
+int tipPOV;
 boolean shootSwitch;
 boolean openManip1;
 boolean openManip2;
-boolean rollersOut;
-boolean rollersIn;
+double rollersOut;
+double rollersIn;
 double cascadeMove;
 double manipTip;
 int preset;
@@ -27,13 +26,12 @@ Joystick conType;
 			cascadeSwitch = conType.getRawButton(Constants.XBOX_B);
 			cascadeLowScale = conType.getRawButton(Constants.XBOX_X);
 			cascadeHighScale = conType.getRawButton(Constants.XBOX_Y);
-			//tipUp = conType.getPOV();
-			//tipDown = conType.getPOV();
+			//tipPOV = conType.getPOV(Constants.XBOX_LEFTSTICK_YAXIS);
 			//shootSwitch = conType.getPOV();
 			openManip1 = conType.getRawButton(Constants.XBOX_LEFTBUMPER);
 			openManip2 = conType.getRawButton(Constants.XBOX_RIGHTBUMPER);
-			rollersOut = (conType.getRawAxis(Constants.XBOX_LEFTTRIGGER) > 0.1);
-			rollersIn = (conType.getRawAxis(Constants.XBOX_RIGHTTRIGGER) > 0.1);
+			rollersOut = (conType.getRawAxis(Constants.XBOX_LEFTTRIGGER));
+			rollersIn = (conType.getRawAxis(Constants.XBOX_RIGHTTRIGGER));
 			cascadeMove = conType.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS);
 			manipTip = conType.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS);
 		}
@@ -42,15 +40,28 @@ Joystick conType;
 			cascadeSwitch = conType.getRawButton(Constants.LOGITECH_B);
 			cascadeLowScale = conType.getRawButton(Constants.LOGITECH_X);
 			cascadeHighScale = conType.getRawButton(Constants.LOGITECH_Y);
-			//tipUp = conType.getPOV();
-			//tipDown = conType.getPOV();
+			//tipPOV = conType.getPOV(Constants.LOGITECH_LEFTSTICK_YAXIS);
 			//shootSwitch = conType.getRawButton(Constants.LOGITECH_X);
 			openManip1 = conType.getRawButton(Constants.LOGITECH_X);
 			openManip2 = conType.getRawButton(Constants.LOGITECH_X);
-			rollersOut = conType.getRawButton(Constants.LOGITECH_X);
-			rollersIn = conType.getRawButton(Constants.LOGITECH_X);
+			rollersOut = conType.getRawButton(Constants.LOGITECH_LEFTTRIGGER) ? 1:0;
+			rollersIn = conType.getRawButton(Constants.LOGITECH_RIGHTTRIGGER) ? 1:0;
 			cascadeMove = conType.getRawAxis(Constants.LOGITECH_X);
 			manipTip = conType.getRawAxis(Constants.LOGITECH_X);
+		}
+		if (preset == 3) {
+			cascade0 = conType.getRawButton(Constants.XBOX_A);
+			cascadeSwitch = conType.getRawButton(Constants.XBOX_B);
+			cascadeLowScale = conType.getRawButton(Constants.XBOX_X);
+			cascadeHighScale = conType.getRawButton(Constants.XBOX_Y);
+			//tipPOV = conType.getPOV(Constants.XBOX_LEFTSTICK_YAXIS);
+			//shootSwitch = conType.getPOV();
+			openManip1 = conType.getRawButton(Constants.XBOX_LEFTBUMPER);
+			openManip2 = conType.getRawButton(Constants.XBOX_RIGHTBUMPER);
+			//rollersOut = (conType.getRawAxis(Constants.XBOX_LEFTTRIGGER) > 0.1);
+			//rollersIn = (conType.getRawAxis(Constants.XBOX_RIGHTTRIGGER) > 0.1);
+			cascadeMove = conType.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS);
+			manipTip = conType.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS);
 		}
 	}
 
@@ -86,20 +97,12 @@ Joystick conType;
 		this.cascadeHighScale = cascadeHighScale;
 	}
 
-	public int getTipUp() {
-		return tipUp;
+	public int getTipPOV() {
+		return tipPOV;
 	}
 
-	public void setTipUp(int tipUp) {
-		this.tipUp = tipUp;
-	}
-
-	public int getTipDown() {
-		return tipDown;
-	}
-
-	public void setTipDown(int tipDown) {
-		this.tipDown = tipDown;
+	public void setTipPOV(int tipPOV) {
+		this.tipPOV = tipPOV;
 	}
 
 	public boolean isShootSwitch() {
@@ -126,25 +129,25 @@ Joystick conType;
 		this.openManip2 = openManip2;
 	}
 
-	public boolean isRollersOut() {
+	public double getRollersOut() {
 		if (preset == 1) {
-			return conType.getRawAxis(Constants.XBOX_LEFTTRIGGER) > 0.1;
+			return conType.getRawAxis(Constants.XBOX_LEFTTRIGGER);
 		}
 		return rollersOut;
 	}
 
-	public void setRollersOut(boolean rollersOut) {
+	public void setRollersOut(double rollersOut) {
 		this.rollersOut = rollersOut;
 	}
 
-	public boolean isRollersIn() {
+	public double getRollersIn() {
 		if (preset == 1) {
-			return conType.getRawAxis(Constants.XBOX_RIGHTTRIGGER) > 0.1;
+			return conType.getRawAxis(Constants.XBOX_RIGHTTRIGGER);
 		}
 		return rollersIn;
 	}
 
-	public void setRollersIn(boolean rollersIn) {
+	public void setRollersIn(double rollersIn) {
 		this.rollersIn = rollersIn;
 	}
 
@@ -162,5 +165,50 @@ Joystick conType;
 
 	public void setManipTip(double manipTip) {
 		this.manipTip = manipTip;
+	}
+	
+	public void update() {
+		if (preset == 1) {
+			cascade0 = conType.getRawButton(Constants.XBOX_A);
+			cascadeSwitch = conType.getRawButton(Constants.XBOX_B);
+			cascadeLowScale = conType.getRawButton(Constants.XBOX_X);
+			cascadeHighScale = conType.getRawButton(Constants.XBOX_Y);
+			tipPOV = conType.getPOV(Constants.XBOX_LEFTSTICK_YAXIS);
+			//shootSwitch = conType.getPOV();
+			openManip1 = conType.getRawButton(Constants.XBOX_LEFTBUMPER);
+			openManip2 = conType.getRawButton(Constants.XBOX_RIGHTBUMPER);
+			rollersOut = (conType.getRawAxis(Constants.XBOX_LEFTTRIGGER));
+			rollersIn = (conType.getRawAxis(Constants.XBOX_RIGHTTRIGGER));
+			cascadeMove = conType.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS);
+			manipTip = conType.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS);
+		}
+		if (preset == 2) {
+			cascade0 = conType.getRawButton(Constants.LOGITECH_A);
+			cascadeSwitch = conType.getRawButton(Constants.LOGITECH_B);
+			cascadeLowScale = conType.getRawButton(Constants.LOGITECH_X);
+			cascadeHighScale = conType.getRawButton(Constants.LOGITECH_Y);
+			tipPOV = conType.getPOV(Constants.LOGITECH_LEFTSTICK_YAXIS);
+			//shootSwitch = conType.getRawButton(Constants.LOGITECH_X);
+			openManip1 = conType.getRawButton(Constants.LOGITECH_X);
+			openManip2 = conType.getRawButton(Constants.LOGITECH_X);
+			rollersOut = conType.getRawButton(Constants.LOGITECH_LEFTTRIGGER) ? 1:0;
+			rollersIn = conType.getRawButton(Constants.LOGITECH_RIGHTTRIGGER) ? 1:0;
+			cascadeMove = conType.getRawAxis(Constants.LOGITECH_X);
+			manipTip = conType.getRawAxis(Constants.LOGITECH_X);
+		}
+		if (preset == 3) {
+			cascade0 = conType.getRawButton(Constants.XBOX_A);
+			cascadeSwitch = conType.getRawButton(Constants.XBOX_B);
+			cascadeLowScale = conType.getRawButton(Constants.XBOX_X);
+			cascadeHighScale = conType.getRawButton(Constants.XBOX_Y);
+			tipPOV = conType.getPOV(Constants.XBOX_LEFTSTICK_YAXIS);
+			//shootSwitch = conType.getPOV();
+			openManip1 = conType.getRawButton(Constants.XBOX_LEFTBUMPER);
+			openManip2 = conType.getRawButton(Constants.XBOX_RIGHTBUMPER);
+			//rollersOut = (conType.getRawAxis(Constants.XBOX_LEFTTRIGGER));
+			//rollersIn = (conType.getRawAxis(Constants.XBOX_RIGHTTRIGGER));
+			cascadeMove = conType.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS);
+			manipTip = conType.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS);
+		}
 	}
 }

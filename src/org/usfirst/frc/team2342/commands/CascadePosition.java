@@ -2,6 +2,7 @@ package org.usfirst.frc.team2342.commands;
 
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.util.Constants;
+import org.usfirst.frc.team2342.util.Controller;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
@@ -13,6 +14,7 @@ public class CascadePosition extends Command {
 	CascadeElevator cascade;
 	private double position;
 	Joystick gamepad;
+	Controller controller;
 	
     public CascadePosition(CascadeElevator cascade, double position, Joystick gamepad) {
         // Use requires() here to declare subsystem dependencies
@@ -39,7 +41,7 @@ public class CascadePosition extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Math.abs(gamepad.getRawAxis(3)) > Constants.CASCADE_DEADZONE || Math.abs(cascade.talonCascade.getSelectedSensorPosition(0) - position * Constants.INCHES_TO_TICKS_CASCADE) < 500;
+        return Math.abs(controller.getManipTip()) > Constants.CASCADE_DEADZONE || Math.abs(cascade.talonCascade.getSelectedSensorPosition(0) - position * Constants.INCHES_TO_TICKS_CASCADE) < 500;
     }
 
     // Called once after isFinished returns true

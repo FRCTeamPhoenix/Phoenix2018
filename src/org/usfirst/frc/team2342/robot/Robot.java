@@ -16,6 +16,7 @@ import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
+import org.usfirst.frc.team2342.util.Controller;
 import org.usfirst.frc.team2342.util.FMS;
 
 import com.ctre.phoenix.ParamEnum;
@@ -59,6 +60,7 @@ public class Robot extends IterativeRobot {
 	UsbCamera camera0;
 	UsbCamera camera1;
 	VideoSink server;
+	Controller controller;
 
 	public Robot() {
 		gamepad = new Joystick(0);
@@ -91,6 +93,8 @@ public class Robot extends IterativeRobot {
 		talonPID.rr    = Constants.dtKrr;
 		talonPID.izone = Constants.dtKizone;
 		westCoast.updateTalonPID(0, talonPID);
+		
+		controller = new Controller(0, XBOX);
 	}
 
 	@Override
@@ -130,6 +134,7 @@ public class Robot extends IterativeRobot {
 
 	public void teleopPeriodic() {
 		
+		controller.update();
 		//this.updatePID();
 		Scheduler.getInstance().run();
 		
@@ -142,28 +147,28 @@ public class Robot extends IterativeRobot {
 		else
 			westCoast.setNoGear();
 		
-		if(Math.abs(XBOX.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS)) > 0.1) {
-			double speed = XBOX.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS);
+		if(Math.abs(controller.getManipTip()) > 0.1) {
+			double speed = controller.getManipTip();
 			if(speed < 0)
 				speed /= 10;
-			talonTip.set(ControlMode.PercentOutput, -XBOX.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS));
+			talonTip.set(ControlMode.PercentOutput, -(controller.getManipTip()));
 		}
 		else
 			talonTip.set(ControlMode.PercentOutput, 0);
 		
-		if (Math.abs(XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS)) > Constants.CASCADE_DEADZONE) {
-			double s = XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS);
+		if (Math.abs(controller.getCascadeMove()) > Constants.CASCADE_DEADZONE) {
+			double s = (controller.getCascadeMove());
 			double max = s < 0 ? 800 : 600;
 			
 			cascadeElevator.setVelocity(s * max);
 		}
-		else if(XBOX.getRawButton(Constants.XBOX_A))
+		else if(controller.isCascade0())
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
-		else if(XBOX.getRawButton(Constants.XBOX_B))
+		else if(controller.isCascadeSwitch())
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
-		else if(XBOX.getRawButton(Constants.XBOX_X))
+		else if(controller.isCascadeLowScale())
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, XBOX));
-		else if(XBOX.getRawButton(Constants.XBOX_Y))
+		else if(controller.isCascadeHighScale())
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
 		else if(!cascadeElevator.runningPreset) {
 			cascadeElevator.setVelocity(0);
@@ -171,16 +176,16 @@ public class Robot extends IterativeRobot {
 		}
 			
 		
-		if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) || XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER) || gamepad.getRawButton(7))
+		if(controller.isOpenManip1() || (controller.isOpenManip2()) || gamepad.getRawButton(7))
 			boxManipulator.closeManipulator();
 		else
 			boxManipulator.openManipulator();
 		
-		if(XBOX.getRawButton(Constants.LOGITECH_LEFTTRIGGER)) {
+		if(controller.getRollersOut() > 0.1) {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0.5);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -0.5);
 		}
-		else if(XBOX.getRawButton(Constants.LOGITECH_RIGHTTRIGGER)) {
+		else if(controller.getRollersIn() > 0.1) {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, -0.5);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0.5);
 		} else {
@@ -292,7 +297,7 @@ public class Robot extends IterativeRobot {
 		System.out.println("TEST MODE INIT");
 		this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
 		
-		talonCascade.set(ControlMode.PercentOutput, XBOX.getRawAxis(3));
+		talonCascade.set(ControlMode.PercentOutput, controller.getRollersIn());
 		westCoast.debug = true;
 		this.updatePID();
 	}

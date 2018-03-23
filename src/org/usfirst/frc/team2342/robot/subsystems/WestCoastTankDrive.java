@@ -12,6 +12,12 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableValue;
+import edu.wpi.first.networktables.TableEntryListener;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -20,27 +26,32 @@ public class WestCoastTankDrive extends Subsystem {
 	private WPI_TalonSRX leftA, rightA, leftB, rightB;
 	private PCMHandler m_PCM;
 	public DistancePIDController dpidc;
-	public GyroPIDController pidc;       // GyroPIDController
-	public boolean debug = false;        // debug messages
+	public GyroPIDController pidc; // GyroPIDController
+	public boolean debug = false; // debug messages
 	private boolean gyroControl = false; // gyro Control
 	private boolean isLeftInner = false; // is the left wheel inner
+	private NetworkTable SmartDashboardNt = NetworkTableInstance.getDefault().getTable("SmartDashboard");
 
-	public WestCoastTankDrive(PCMHandler PCM, WPI_TalonSRX leftFR, WPI_TalonSRX rightFR, WPI_TalonSRX leftBA, WPI_TalonSRX rightBA) {
-		//Json config = JsonHelpe.getConfig();
+	public WestCoastTankDrive(PCMHandler PCM, WPI_TalonSRX leftFR, WPI_TalonSRX rightFR, WPI_TalonSRX leftBA,
+			WPI_TalonSRX rightBA) {
+		// Json config = JsonHelpe.getConfig();
 		m_PCM = PCM;
 		leftA = leftFR;
 		rightA = rightFR;
 		leftB = leftBA;
 		rightB = rightBA;
 		dpidc = new DistancePIDController(0.0008d, 0.0d, 0.0d, 0.0d, leftA, rightA);
-		
-		leftA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
-		rightA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX, 0);
+
+		leftA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX,
+				0);
+		rightA.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.TALON_VELOCITY_SLOT_IDX,
+				0);
 
 		leftA.configAllowableClosedloopError(0, Constants.TALON_DISTANCE_SLOT_IDX, 0);
 		rightA.configAllowableClosedloopError(0, Constants.TALON_DISTANCE_SLOT_IDX, 0);
 
-		// If the talons run indefinitely, the sensors may be reading in the wrong direction,
+		// If the talons run indefinitely, the sensors may be reading in the wrong
+		// direction,
 		// in which case the sensor phase should be inverted.
 		leftA.setSensorPhase(false);
 		rightA.setSensorPhase(false);
@@ -61,7 +72,6 @@ public class WestCoastTankDrive extends Subsystem {
 		rightA.configPeakOutputForward(1.0, 0);
 		rightA.configPeakOutputReverse(-1.0, 0);
 
-
 		leftB.follow(leftA);
 		rightB.follow(rightA);
 
@@ -74,23 +84,62 @@ public class WestCoastTankDrive extends Subsystem {
 		fakeGains.izone = 0;
 
 		// TODO are these the right indices of the talons?
-		/*        PIDGains leftVelocityGains = //config.talons.get(0).velocityGains;
-        PIDGains leftDistanceGains = //config.talons.get(0).distanceGains;
-        PIDGains rightVelocityGains = //config.talons.get(1).velocityGains;
-        PIDGains rightDistanceGains = //config.talons.get(1).distanceGains;
+		/*
+		 * PIDGains leftVelocityGains = //config.talons.get(0).velocityGains; PIDGains
+		 * leftDistanceGains = //config.talons.get(0).distanceGains; PIDGains
+		 * rightVelocityGains = //config.talons.get(1).velocityGains; PIDGains
+		 * rightDistanceGains = //config.talons.get(1).distanceGains;
+		 * 
+		 * 
+		 * WestCoastTankDrive.loadGains(leftA, Constants.TALON_VELOCITY_SLOT_IDX,
+		 * leftVelocityGains); WestCoastTankDrive.loadGains(leftA,
+		 * Constants.TALON_DISTANCE_SLOT_IDX, leftDistanceGains);
+		 * WestCoastTankDrive.loadGains(rightA, Constants.TALON_VELOCITY_SLOT_IDX,
+		 * rightVelocityGains); WestCoastTankDrive.loadGains(rightA,
+		 * Constants.TALON_DISTANCE_SLOT_IDX, rightDistanceGains);
+		 * WestCoastTankDrive.loadGains(leftB, Constants.TALON_VELOCITY_SLOT_IDX,
+		 * leftVelocityGains); WestCoastTankDrive.loadGains(leftB,
+		 * Constants.TALON_DISTANCE_SLOT_IDX, leftDistanceGains);
+		 * WestCoastTankDrive.loadGains(rightB, Constants.TALON_VELOCITY_SLOT_IDX,
+		 * rightVelocityGains); WestCoastTankDrive.loadGains(rightB,
+		 * Constants.TALON_DISTANCE_SLOT_IDX, rightDistanceGains);
+		 */
 
-
-        WestCoastTankDrive.loadGains(leftA, Constants.TALON_VELOCITY_SLOT_IDX, leftVelocityGains);
-        WestCoastTankDrive.loadGains(leftA, Constants.TALON_DISTANCE_SLOT_IDX, leftDistanceGains);
-        WestCoastTankDrive.loadGains(rightA, Constants.TALON_VELOCITY_SLOT_IDX, rightVelocityGains);
-        WestCoastTankDrive.loadGains(rightA, Constants.TALON_DISTANCE_SLOT_IDX, rightDistanceGains);
-        WestCoastTankDrive.loadGains(leftB, Constants.TALON_VELOCITY_SLOT_IDX, leftVelocityGains);
-        WestCoastTankDrive.loadGains(leftB, Constants.TALON_DISTANCE_SLOT_IDX, leftDistanceGains);
-        WestCoastTankDrive.loadGains(rightB, Constants.TALON_VELOCITY_SLOT_IDX, rightVelocityGains);
-        WestCoastTankDrive.loadGains(rightB, Constants.TALON_DISTANCE_SLOT_IDX, rightDistanceGains);*/
-
+		EnableGyroPidUpdating();
 		pidc = new GyroPIDController(Constants.Kp, Constants.Ki, Constants.Kd);
-		zeroSensors(); 
+		zeroSensors();
+	}
+
+	private void EnableGyroPidUpdating() {
+		SmartDashboardNt.addEntryListener("DB/Slider 0", new TableEntryListener() {
+
+			@Override
+			public void valueChanged(NetworkTable table, String key, NetworkTableEntry entry, NetworkTableValue value,
+					int flags) {
+				pidc.setP(value.getDouble());
+
+			}
+		}, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+		SmartDashboardNt.addEntryListener("DB/Slider 1", new TableEntryListener() {
+
+			@Override
+			public void valueChanged(NetworkTable table, String key, NetworkTableEntry entry, NetworkTableValue value,
+					int flags) {
+				pidc.setI(value.getDouble());
+
+			}
+		}, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+
+		SmartDashboardNt.addEntryListener("DB/Slider 2", new TableEntryListener() {
+
+			@Override
+			public void valueChanged(NetworkTable table, String key, NetworkTableEntry entry, NetworkTableValue value,
+					int flags) {
+				pidc.setD(value.getDouble());
+
+			}
+		}, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+
 	}
 
 	public void setOpenLoop(double left, double right) {
@@ -112,14 +161,13 @@ public class WestCoastTankDrive extends Subsystem {
 				SmartDashboard.putString("DB/String 0", String.valueOf(left));
 				SmartDashboard.putString("DB/String 1", String.valueOf(right));
 			}
-		}
-		else {
-			left = left  * (1 - pidc.getCorrection());
+		} else {
+			left = left * (1 - pidc.getCorrection());
 			right = right * (1 + pidc.getCorrection());
-			leftA.set(ControlMode.Velocity,  left);
+			leftA.set(ControlMode.Velocity, left);
 			rightA.set(ControlMode.Velocity, right);
 			if (this.debug) {
-				//printGDebug(left, right);
+				// printGDebug(left, right);
 				SmartDashboard.putString("DB/String 3", String.valueOf(left));
 				SmartDashboard.putString("DB/String 4", String.valueOf(right));
 			}
@@ -135,33 +183,31 @@ public class WestCoastTankDrive extends Subsystem {
 		}
 	}
 
-	public void goDistance(double distanceInFeet){
-		double distance = distanceInFeet/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
+	public void goDistance(double distanceInFeet) {
+		double distance = distanceInFeet / Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
 		dpidc.setGoal(distance);
 		if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
 			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
 		}
 		double vel = Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection();
 		if (!this.gyroControl) {
-			leftA.set(ControlMode.Velocity,  vel);
+			leftA.set(ControlMode.Velocity, vel);
 			rightA.set(ControlMode.Velocity, vel);
-		}
-		else {
+		} else {
 			SmartDashboard.putString("DB/String 2", String.valueOf(vel));
 			this.setVelocity(vel, vel);
 		}
 	}
 
-	public void distanceLoop(){
+	public void distanceLoop() {
 		if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
 			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
 		}
 		double vel = Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection();
 		if (!this.gyroControl) {
-			leftA.set(ControlMode.Velocity,  vel);
+			leftA.set(ControlMode.Velocity, vel);
 			rightA.set(ControlMode.Velocity, vel);
-		}
-		else {
+		} else {
 			SmartDashboard.putString("DB/String 2", String.valueOf(vel));
 			this.setVelocity(vel, vel);
 		}
@@ -169,9 +215,9 @@ public class WestCoastTankDrive extends Subsystem {
 
 	// Turn setup for rotating the robot
 	public void turnSet(double angle) {
-		//		this.pidc.setP(Constants.tKp);
-		//		this.pidc.setI(Constants.tKi);
-		//		this.pidc.setD(Constants.tKd);
+		// this.pidc.setP(Constants.tKp);
+		// this.pidc.setI(Constants.tKi);
+		// this.pidc.setD(Constants.tKd);
 		this.updateGyroPID();
 		this.pidc.updateAngle(angle);
 	}
@@ -184,39 +230,41 @@ public class WestCoastTankDrive extends Subsystem {
 
 		if (this.gyroControl == true) {
 			double lspeed = -velocity * pidc.getCorrection();
-			double rspeed =  velocity * pidc.getCorrection();
+			double rspeed = velocity * pidc.getCorrection();
 			if (this.debug) {
 				SmartDashboard.putString("DB/String 0", String.valueOf(this.pidc.getCurAngle()));
 				SmartDashboard.putString("DB/String 2", String.valueOf(lspeed));
 				SmartDashboard.putString("DB/String 3", String.valueOf(rspeed));
 				printGDebug(lspeed, rspeed);
 			}
-			leftA.set(ControlMode.Velocity,  lspeed);
+			leftA.set(ControlMode.Velocity, lspeed);
 			rightA.set(ControlMode.Velocity, rspeed);
 		}
 	}
 
-	public boolean isDistanceFinished(){
-		return (dpidc.pidGet() > dpidc.getGoal()*1.02 && dpidc.pidGet() < dpidc.getGoal()*0.98);
+	public boolean isDistanceFinished() {
+		return (dpidc.pidGet() > dpidc.getGoal() * 1.02 && dpidc.pidGet() < dpidc.getGoal() * 0.98);
 	}
 
 	private double innerSpeed = 0.0d;
 	private double outerSpeed = 0.0d;
 
-	public void goArc(double radius, double degrees, double outerMultiplyer, double innerMultiplyer, boolean isLeftInner){
+	public void goArc(double radius, double degrees, double outerMultiplyer, double innerMultiplyer,
+			boolean isLeftInner) {
 		this.isLeftInner = isLeftInner;
 		innerMultiplyer = 1.0d;
 
 		this.pidc.updateAngle(this.pidc.getCurAngle());
 		double circumfrence = 2 * radius * Math.PI;
-		double innerCircumfrence = 2 * (radius - (11.0/12.0)) * Math.PI;
-		double outerCircumfrence = 2 * (radius + (11.0/12.0)) * Math.PI;
+		double innerCircumfrence = 2 * (radius - (11.0 / 12.0)) * Math.PI;
+		double outerCircumfrence = 2 * (radius + (11.0 / 12.0)) * Math.PI;
 
 		double degreeMultiplyer = degrees / 360;
-		innerSpeed = Constants.WESTCOAST_MAX_SPEED * ((radius - (2)/2.0)/(radius + (2)/2.0));
-		//		innerSpeed = Constants.WESTCOAST_MAX_SPEED * ((radius - (2)/2.0)/(radius + (2)/2.0));
+		innerSpeed = Constants.WESTCOAST_MAX_SPEED * ((radius - (2) / 2.0) / (radius + (2) / 2.0));
+		// innerSpeed = Constants.WESTCOAST_MAX_SPEED * ((radius - (2)/2.0)/(radius +
+		// (2)/2.0));
 		outerSpeed = Constants.WESTCOAST_MAX_SPEED * outerMultiplyer;
-		double distance = circumfrence/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
+		double distance = circumfrence / Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
 		dpidc.setGoal(distance * degreeMultiplyer);
 		if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
 			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
@@ -224,30 +272,32 @@ public class WestCoastTankDrive extends Subsystem {
 		if (!rightA.getControlMode().equals(ControlMode.Velocity)) {
 			rightA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
 		}
-		if (this.debug == true) 
+		if (this.debug == true)
 			this.printGDebug(innerSpeed, outerSpeed);
-		//leftA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
-		//rightA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED * dpidc.getCorrection());
+		// leftA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED *
+		// dpidc.getCorrection());
+		// rightA.set(ControlMode.Velocity, Constants.WESTCOAST_MAX_SPEED *
+		// dpidc.getCorrection());
 	}
 
-	public void arcLoop(boolean isLeftInner){
+	public void arcLoop(boolean isLeftInner) {
 		double leftV = 0.0d;
 		double rightV = 0.0d;
 		if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
 			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
 		}
-		if(this.isLeftInner){
+		if (this.isLeftInner) {
 			leftV = innerSpeed * (1 - dpidc.getCorrection());
 			rightV = outerSpeed * (1 + dpidc.getCorrection());
 			leftA.set(ControlMode.Velocity, -leftV);
 			rightA.set(ControlMode.Velocity, -rightV);
-		}else{
+		} else {
 			rightV = innerSpeed * (1 - dpidc.getCorrection());
 			leftV = outerSpeed * (1 + dpidc.getCorrection());
 			rightA.set(ControlMode.Velocity, -rightV);
 			leftA.set(ControlMode.Velocity, -leftV);
 		}
-		if (this.debug == true) 
+		if (this.debug == true)
 			this.printGDebug(leftV, rightV);
 	}
 
@@ -323,7 +373,7 @@ public class WestCoastTankDrive extends Subsystem {
 
 	// updates the PID in gyro with the sliders or the networktables.
 	public void updateGyroPID() {
-		//TalonNWT.populateGyroPID(this.pidc);
+		// TalonNWT.populateGyroPID(this.pidc);
 		pidc.setP(SmartDashboard.getNumber("DB/Slider 0", 0));
 		pidc.setI(SmartDashboard.getNumber("DB/Slider 1", 0));
 		pidc.setD(SmartDashboard.getNumber("DB/Slider 2", 0));
@@ -336,8 +386,10 @@ public class WestCoastTankDrive extends Subsystem {
 
 	// print gyro debug
 	public void printGDebug(double lspeed, double rspeed) {
-		System.out.println("INNER SPEED: " + String.valueOf(this.innerSpeed) + "     OUTER SPEED: " + String.valueOf(this.outerSpeed));
-		System.out.println("Correction: " + pidc.getCorrection() + "    CurAngle: " + pidc.getCurAngle() + "    AngleD: " + pidc.calculateAE());
+		System.out.println("INNER SPEED: " + String.valueOf(this.innerSpeed) + "     OUTER SPEED: "
+				+ String.valueOf(this.outerSpeed));
+		System.out.println("Correction: " + pidc.getCorrection() + "    CurAngle: " + pidc.getCurAngle()
+				+ "    AngleD: " + pidc.calculateAE());
 		System.out.println("LEFTV: " + String.valueOf(lspeed) + "  RIGHTV: " + String.valueOf(rspeed));
 		System.out.println("Kp Vlaue: " + String.valueOf(pidc.getP()));
 		System.out.println("Ki Vlaue: " + String.valueOf(pidc.getI()));
@@ -345,7 +397,8 @@ public class WestCoastTankDrive extends Subsystem {
 	}
 
 	/*
-	 * Need to get values for talons from network tables to be able to read and write talon values.
+	 * Need to get values for talons from network tables to be able to read and
+	 * write talon values.
 	 */
 
 	// set gyro control

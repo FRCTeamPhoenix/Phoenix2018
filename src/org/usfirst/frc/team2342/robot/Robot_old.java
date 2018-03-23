@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * class.
  */
 
-public class Robot extends IterativeRobot {
+public class Robot_old extends IterativeRobot {
 
 	Joystick gamepad;
 	PCMHandler PCM;
@@ -53,7 +53,7 @@ public class Robot extends IterativeRobot {
 	UsbCamera camera1;
 	VideoSink server;
 
-	public Robot() {
+	public Robot_old() {
 		gamepad = new Joystick(0);
 		PCM = new PCMHandler(11);
 		talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);

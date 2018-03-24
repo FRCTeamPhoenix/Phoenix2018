@@ -2,10 +2,9 @@ package org.usfirst.frc.team2342.robot.subsystems;
 
 import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
 import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
-import org.usfirst.frc.team2342.PIDLoops.SingleTalonDistancePIDController;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.robot.PCMHandler;
-import org.usfirst.frc.team2342.robot.TalonNWT;
+//import org.usfirst.frc.team2342.robot.TalonNWT;
 import org.usfirst.frc.team2342.util.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -256,10 +255,10 @@ public class WestCoastTankDrive extends Subsystem {
 	}
 
 	public void outputToSmartDashboard() {
-		TalonNWT.updateTalon(leftA);
-		TalonNWT.updateTalon(leftB);
-		TalonNWT.updateTalon(rightA);
-		TalonNWT.updateTalon(rightB);
+//		TalonNWT.updateTalon(leftA);
+//		TalonNWT.updateTalon(leftB);
+//		TalonNWT.updateTalon(rightA);
+//		TalonNWT.updateTalon(rightB);
 	}
 
 	public void stop() {
@@ -306,7 +305,7 @@ public class WestCoastTankDrive extends Subsystem {
 		talon.config_kF(slotIdx, talonPID.ff, 0);
 		talon.config_IntegralZone(slotIdx, talonPID.izone, 0);
 		talon.configOpenloopRamp(talonPID.rr, 0);
-		TalonNWT.setPIDValues(slotIdx, talon);
+		//TalonNWT.setPIDValues(slotIdx, talon);
 	}
 
 	public void updateTalonPID(int slotIdx, PIDGains talonPID) {

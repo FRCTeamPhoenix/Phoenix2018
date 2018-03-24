@@ -17,7 +17,7 @@ public class SwitchAuto extends CommandGroup{
 	public SwitchAuto(TankDrive drive, CascadeElevator cascade, BoxManipulator manip, Joystick gamepad) {
 		addParallel(new CascadePosition(cascade, Constants.CASCADE_SWITCH * 1.5, gamepad));
 		addSequential(new DriveVoltageTime(drive, 1700, 1));
-		addParallel(new CascadeHold(cascade));
+	//	addParallel(new CascadeHold(cascade));
 		addSequential(new TiltManipulator(manip));
 		addSequential(new PushBox(manip, gamepad));
 	}

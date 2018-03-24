@@ -2,6 +2,7 @@ package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.automodes.ScaleAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
+import org.usfirst.frc.team2342.commands.DriveDistance2;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
@@ -87,7 +88,7 @@ public class Robot extends IterativeRobot {
 		talonPID.ff    = Constants.dtKff;
 		talonPID.rr    = Constants.dtKrr;
 		talonPID.izone = Constants.dtKizone;
-		westCoast.updateTalonPID(0, talonPID);
+		//westCoast.updateTalonPID(0, talonPID);
 	}
 
 	@Override
@@ -97,6 +98,7 @@ public class Robot extends IterativeRobot {
 		
 		//Start up cameras
 		CameraControl cameras = new CameraControl(640, 480, 15);
+		cascadeElevator.lastPosition = 0;
 	}
 
 	public void teleopInit() {
@@ -124,7 +126,7 @@ public class Robot extends IterativeRobot {
 		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		talonTip.setSelectedSensorPosition(0, 0, 10);
 		
-		cascadeElevator.lastPosition = 0;
+		//cascadeElevator.lastPosition = 0;
 	}
 
 	public void teleopPeriodic() {
@@ -227,7 +229,7 @@ public class Robot extends IterativeRobot {
 		talonPID.ff    = Constants.dtKff;
 		talonPID.rr    = Constants.dtKrr;
 		talonPID.izone = Constants.dtKizone;
-		westCoast.updateTalonPID(0, talonPID);
+		//westCoast.updateTalonPID(0, talonPID);
 		System.out.println("AUTOMODE INIT");
 		FMS.init();
 		try {
@@ -298,19 +300,31 @@ public class Robot extends IterativeRobot {
 			e.printStackTrace();
 		}*/
 		//Scheduler.getInstance().add(new DriveVoltageTime(tankDrive,2000,0.5));
-		westCoast.debug = false;
+		//westCoast.debug = false;
+		Scheduler.getInstance().add(new ScaleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 
+		
 		this.updatePID();
 		//TalonNWT.updateGyroPID(westCoast.pidc);
 	}
 
 	public void autonomousPeriodic(){
-		this.updatePID();
+		//this.updatePID();
 		
 		Scheduler.getInstance().run();
 		
 		try { Thread.sleep(25); }
 		catch (Exception e) { }
+		
+		if(!cascadeElevator.runningPreset) {
+			if(Math.abs(cascadeElevator.talonCascade.getSelectedSensorPosition(0)) > 100 && !cascadeElevator.lowerLimit.get()) {
+				cascadeElevator.talonCascade.selectProfileSlot(1, 0);
+				cascadeElevator.talonCascade.set(ControlMode.Position, cascadeElevator.lastPosition);
+			}
+				//System.out.println("setting 0 no preset");
+		}
+		
+		//System.out.println(tankDrive.leftA.getSelectedSensorPosition(0));
 	}
 
 	@Override
@@ -338,11 +352,11 @@ public class Robot extends IterativeRobot {
 	// updates the PID in gyro with the sliders or the networktables.
 	public void updatePID() {
 		//TalonNWT.populateGyroPID(this.pidc);
-		this.talonPID.p = SmartDashboard.getNumber("DB/Slider 0", 0);
-		this.talonPID.i = SmartDashboard.getNumber("DB/Slider 1", 0);
-		//this.talonPID.d = SmartDashboard.getNumber("DB/Slider 2", 0);
-		this.talonPID.ff = SmartDashboard.getNumber("DB/Slider 2", 0);
-		westCoast.updateTalonPID(0, talonPID);
+		this.talonPID.p = 1;
+		this.talonPID.i = 0;
+		this.talonPID.d = 0;
+		this.talonPID.ff = 0;
+		tankDrive.setPid(talonPID);
 		SmartDashboard.putString("DB/String 6", String.valueOf(this.talonPID.p));
 		SmartDashboard.putString("DB/String 7", String.valueOf(this.talonPID.i));
 		SmartDashboard.putString("DB/String 8", String.valueOf(this.talonPID.d));

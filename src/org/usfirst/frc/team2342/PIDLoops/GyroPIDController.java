@@ -82,7 +82,7 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 
 	// set the d value
 	public void setD(double d) {
-		pc.setD(d);;
+		pc.setD(d);
 	}
 
 	// calculate angle error

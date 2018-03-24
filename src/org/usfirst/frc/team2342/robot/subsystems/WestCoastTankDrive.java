@@ -114,14 +114,16 @@ public class WestCoastTankDrive extends Subsystem {
 			}
 		}
 		else {
-			left = left  * (1 - pidc.getCorrection());
-			right = right * (1 + pidc.getCorrection());
+			left  = left   * (1 - pidc.getCorrection());
+			right = right  * (1 + pidc.getCorrection());
 			leftA.set(ControlMode.Velocity,  left);
+			//leftB.set(ControlMode.Velocity,  left);
 			rightA.set(ControlMode.Velocity, right);
+			//rightB.set(ControlMode.Velocity, right);
 			if (this.debug) {
 				//printGDebug(left, right);
-				SmartDashboard.putString("DB/String 3", String.valueOf(left));
-				SmartDashboard.putString("DB/String 4", String.valueOf(right));
+				SmartDashboard.putString("DB/String 0", String.valueOf(pidc.getCorrection()));
+				SmartDashboard.putString("DB/String 1", String.valueOf(pidc.getCurAngle()));
 			}
 		}
 	}
@@ -169,10 +171,6 @@ public class WestCoastTankDrive extends Subsystem {
 
 	// Turn setup for rotating the robot
 	public void turnSet(double angle) {
-		//		this.pidc.setP(Constants.tKp);
-		//		this.pidc.setI(Constants.tKi);
-		//		this.pidc.setD(Constants.tKd);
-		this.updateGyroPID();
 		this.pidc.updateAngle(angle);
 	}
 
@@ -322,15 +320,15 @@ public class WestCoastTankDrive extends Subsystem {
 	}
 
 	// updates the PID in gyro with the sliders or the networktables.
-	public void updateGyroPID() {
+	public void updateGyroPID(PIDGains p) {
 		//TalonNWT.populateGyroPID(this.pidc);
-		pidc.setP(SmartDashboard.getNumber("DB/Slider 0", 0));
-		pidc.setI(SmartDashboard.getNumber("DB/Slider 1", 0));
-		pidc.setD(SmartDashboard.getNumber("DB/Slider 2", 0));
+		pidc.setP(p.p);
+		pidc.setI(p.i);
+		pidc.setD(p.d);
 		if (this.debug) {
-			SmartDashboard.putString("DB/String 7", String.valueOf(pidc.getP()));
-			SmartDashboard.putString("DB/String 8", String.valueOf(pidc.getI()));
-			SmartDashboard.putString("DB/String 9", String.valueOf(pidc.getD()));
+			System.out.println("P: " + String.valueOf(pidc.getP()));
+			System.out.println("I: " + String.valueOf(pidc.getI()));
+			System.out.println("D: " + String.valueOf(pidc.getD()));
 		}
 	}
 

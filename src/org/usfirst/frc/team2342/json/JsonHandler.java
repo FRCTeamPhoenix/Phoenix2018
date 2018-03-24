@@ -59,6 +59,8 @@ public class JsonHandler
 	public void setFname(String name) 
 	{
 		this.m_fname = name;
+		this.m_fileHandler = new File(name);
+		this.m_fExists = this.m_fileHandler.exists();
 	}
 	
 	public boolean getFileExisting() {

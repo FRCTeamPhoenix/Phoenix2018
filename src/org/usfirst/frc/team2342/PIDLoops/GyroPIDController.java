@@ -1,6 +1,6 @@
 package org.usfirst.frc.team2342.PIDLoops;
 
-import org.usfirst.frc.team2342.robot.sensors.Gyro;
+import com.analog.adis16448.frc.ADIS16448_IMU;
 
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
@@ -24,82 +24,89 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 
 // must implement the velocity PID control into the Gyro
 public class GyroPIDController implements PIDSource, PIDOutput {
-	//private ADIS16448_IMU gyro; 		// gyro instance
-	private PIDController pc;           // PID Controller
-	private double curAngle = 0.0d;     // Current angle
-	private double targetAngle = 0.0d;  // Target angle
-	private double correction = 0.0d;   // PID Correction
+	private static ADIS16448_IMU gyro; 		   // gyro instance
+	private static PIDController pc;           // PID Controller
+	private static double curAngle = 0.0d;     // Current angle
+	private static double targetAngle = 0.0d;  // Target angle
+	private static double correction = 0.0d;   // PID Correction
 
 
 	// CONSTRUCTOR
-	public GyroPIDController(double p, double i, double d) {		
+	public void GyroPIDController() {
+		//DONOTHING
+	}
+	
+	public void init(double p, double i, double d) {		
 		// Gyro and PIDController setup
-		pc = new PIDController(p, i, d, 0.0d, this, this);
+		if (gyro == null)
+			gyro = new ADIS16448_IMU();
+		if (pc == null)
+			pc = new PIDController(p, i, d, 0.0d, this, this);
 		pc.disable();
 		reset();
 	}
-
+	
 	// reset the options for PID Controller
-	public void reset() {
+	public static void reset() {
 		pc.reset();
 		pc.setOutputRange(-1, 1);
 	}
 
 	// update the angle and the target thing
-	public void updateAngle(double angle) {
-		this.targetAngle = angle;
-		this.reset();
-		pc.setSetpoint(this.targetAngle);
+	public static void updateAngle(double angle) {
+		targetAngle = angle;
+		reset();
+		pc.setSetpoint(targetAngle);
 		pc.enable();
 	}
 
 	// get the p value
-	public double getP() {
+	public static double getP() {
 		return pc.getP();
 	}
 
 	// set the p value
-	public void setP(double p) {
+	public static void setP(double p) {
 		pc.setP(p);
 	}
 
 	// get the i value
-	public double getI() {
+	public static double getI() {
 		return pc.getI();
 	}
 
 	// set the i value
-	public void setI(double i) {
+	public static void setI(double i) {
 		pc.setI(i);
 	}
 
 	// get the d value
-	public double getD() {
+	public static double getD() {
 		return pc.getD();
 	}
 
 	// set the d value
-	public void setD(double d) {
-		pc.setD(d);;
+	public static void setD(double d) {
+		pc.setD(d);
 	}
 
 	// calculate angle error
-	public double calculateAE() {
+	public static double calculateAE() {
 		return targetAngle - getCurAngle();
 	}
 
 	// set the target angle
-	public void setTargetAngle(double ta) {
-		this.targetAngle = ta;
+	public static void setTargetAngle(double ta) {
+		targetAngle = ta;
 	}
 
 	// return the gyro for test purposes
-	/*public ADIS16448_IMU getGyro() {
-		return this.gyro;
-	}*/
+	public static ADIS16448_IMU getGyro() {
+		return gyro;
+	}
 
 	// return target angle
-	public double getTargetAngle() {
+	public static double getTargetAngle() {
 		return targetAngle;
 	}
 
@@ -109,43 +116,53 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 	 * right is negative
 	 * left is positive
 	 */
-	private void updateCurAngle() {
+	private static void updateCurAngle() {
 		//this.curAngle = gyro.getAngleX() % 360;
 		//this.curAngle = (this.curAngle < 0.0d) ? this.curAngle + 360.0d : this.curAngle;
-		this.curAngle = Gyro.angle();
+		curAngle = gyro.getAngleX();
 	}
 
-	// get the current angle
-	public double getCurAngle() {
+	// get static the current angle
+	public static double getCurAngle() {
 		updateCurAngle();
 		return curAngle;
 	}
 
 	// get the correction from PID LOOP
-	public double getCorrection() {
-		return this.correction;
+	public static double getCorrection() {
+		return correction;
 	}
 
 	// get the PID Controller
-	public PIDController getPC() {
-		return this.pc;
+	public static PIDController getPC() {
+		return pc;
 	}
 
-	public void gyroReset() {
-		Gyro.reset();
+	// Reset the gyro to have the angle set to zero.
+	public static void gyroReset() {
+		gyro.reset();
+	}
+	
+	/*
+	 * WARNING: MAKE SURE BOT IS ON, AND DO NOT ROTATE THE BOT.
+	 * LEAVE THE BOT ALONE!
+	 */
+	// Recallibrates the gyro 
+	public static void callibrateGyro() {
+		gyro.calibrate();
 	}
 
 	@Override
 	public void setPIDSourceType(PIDSourceType pidSource) {
 		// TODO Auto-generated method stub
-		Gyro.setPIDSourceType(pidSource);
+		gyro.setPIDSourceType(pidSource);
 	}
 
 	@Override
 	public PIDSourceType getPIDSourceType() {
 		// TODO Auto-generated method stub
 		//return PIDSourceType.kDisplacement;
-		return Gyro.getPIDSourceType();
+		return gyro.getPIDSourceType();
 	}
 
 	// IMPORTANT
@@ -159,6 +176,6 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 	// PID Controller set the correction value
 	@Override
 	public void pidWrite(double output) {
-		this.correction = output;
+		correction = output;
 	}
 }

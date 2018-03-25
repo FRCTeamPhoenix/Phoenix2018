@@ -88,7 +88,7 @@ public class WestCoastTankDrive extends Subsystem {
         WestCoastTankDrive.loadGains(rightB, Constants.TALON_VELOCITY_SLOT_IDX, rightVelocityGains);
         WestCoastTankDrive.loadGains(rightB, Constants.TALON_DISTANCE_SLOT_IDX, rightDistanceGains);*/
 
-		pidc = new GyroPIDController(Constants.Kp, Constants.Ki, Constants.Kd);
+		pidc = null; // gyropidcontroller is not needed in westcoast yet.
 		zeroSensors(); 
 	}
 
@@ -172,7 +172,6 @@ public class WestCoastTankDrive extends Subsystem {
 		//		this.pidc.setI(Constants.tKi);
 		//		this.pidc.setD(Constants.tKd);
 		this.updateGyroPID();
-		this.pidc.updateAngle(angle);
 	}
 
 	// Rotate the robot in autonomous

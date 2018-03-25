@@ -17,19 +17,23 @@ public class MiddleAuto extends CommandGroup {
 
 	public MiddleAuto(TankDrive drive, CascadeElevator cascade, BoxManipulator manip, Joystick gamepad) {
 		addSequential(new DriveDistance2(drive, 1));
-		if(DriverStation.getInstance().getGameSpecificMessage().charAt(0) == 'R') {
+		if(DriverStation.getInstance().getGameSpecificMessage().charAt(0) == 'L') {
 			addSequential(new Turn90(drive, true, 45));
-			addSequential(new CascadePosition(cascade, Constants.CASCADE_SWITCH, gamepad));
+			addParallel(new CascadePosition(cascade, Constants.CASCADE_SWITCH, gamepad));
 			addSequential(new DriveDistance2(drive, 6));
+			addSequential(new Turn90(drive, false, 35));
 			addSequential(new DriveDistance2(drive, 2, Constants.WESTCOAST_HALF_SPEED / 2));
-			addSequential(new PushBox(manip, gamepad));
+			addSequential(new PushBox(manip, gamepad, 0.5));
 		} else {
-			addSequential(new Turn90(drive, false, 45));
-			addSequential(new CascadePosition(cascade, Constants.CASCADE_SWITCH, gamepad));
+			addSequential(new Turn90(drive, false, 55));
+			addParallel(new CascadePosition(cascade, Constants.CASCADE_SWITCH, gamepad));
 			addSequential(new DriveDistance2(drive, 6));
-			addSequential(new DriveDistance2(drive, 2, Constants.WESTCOAST_HALF_SPEED / 2));
-			addSequential(new PushBox(manip, gamepad));
+			addSequential(new Turn90(drive, true, 35));
+			addSequential(new DriveDistance2(drive, 1, Constants.WESTCOAST_HALF_SPEED / 2));
+			addSequential(new PushBox(manip, gamepad, 0.5));
 		}
+		addSequential(new DriveDistance2(drive, -2));
+		addSequential(new CascadePosition(cascade, Constants.CASCADE_BASE, gamepad));
 	}
 	
 }

@@ -1,6 +1,6 @@
 package org.usfirst.frc.team2342.robot;
 
-import org.usfirst.frc.team2342.automodes.MiddleAuto;
+import org.usfirst.frc.team2342.automodes.LeftSideAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.json.PIDGains;
@@ -184,7 +184,7 @@ public class Robot extends IterativeRobot {
 		}
 			
 		
-		if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) || XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER) || gamepad.getRawButton(7))
+		if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) || XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER) || gamepad.getRawAxis(2) > 0.8 || gamepad.getRawAxis(3) > 0.8)
 			boxManipulator.closeManipulator();
 		else
 			boxManipulator.openManipulator();
@@ -306,7 +306,7 @@ public class Robot extends IterativeRobot {
 			//Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//Scheduler.getInstance().add(new RightSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//Scheduler.getInstance().add(new DriveDistance(westCoast, 20));
-		Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		
 		this.updatePID();
 		//TalonNWT.updateGyroPID(westCoast.pidc);

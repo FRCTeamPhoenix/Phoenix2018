@@ -10,19 +10,25 @@ public class PushBox extends Command {
 	Timer timer;
 	BoxManipulator manipulator;
 	Joystick gamepad;
+	double power;
 	
-    public PushBox(BoxManipulator manipulator, Joystick gamepad) {
+	public PushBox(BoxManipulator manipulator, Joystick gamepad) {
+		this(manipulator, gamepad, 1);
+	}
+	
+    public PushBox(BoxManipulator manipulator, Joystick gamepad, double power) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     	requires(manipulator);
     	this.gamepad = gamepad;
     	this.manipulator = manipulator;
     	timer = new Timer();
+    	this.power = power;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	manipulator.pushBox();
+    	manipulator.pushBox(power);
     	timer.start();
     }
 

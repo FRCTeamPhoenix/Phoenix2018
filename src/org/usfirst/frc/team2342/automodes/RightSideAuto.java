@@ -31,6 +31,8 @@ public class RightSideAuto extends CommandGroup {
 			addSequential(new CascadePosition(cascade, Constants.CASCADE_UPPER_SCALE, gamepad));
 			addSequential(new DriveDistance2(drive,1,Constants.WESTCOAST_HALF_SPEED/2));
 			addSequential(new PushBox(manip, gamepad));
+			addSequential(new DriveDistance2(drive, -2));
+			addSequential(new CascadePosition(cascade, Constants.CASCADE_BASE, gamepad));
 		} else if(DriverStation.getInstance().getGameSpecificMessage().charAt(0) == 'R') {
 			addParallel(new CascadePosition(cascade, Constants.CASCADE_SWITCH, gamepad));
 			addSequential(new DriveDistance2(drive,12));
@@ -40,6 +42,8 @@ public class RightSideAuto extends CommandGroup {
 			addSequential(new DriveDistance2(drive, 2, Constants.WESTCOAST_HALF_SPEED / 2));
 			//addSequential(new TiltManipulator(manip));
 			addSequential(new PushBox(manip, gamepad));
+			addSequential(new DriveDistance2(drive, -2));
+			addSequential(new CascadePosition(cascade, Constants.CASCADE_BASE, gamepad));
 		} else if(SmartDashboard.getBoolean("DB/Button 1", false)) {
 			addSequential(new DriveDistance2(drive, 18));
 			addSequential(new Turn90(drive, true));
@@ -49,6 +53,8 @@ public class RightSideAuto extends CommandGroup {
 			addSequential(new DriveDistance2(drive,1,Constants.WESTCOAST_HALF_SPEED/2));
 			addSequential(new TiltManipulator(manip));
 			addSequential(new PushBox(manip, gamepad));
+			addSequential(new DriveDistance2(drive, -2));
+			addSequential(new CascadePosition(cascade, Constants.CASCADE_BASE, gamepad));
 		} else {
 			addSequential(new DriveDistance2(drive, 19));
 			addSequential(new Turn90(drive, true));

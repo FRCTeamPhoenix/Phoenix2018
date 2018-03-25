@@ -81,8 +81,8 @@ public class BoxManipulator extends Subsystem {
 	}
 	
 	public void pushBox() {
-		talonIntakeRight.set(ControlMode.PercentOutput, 0.25);
-		talonIntakeLeft.set(ControlMode.PercentOutput, -0.25);
+		talonIntakeRight.set(ControlMode.PercentOutput, 1);
+		talonIntakeLeft.set(ControlMode.PercentOutput, -1);
 	}
 	
 	public void outputToSmartDashboard() {

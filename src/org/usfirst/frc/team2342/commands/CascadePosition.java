@@ -39,6 +39,7 @@ public class CascadePosition extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
+    	System.out.println(cascade.talonCascade.getSelectedSensorPosition(0));
         return Math.abs(gamepad.getRawAxis(3)) > Constants.CASCADE_DEADZONE || Math.abs(cascade.talonCascade.getSelectedSensorPosition(0) + position) < 200;
     }
 

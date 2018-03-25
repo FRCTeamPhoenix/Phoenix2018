@@ -1,6 +1,6 @@
 package org.usfirst.frc.team2342.PIDLoops;
 
-import com.analog.adis16448.frc.ADIS16448_IMU;
+import org.usfirst.frc.team2342.robot.sensors.Gyro;
 
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 
 // must implement the velocity PID control into the Gyro
 public class GyroPIDController implements PIDSource, PIDOutput {
-	private ADIS16448_IMU gyro; 		// gyro instance
+	//private ADIS16448_IMU gyro; 		// gyro instance
 	private PIDController pc;           // PID Controller
 	private double curAngle = 0.0d;     // Current angle
 	private double targetAngle = 0.0d;  // Target angle
@@ -34,8 +34,6 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 	// CONSTRUCTOR
 	public GyroPIDController(double p, double i, double d) {		
 		// Gyro and PIDController setup
-		if (gyro == null)
-			gyro = new ADIS16448_IMU();
 		pc = new PIDController(p, i, d, 0.0d, this, this);
 		pc.disable();
 		reset();
@@ -96,9 +94,9 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 	}
 
 	// return the gyro for test purposes
-	public ADIS16448_IMU getGyro() {
+	/*public ADIS16448_IMU getGyro() {
 		return this.gyro;
-	}
+	}*/
 
 	// return target angle
 	public double getTargetAngle() {
@@ -114,7 +112,7 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 	private void updateCurAngle() {
 		//this.curAngle = gyro.getAngleX() % 360;
 		//this.curAngle = (this.curAngle < 0.0d) ? this.curAngle + 360.0d : this.curAngle;
-		this.curAngle = gyro.getAngleX();
+		this.curAngle = Gyro.angle();
 	}
 
 	// get the current angle
@@ -134,20 +132,20 @@ public class GyroPIDController implements PIDSource, PIDOutput {
 	}
 
 	public void gyroReset() {
-		this.gyro.reset();
+		Gyro.reset();
 	}
 
 	@Override
 	public void setPIDSourceType(PIDSourceType pidSource) {
 		// TODO Auto-generated method stub
-		this.gyro.setPIDSourceType(pidSource);
+		Gyro.setPIDSourceType(pidSource);
 	}
 
 	@Override
 	public PIDSourceType getPIDSourceType() {
 		// TODO Auto-generated method stub
 		//return PIDSourceType.kDisplacement;
-		return this.gyro.getPIDSourceType();
+		return Gyro.getPIDSourceType();
 	}
 
 	// IMPORTANT

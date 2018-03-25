@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2342.commands;
 
+import org.usfirst.frc.team2342.robot.sensors.Gyro;
 import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
@@ -14,12 +15,21 @@ public class Turn90 extends Command {
 
 	TankDrive westCoast;	
 	boolean direction;
+	double startAngle;
 	long startTime;
-    public Turn90(TankDrive westCoast,boolean direction) {
-    	this.westCoast = westCoast;
+	double angle;
+	
+	public Turn90(TankDrive westCoast,boolean direction,double angle) {
+		this.westCoast = westCoast;
     	
     	this.direction = direction;
+    	this.startAngle = Gyro.angle();
+    	this.angle = angle;
+	}
+	
+    public Turn90(TankDrive westCoast,boolean direction) {
     	
+    	this(westCoast,direction,90);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
@@ -29,7 +39,7 @@ public class Turn90 extends Command {
     	
     	
     	//westCoast.setLowGear();
-    	westCoast.setHighGear();
+    	westCoast.setLowGear();
     	startTime = System.currentTimeMillis();
     	
     	
@@ -47,7 +57,7 @@ public class Turn90 extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return System.currentTimeMillis() - startTime > SmartDashboard.getNumber("DB/Slider 3", 2000);
+        return System.currentTimeMillis() - startTime > ((direction ? SmartDashboard.getNumber("DB/Slider 3", 2000) : SmartDashboard.getNumber("DB/Slider 2", 2000))*angle/90.0);
     }
 
     // Called once after isFinished returns true

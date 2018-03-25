@@ -64,7 +64,7 @@ public class Constants {
 
 	//positions of important cascade heights
 	public static final int CASCADE_BASE = 0;
-	public static final int CASCADE_SWITCH = 9000;
+	public static final int CASCADE_SWITCH = 12000;
 	public static final int CASCADE_LOWER_SCALE = 22000;
 	public static final int CASCADE_UPPER_SCALE = 25500;
 

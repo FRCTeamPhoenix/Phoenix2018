@@ -1,10 +1,10 @@
 package org.usfirst.frc.team2342.robot;
 
-import org.usfirst.frc.team2342.automodes.ScaleAuto;
+import org.usfirst.frc.team2342.automodes.MiddleAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
-import org.usfirst.frc.team2342.commands.DriveDistance2;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.json.PIDGains;
+import org.usfirst.frc.team2342.robot.sensors.Gyro;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
@@ -99,6 +99,7 @@ public class Robot extends IterativeRobot {
 		//Start up cameras
 		CameraControl cameras = new CameraControl(640, 480, 15);
 		cascadeElevator.lastPosition = 0;
+		Gyro.init();
 	}
 
 	public void teleopInit() {
@@ -220,6 +221,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousInit() {
+		Gyro.reset();
 		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 1.0, 1, 0, 0);
 		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 1.0, 1, 0, 0);
 		// set TalonPid
@@ -301,8 +303,10 @@ public class Robot extends IterativeRobot {
 		}*/
 		//Scheduler.getInstance().add(new DriveVoltageTime(tankDrive,2000,0.5));
 		//westCoast.debug = false;
-		Scheduler.getInstance().add(new ScaleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
-
+			//Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		//Scheduler.getInstance().add(new RightSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		//Scheduler.getInstance().add(new DriveDistance(westCoast, 20));
+		Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		
 		this.updatePID();
 		//TalonNWT.updateGyroPID(westCoast.pidc);

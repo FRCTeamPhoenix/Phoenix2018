@@ -1,8 +1,9 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
-import org.usfirst.frc.team2342.robot.PCMHandler;
-import org.usfirst.frc.team2342.util.Constants;
 import org.usfirst.frc.team2342.json.PIDGains;
+import org.usfirst.frc.team2342.robot.PCMHandler;
+import org.usfirst.frc.team2342.robot.sensors.Gyro;
+import org.usfirst.frc.team2342.util.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -23,7 +24,6 @@ public class TankDrive extends Subsystem{
 	private final int PidTimeOutMs = 10;
 	
 	public TankDrive(PCMHandler PCM, WPI_TalonSRX leftFR, WPI_TalonSRX rightFR, WPI_TalonSRX leftBA, WPI_TalonSRX rightBA) {
-		
 		this.PCM = PCM;
 		leftA = leftFR;
 		rightA = rightFR;
@@ -135,21 +135,20 @@ public class TankDrive extends Subsystem{
 //			right = Math.min(right, Constants.WESTCOAST_MAX_SPEED);
 //		else if (right < 0)
 //			right = Math.max(right, -Constants.WESTCOAST_MAX_SPEED);
-		System.out.println("going " + left + " " + right);
+		//System.out.println("going " + left + " " + right);
+		if (Gyro.angle() > 1)
+			left *= 1.05;
+		if (Gyro.angle() < -1)
+			right *= 1.05;
 		leftA.set(ControlMode.Velocity,left);
 		rightA.set(ControlMode.Velocity,right);
 	}
 	
 	//the encoder values has to be zeroed for this to work
 	public void goDistance(double distanceInFeet) {
-		
-		
-		double speed = Constants.WESTCOAST_HALF_SPEED;
-		if (-leftA.getSelectedSensorPosition(PidLoopIndexHigh) < distanceInFeet/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV)
-			speed *= -1;
-		
-		setVelocity(speed * 1.02,speed);
+		goDistance(distanceInFeet, Constants.WESTCOAST_HALF_SPEED);
 	}
+	
 	@Override
 	protected void initDefaultCommand() {
 		// TODO Auto-generated method stub
@@ -165,6 +164,12 @@ public class TankDrive extends Subsystem{
 		rightA.config_kP(PidLoopIndexHigh, pid.p, PidTimeOutMs);
 		rightA.config_kI(PidLoopIndexHigh, pid.i, PidTimeOutMs);
 		rightA.config_kD(PidLoopIndexHigh, pid.d, PidTimeOutMs);
+	}
+	public void goDistance(double distance, double speed) {
+		if (-leftA.getSelectedSensorPosition(PidLoopIndexHigh) < distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV)
+			speed *= -1;
+		
+		setVelocity(speed,speed);
 	}
 	
 }

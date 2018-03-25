@@ -127,6 +127,7 @@ public class CascadeElevator extends Subsystem {
 		} catch (Exception e) {
 
 		}
+		System.out.println("cascade going " + speed);
 		talonCascade.set(ControlMode.Velocity, speed);
 
 	}

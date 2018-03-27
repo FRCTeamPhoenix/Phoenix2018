@@ -106,7 +106,7 @@ public class Robot extends IterativeRobot {
 		//Start up cameras
 		CameraControl cameras = new CameraControl(640, 480, 15);
 		cascadeElevator.lastPosition = 0;
-		Gyro.init();
+		//Gyro.init();
 	}
 
 	public void teleopInit() {
@@ -341,17 +341,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testInit() {
 		System.out.println("TEST MODE INIT");
-		//this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
-
 		//talonCascade.set(ControlMode.PercentOutput, XBOX.getRawAxis(3));
-		
 		tankDrive.setGyroControl(true);
 		tankDrive.debug = true;
-		GyroPIDController.updateAngle(0.0d);
 		this.updatePID(gpidjson.gyroPid);
 		tankDrive.updateGyroPID(gpidjson.gyroPid);
 		GyroPIDController.gyroReset();
-		tankDrive.turnSet(90);
+		tankDrive.turnSet(90.0d);
 	}
 
 	@Override

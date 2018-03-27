@@ -193,15 +193,18 @@ public class TankDrive extends Subsystem{
 		}
 
 		if (this.gyroControl == true) {
-			double lspeed = -velocity * GyroPIDController.getCorrection();
-			double rspeed =  velocity * GyroPIDController.getCorrection();
-			if (this.debug) {
-				SmartDashboard.putString("DB/String 0", String.valueOf(GyroPIDController.getCorrection()));
-				SmartDashboard.putString("DB/String 2", String.valueOf(lspeed));
-				SmartDashboard.putString("DB/String 3", String.valueOf(rspeed));
-			}
+			double lspeed =   velocity * GyroPIDController.getCorrection();
+			double rspeed =  -velocity * GyroPIDController.getCorrection();
 			leftA.set(ControlMode.Velocity,  lspeed);
 			rightA.set(ControlMode.Velocity, rspeed);
+			if (this.debug) {
+				SmartDashboard.putString("DB/String 0", String.valueOf(GyroPIDController.getCorrection()));
+				SmartDashboard.putString("DB/String 1", String.valueOf(GyroPIDController.getCurAngle()));
+				SmartDashboard.putString("DB/String 2", String.valueOf(lspeed));
+				SmartDashboard.putString("DB/String 3", String.valueOf(rspeed));
+				SmartDashboard.putString("DB/String 4", String.valueOf(GyroPIDController.getTargetAngle()));
+			
+			}
 		}
 	}
 

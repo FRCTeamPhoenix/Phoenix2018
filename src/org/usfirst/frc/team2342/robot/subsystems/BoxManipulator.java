@@ -71,7 +71,7 @@ public class BoxManipulator extends Subsystem {
 	}
 	
 	public void goToPosition(double position) {
-		talonIntakeRight.set(ControlMode.Position, position);
+		talonTip.set(ControlMode.Position, position);
 	}
 	
 	public void pullBox() {

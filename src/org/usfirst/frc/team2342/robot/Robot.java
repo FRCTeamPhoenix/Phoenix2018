@@ -106,7 +106,7 @@ public class Robot extends IterativeRobot {
 		//Start up cameras
 		CameraControl cameras = new CameraControl(640, 480, 15);
 		cascadeElevator.lastPosition = 0;
-		Gyro.init();
+		//Gyro.init();
 	}
 
 	public void teleopInit() {
@@ -345,13 +345,20 @@ public class Robot extends IterativeRobot {
 
 		//talonCascade.set(ControlMode.PercentOutput, XBOX.getRawAxis(3));
 		
-		tankDrive.setGyroControl(true);
+		/*tankDrive.setGyroControl(true);
 		tankDrive.debug = true;
 		GyroPIDController.updateAngle(0.0d);
 		this.updatePID(gpidjson.gyroPid);
 		tankDrive.updateGyroPID(gpidjson.gyroPid);
 		GyroPIDController.gyroReset();
-		tankDrive.turnSet(90);
+		tankDrive.turnSet(90);*/
+		
+		/*boxManipulator.talonTip.config_kF(0, SmartDashboard.getNumber("DB/Slider 2", 0), 10);
+		boxManipulator.talonTip.config_kP(0, SmartDashboard.getNumber("DB/Slider 0", 0), 10);
+		boxManipulator.talonTip.config_kI(0, SmartDashboard.getNumber("DB/Slider 1", 0), 10);
+		boxManipulator.talonTip.config_kD(0, SmartDashboard.getNumber("DB/Slider 3", 0), 10);*/
+		boxManipulator.talonTip.setSelectedSensorPosition(0, 0, 10);
+		boxManipulator.goToPosition(-1000);
 	}
 
 	@Override
@@ -359,8 +366,12 @@ public class Robot extends IterativeRobot {
 		try {
 			//Scheduler.getInstance().run();
 			//tankDrive.setVelocity(Constants.WESTCOAST_HALF_SPEED, Constants.WESTCOAST_HALF_SPEED);
-			tankDrive.rotateAuto(Constants.WESTCOAST_HALF_SPEED);
-			Thread.sleep(10);
+			/*tankDrive.rotateAuto(Constants.WESTCOAST_HALF_SPEED);
+			Thread.sleep(10);*/
+			boxManipulator.goToPosition(-1000);
+
+			System.out.println(boxManipulator.talonTip.getSelectedSensorPosition(0));
+			
 		} catch(Exception e) {
 			//DONOTHING
 		}

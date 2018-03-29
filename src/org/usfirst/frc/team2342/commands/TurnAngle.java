@@ -1,9 +1,9 @@
 package org.usfirst.frc.team2342.commands;
 
-import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
-import org.usfirst.frc.team2342.util.Constants;
+import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
+import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
+
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /*
  * By: Joshua Calzadillas
@@ -21,25 +21,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 
 public class TurnAngle extends Command {
-	WestCoastTankDrive m_westCoast;
+	TankDrive m_westCoast;
 	private double cangle = 0.0d;
 	private double angle = 0.0d;
 	private double vel = 0.0d;
-	private double deadZone = 1.0d;
+	private double deadZone = 0.5d;
 
 	// Constructor for the command
-	public TurnAngle(double velocity, double angle, WestCoastTankDrive westCoast){
+	public TurnAngle(double velocity, double angle, TankDrive westCoast){
 		requires(westCoast);
 		m_westCoast = westCoast;
 		m_westCoast.setGyroControl(true);
-		m_westCoast.pidc.gyroReset();
 		this.angle = angle;
-		this.cangle = westCoast.pidc.getCurAngle();
 		this.vel = -velocity;
 	}
 	
 	// Initialize the setup for the target angle
 	protected void initialize(){
+		GyroPIDController.gyroReset();
+		this.cangle = GyroPIDController.getCurAngle();
 		if(m_westCoast.debug)
 			System.out.println("turning angle "+angle+" degrees");
 		m_westCoast.turnSet(this.angle);
@@ -50,7 +50,7 @@ public class TurnAngle extends Command {
 	protected void execute(){
 		//SmartDashboard.putString("DB/String 0", ""+ String.valueOf(m_westCoast.pidc.calculateAE()));
 		m_westCoast.rotateAuto(this.vel);
-		this.cangle = m_westCoast.pidc.getCurAngle();
+		this.cangle = GyroPIDController.getCurAngle();
 	}
 
 	@Override

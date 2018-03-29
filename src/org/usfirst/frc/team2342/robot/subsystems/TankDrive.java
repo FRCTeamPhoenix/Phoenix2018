@@ -134,10 +134,6 @@ public class TankDrive extends Subsystem{
 	public void setVelocity(double left,double right) {
 		left = (left >= 0) ? Math.min(left, Constants.WESTCOAST_MAX_SPEED) : Math.max(left, -Constants.WESTCOAST_MAX_SPEED);
 		right = (right >= 0) ? Math.min(right, Constants.WESTCOAST_MAX_SPEED) : Math.max(right, -Constants.WESTCOAST_MAX_SPEED);
-		if (Gyro.angle() > 1)
-			left *= 1.05;
-		if (Gyro.angle() < -1)
-			right *= 1.05;
 
 		if (this.gyroControl != true) {
 			leftA.set(ControlMode.Velocity, -left);
@@ -226,6 +222,9 @@ public class TankDrive extends Subsystem{
 
 	public void setGyroControl(boolean b) {
 		this.gyroControl = b;
+	}
+	public double getEncoderDistance() {
+		return (leftA.getSelectedSensorPosition(0) + rightA.getSelectedSensorPosition(0)) / 2;
 	}
 
 }

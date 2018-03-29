@@ -1,14 +1,15 @@
 package org.usfirst.frc.team2342.commands;
 
-import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
+import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveDistance extends Command {
-	WestCoastTankDrive m_westCoast;
+	TankDrive m_westCoast;
 	private double m_distance;
+	private double m_start;
 	
-	public DriveDistance(WestCoastTankDrive westCoast, double distance) {
+	public DriveDistance(TankDrive westCoast, double distance) {
 		//only one system can use westCoast
 		requires(westCoast);
 		m_westCoast = westCoast;
@@ -20,17 +21,18 @@ public class DriveDistance extends Command {
 		if(m_westCoast.debug)
 			System.out.println("started distance: "+m_distance+" ft");
 		//sets distance when created
+		m_start = m_westCoast.getEncoderDistance();
 		m_westCoast.goDistance(m_distance);
 	}
 	
 	protected void execute() {
 		//adjusts velocity values and called on scheduler.getInstance().run()
-		m_westCoast.distanceLoop();
+		m_westCoast.goDistance(m_distance);
 	}
 	
 	public boolean isFinished(){
 		//should the command terminate
-    	return m_westCoast.isDistanceFinished();
+    	return Math.abs(m_westCoast.getEncoderDistance() - m_start - m_distance) < 50 ;
     }
 	
 	protected void end() {

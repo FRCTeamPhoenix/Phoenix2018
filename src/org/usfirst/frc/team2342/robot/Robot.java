@@ -357,6 +357,9 @@ public class Robot extends IterativeRobot {
 		boxManipulator.talonTip.config_kP(0, SmartDashboard.getNumber("DB/Slider 0", 0), 10);
 		boxManipulator.talonTip.config_kI(0, SmartDashboard.getNumber("DB/Slider 1", 0), 10);
 		boxManipulator.talonTip.config_kD(0, SmartDashboard.getNumber("DB/Slider 3", 0), 10);*/
+		
+		boxManipulator.talonTipSetP();
+		
 		boxManipulator.talonTip.setSelectedSensorPosition(0, 0, 10);
 		boxManipulator.goToPosition(-1000);
 	}

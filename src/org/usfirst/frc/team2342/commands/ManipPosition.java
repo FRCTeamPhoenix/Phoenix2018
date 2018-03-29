@@ -18,7 +18,7 @@ public class ManipPosition extends Command {
 	}
 	
 	protected void execute() {
-		//double position = 
+
 	}
 
 	protected boolean isFinished() {

@@ -89,6 +89,13 @@ public class BoxManipulator extends Subsystem {
 		talonIntakeLeft.set(ControlMode.PercentOutput, -power);
 	}
 	
+	public void talonTipSetP() {
+		talonTip.config_kF(0, 0, 10);
+		talonTip.config_kP(0, 0.75, 10);
+		talonTip.config_kI(0, 0, 10);
+		talonTip.config_kD(0, 10, 10);
+	}
+	
 	public void outputToSmartDashboard() {
 		SmartDashboard.putString("DB/String 0", "Motor Output: " + (talonIntakeRight.getMotorOutputPercent()*100) + "%");
 		SmartDashboard.putString("DB/String 1", "Position: " + talonIntakeRight.getSelectedSensorPosition(0));

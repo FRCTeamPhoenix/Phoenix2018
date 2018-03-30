@@ -1,10 +1,12 @@
 package org.usfirst.frc.team2342.robot;
 
-import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
 import org.usfirst.frc.team2342.automodes.LeftSideAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
-import org.usfirst.frc.team2342.json.*;
+import org.usfirst.frc.team2342.commands.ManipPosition;
+import org.usfirst.frc.team2342.json.GyroPIDJson;
+import org.usfirst.frc.team2342.json.JsonHandler;
+import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.robot.sensors.Gyro;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
@@ -358,7 +360,8 @@ public class Robot extends IterativeRobot {
 		boxManipulator.talonTip.config_kI(0, SmartDashboard.getNumber("DB/Slider 1", 0), 10);
 		boxManipulator.talonTip.config_kD(0, SmartDashboard.getNumber("DB/Slider 3", 0), 10);*/
 		boxManipulator.talonTip.setSelectedSensorPosition(0, 0, 10);
-		boxManipulator.goToPosition(-1000);
+		//boxManipulator.goToPosition(-1000);
+		Scheduler.getInstance().add(new ManipPosition(boxManipulator, -1000));
 	}
 
 	@Override
@@ -368,7 +371,8 @@ public class Robot extends IterativeRobot {
 			//tankDrive.setVelocity(Constants.WESTCOAST_HALF_SPEED, Constants.WESTCOAST_HALF_SPEED);
 			/*tankDrive.rotateAuto(Constants.WESTCOAST_HALF_SPEED);
 			Thread.sleep(10);*/
-			boxManipulator.goToPosition(-1000);
+			//boxManipulator.goToPosition(-1000);
+			Scheduler.getInstance().run();
 
 			System.out.println(boxManipulator.talonTip.getSelectedSensorPosition(0));
 			

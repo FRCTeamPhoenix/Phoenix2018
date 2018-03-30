@@ -22,7 +22,10 @@ public class ManipPosition extends Command {
 	}
 
 	protected boolean isFinished() {
-		if(Math.abs(boxManip.talonTip.getSelectedSensorPosition(0) - position) < 100) {
+		if(Math.abs(boxManip.talonTip.getSelectedSensorPosition(0) - position) < 100)
+			return true;
+			
+		if (boxManip.talonTip.getSelectedSensorPosition(0) < -2000) {
 			return true;
 		}
 		return false;

@@ -126,6 +126,9 @@ public class Constants {
 	public static final double tSpeed = 4.5d;
 	
 	public static final double CASCADE_DEADZONE = 0.1;
+	
+	//Infrared sensor
+	public static final int INFRARED_SENSOR = 3;
 
 	// Drive Talon PID Constants
 	public static final double dtKp     = 1.5d;

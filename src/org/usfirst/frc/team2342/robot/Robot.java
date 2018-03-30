@@ -1,11 +1,13 @@
 package org.usfirst.frc.team2342.robot;
 
-import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
 import org.usfirst.frc.team2342.automodes.LeftSideAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
-import org.usfirst.frc.team2342.json.*;
+import org.usfirst.frc.team2342.json.GyroPIDJson;
+import org.usfirst.frc.team2342.json.JsonHandler;
+import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.robot.sensors.Gyro;
+import org.usfirst.frc.team2342.robot.sensors.Infrared;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
@@ -135,10 +137,12 @@ public class Robot extends IterativeRobot {
 		talonTip.setSelectedSensorPosition(0, 0, 10);
 
 		//cascadeElevator.lastPosition = 0;
+		
+		Infrared.init();
 	}
 
 	public void teleopPeriodic() {
-
+		
 		//this.updatePID();
 		Scheduler.getInstance().run();
 
@@ -150,13 +154,6 @@ public class Robot extends IterativeRobot {
 			westCoast.setHighGear();
 		else
 			westCoast.setNoGear();
-
-		boolean p = XBOX.getRawButton(8);
-		if(p && !pressed8) {
-			intakeLowVoltage = !intakeLowVoltage;
-			pressed8 = p;
-		} else if(!p && pressed8)
-			pressed8 = p;
 
 		if(Math.abs(XBOX.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS)) > 0.1) {
 			double speed = XBOX.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS);
@@ -199,6 +196,8 @@ public class Robot extends IterativeRobot {
 		double triggerL = XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER);
 		double triggerR = XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER);
 
+		intakeLowVoltage = !Infrared.get();
+		
 		if(triggerL > 0.9) {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, triggerL * triggerL);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -triggerL * triggerL);
@@ -361,7 +360,9 @@ public class Robot extends IterativeRobot {
 		boxManipulator.talonTipSetP();
 		
 		boxManipulator.talonTip.setSelectedSensorPosition(0, 0, 10);
-		boxManipulator.goToPosition(-1000);
+		//boxManipulator.goToPosition(-1000);
+		
+		Infrared.init();
 	}
 
 	@Override
@@ -371,9 +372,10 @@ public class Robot extends IterativeRobot {
 			//tankDrive.setVelocity(Constants.WESTCOAST_HALF_SPEED, Constants.WESTCOAST_HALF_SPEED);
 			/*tankDrive.rotateAuto(Constants.WESTCOAST_HALF_SPEED);
 			Thread.sleep(10);*/
-			boxManipulator.goToPosition(-1000);
+			/*boxManipulator.goToPosition(-1000);*/
 
 			System.out.println(boxManipulator.talonTip.getSelectedSensorPosition(0));
+			System.out.println(!Infrared.get());
 			
 		} catch(Exception e) {
 			//DONOTHING

@@ -75,7 +75,7 @@ public class Constants {
 	public static final int PCM_BOX_MANIPULATOR = 2;
 
 	// PID for Gyro Forward
-	public static final double Kp = 0.02d;
+	public static final double Kp = 0.04d;
 	public static final double Ki = 0.0d;
 	public static final double Kd = 0.0d;
 

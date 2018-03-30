@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2342.robot;
 
+import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveDistance;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
@@ -43,6 +44,8 @@ public class Robot extends IterativeRobot {
 	WPI_TalonSRX talonIntakeLeft;
 	WPI_TalonSRX talonTip;
 
+	DistancePIDController pc;
+	
 	TankDrive tankDrive;
 	WestCoastTankDrive westCoast;
 	Joystick joystickR;
@@ -93,6 +96,8 @@ public class Robot extends IterativeRobot {
 		talonPID.rr    = Constants.dtKrr;
 		talonPID.izone = Constants.dtKizone;
 		//westCoast.updateTalonPID(0, talonPID);
+		pc = new DistancePIDController();
+		pc.init(talonPID.p, talonPID.i, talonPID.d, talonPID.ff, talonFL, talonFR);
 		json = new JsonHandler("");
 		gpidjson = new GyroPIDJson();
 		json.getJson("gyropidr.json", gpidjson);
@@ -247,7 +252,7 @@ public class Robot extends IterativeRobot {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		this.updatePID(this.talonPID);
+		//this.updatePID(this.talonPID);
 
 		//Scheduler.getInstance().add(new ScaleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//calculate auto mode
@@ -315,8 +320,7 @@ public class Robot extends IterativeRobot {
 		//Scheduler.getInstance().add(new RightSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//Scheduler.getInstance().add(new DriveDistance(westCoast, 20));
 		//Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
-		Scheduler.getInstance().add(new DriveDistance(tankDrive, -60));
-		this.updatePID(this.talonPID);
+		Scheduler.getInstance().add(new DriveDistance(tankDrive, -40));
 		//TalonNWT.updateGyroPID(westCoast.pidc);
 	}
 
@@ -328,13 +332,13 @@ public class Robot extends IterativeRobot {
 		try { Thread.sleep(25); }
 		catch (Exception e) { }
 
-		if(!cascadeElevator.runningPreset) {
+		/*if(!cascadeElevator.runningPreset) {
 			if(Math.abs(cascadeElevator.talonCascade.getSelectedSensorPosition(0)) > 100 && !cascadeElevator.lowerLimit.get()) {
 				cascadeElevator.talonCascade.selectProfileSlot(1, 0);
 				cascadeElevator.talonCascade.set(ControlMode.Position, cascadeElevator.lastPosition);
 			}
 			//System.out.println("setting 0 no preset");
-		}
+		}*/
 
 		//System.out.println(tankDrive.leftA.getSelectedSensorPosition(0));
 	}

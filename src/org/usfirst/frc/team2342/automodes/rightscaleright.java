@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class rightscaleright extends CommandGroup {
 	public rightscaleright(WestCoastTankDrive westCoast){
-		addSequential(new DriveDistance(westCoast, 22));
+		/*addSequential(new DriveDistance(westCoast, 22));
 		//turn 90 degrees to the left
-		addSequential(new TurnAngle(1350, -90, westCoast));
+		addSequential(new TurnAngle(1350, -90, westCoast));*/
 	}
 }

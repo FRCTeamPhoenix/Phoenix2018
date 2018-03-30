@@ -1,9 +1,9 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
+import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
 import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.robot.PCMHandler;
-import org.usfirst.frc.team2342.robot.sensors.Gyro;
 import org.usfirst.frc.team2342.util.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -20,6 +20,7 @@ public class TankDrive extends Subsystem{
 	private WPI_TalonSRX leftB;
 	private WPI_TalonSRX rightB;
 	private PCMHandler PCM;
+	public DistancePIDController dpid = new DistancePIDController();
 	public GyroPIDController gpid = new GyroPIDController();
 	private final int PidLoopIndexHigh = 0;
 	private final int PidLoopIndexLow = 0;
@@ -177,10 +178,14 @@ public class TankDrive extends Subsystem{
 		rightA.config_kD(PidLoopIndexHigh, pid.d, PidTimeOutMs);
 	}
 	public void goDistance(double distance, double speed) {
-		if (-leftA.getSelectedSensorPosition(PidLoopIndexHigh) < distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV)
-			speed *= -1;
+		/*if (-leftA.getSelectedSensorPosition(PidLoopIndexHigh) < distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV)
+			speed *= -1;*/
 
-		setVelocity(speed,speed);
+		speed*=dpid.getCorrection();
+		
+		System.out.println(""+GyroPIDController.getCorrection());
+		
+		setVelocity(speed*(1.0-GyroPIDController.getCorrection()), speed*(1.0+GyroPIDController.getCorrection()));
 	}
 
 	public void rotateAuto(double velocity) {

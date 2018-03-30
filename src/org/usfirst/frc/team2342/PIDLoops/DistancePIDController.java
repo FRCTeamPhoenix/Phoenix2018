@@ -9,42 +9,70 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 
 // Distance pid controller
 public class DistancePIDController implements PIDOutput, PIDSource {
-	private WPI_TalonSRX left;
-	private WPI_TalonSRX right;
-	private double Kp = 0.0d;
-	private double Ki = 0.0d;
-	private double Kd = 0.0d;
-	private double Kff = 0.0d;
-	private PIDController pc;
-	private PIDSourceType type = PIDSourceType.kDisplacement;
-	private double correction = 0.0d;
+	private static WPI_TalonSRX left;
+	private static WPI_TalonSRX right;
+	private static PIDController pc;
+	static private PIDSourceType type = PIDSourceType.kDisplacement;
+	static private double correction = 0.0d;
 	
-	public DistancePIDController(double p, double i, double d, double ff, WPI_TalonSRX talonMasterLeft, WPI_TalonSRX talonMasterRight){
-		this.left = talonMasterLeft;
-		this.right = talonMasterRight;
-		this.Kp = p;
-		this.Ki = i;
-		this.Kd = d;
-		this.Kff = ff;
-		pc = new PIDController(this.Kp, 0.0d, 0.0d, 0.0d, this, this);
+	public DistancePIDController(){
+		
+	}
+	
+	public void init(double p, double i, double d, double ff, WPI_TalonSRX talonMasterLeft, WPI_TalonSRX talonMasterRight){
+		left = talonMasterLeft;
+		right = talonMasterRight;
+		pc = new PIDController(p, i, d, ff, this, this);
 		pc.setOutputRange(-1.0, 1.0);
 		pc.enable();
 	}
 	
-	public void setGoal(double distanceTicks){
-		pc.setSetpoint(-distanceTicks + getPositionAverage());
+	public static void setGoal(double distanceTicks){
+		pc.setSetpoint(distanceTicks + getPositionAverage());
 	}
 	
-	public double getGoal(){
+	public static double getGoal(){
 		return pc.getSetpoint();
 	}
 	
 	public double getCorrection(){
-		return this.correction;
+		return correction;
 	}
 	
-	private double getPositionAverage(){
+	private static double getPositionAverage(){
 		return (left.getSelectedSensorPosition(0)+right.getSelectedSensorPosition(0))/2;
+	}
+	
+	public static double getP(){
+		return pc.getP();
+	}
+	
+	public static double getI(){
+		return pc.getI();
+	}
+	
+	public static double getD(){
+		return pc.getD();
+	}
+	
+	public static double getFF(){
+		return pc.getF();
+	}
+	
+	public static void setP(double value){
+		pc.setP(value);
+	}
+	
+	public static void setI(double value){
+		pc.setI(value);
+	}
+	
+	public static void setD(double value){
+		pc.setD(value);
+	}
+	
+	public static void setF(double value){
+		pc.setF(value);
 	}
 	
 	@Override

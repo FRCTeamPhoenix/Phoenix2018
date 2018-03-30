@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class middleleftside extends CommandGroup {
 	public middleleftside(WestCoastTankDrive westCoast){
 		//drive forward 3 feet
-		addSequential(new DriveDistance(westCoast, 3));
+		/*addSequential(new DriveDistance(westCoast, 3));
 		//turn 90 degrees to the left
 		addSequential(new TurnAngle(Constants.WESTCOAST_MAX_SPEED, -90, westCoast));
 		//drive 6 ft forward
@@ -19,6 +19,6 @@ public class middleleftside extends CommandGroup {
 		//turn 90 degrees to the right
 		addSequential(new TurnAngle(Constants.WESTCOAST_MAX_SPEED, 90, westCoast));
 		//drive 5 ft forward
-		addSequential(new DriveDistance(westCoast, 5));
+		addSequential(new DriveDistance(westCoast, 5));*/
 	}
 }

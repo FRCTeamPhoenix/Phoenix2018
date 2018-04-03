@@ -1,8 +1,9 @@
 package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
+import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
+import org.usfirst.frc.team2342.automodes.MultiCubeAutoRightSide;
 import org.usfirst.frc.team2342.commands.CascadePosition;
-import org.usfirst.frc.team2342.commands.DriveDistance;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.json.GyroPIDJson;
 import org.usfirst.frc.team2342.json.JsonHandler;
@@ -243,6 +244,8 @@ public class Robot extends IterativeRobot {
 		westCoast.updateTalonPID(0, talonPID);
 		//westCoast.updateTalonPID(0, talonPID);
 		System.out.println("AUTOMODE INIT");
+		JsonHandler.readJson("gyropidr.json", gpidjson);
+		System.out.println(String.valueOf(gpidjson.gyroPid.p));
 		FMS.init();
 		try {
 			Thread.sleep(100);
@@ -318,7 +321,12 @@ public class Robot extends IterativeRobot {
 		//Scheduler.getInstance().add(new RightSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//Scheduler.getInstance().add(new DriveDistance(westCoast, 20));
 		//Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
-		Scheduler.getInstance().add(new DriveDistance(tankDrive, -40));
+		tankDrive.updateGyroPID(gpidjson.gyroPid);
+		GyroPIDController.setP(SmartDashboard.getNumber("DB/Slider 0", 0));
+		GyroPIDController.setI(SmartDashboard.getNumber("DB/Slider 1", 0));
+		GyroPIDController.setD(SmartDashboard.getNumber("DB/Slider 2", 0));
+		tankDrive.debug = true;
+		Scheduler.getInstance().add(new MultiCubeAutoRightSide(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//TalonNWT.updateGyroPID(westCoast.pidc);
 	}
 
@@ -327,7 +335,7 @@ public class Robot extends IterativeRobot {
 
 		Scheduler.getInstance().run();
 
-		try { Thread.sleep(25); }
+		try { Thread.sleep(10); }
 		catch (Exception e) { }
 
 		/*if(!cascadeElevator.runningPreset) {

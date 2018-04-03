@@ -2,6 +2,7 @@ package org.usfirst.frc.team2342.commands;
 
 import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
 import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
+import org.usfirst.frc.team2342.util.Constants;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -26,6 +27,9 @@ public class TurnAngle extends Command {
 	private double angle = 0.0d;
 	private double vel = 0.0d;
 	private double deadZone = 0.5d;
+	
+	double[] trailingCorrections = new double[Constants.TURN_AVERAGE_SIZE];
+	int position;
 
 	// Constructor for the command
 	public TurnAngle(double velocity, double angle, TankDrive westCoast){
@@ -33,7 +37,8 @@ public class TurnAngle extends Command {
 		m_westCoast = westCoast;
 		m_westCoast.setGyroControl(true);
 		this.angle = angle;
-		this.vel = -velocity;
+		this.vel = velocity;
+		position = 0;
 	}
 	
 	// Initialize the setup for the target angle
@@ -51,16 +56,25 @@ public class TurnAngle extends Command {
 		//SmartDashboard.putString("DB/String 0", ""+ String.valueOf(m_westCoast.pidc.calculateAE()));
 		m_westCoast.rotateAuto(this.vel);
 		this.cangle = GyroPIDController.getCurAngle();
+		if(m_westCoast.debug)
+			System.out.println("current angle: "+GyroPIDController.getCurAngle() + " degrees");
+		if(position == 0)
+			for(int i=0;i<Constants.TURN_AVERAGE_SIZE;i++)
+				trailingCorrections[i] = GyroPIDController.getCurAngle();
+		else
+			trailingCorrections[position % Constants.TURN_AVERAGE_SIZE] = GyroPIDController.getCurAngle();
+		position++;
 	}
 
 	@Override
 	// Check to see if the gyro is done
 	protected boolean isFinished() {
-		double dist = (Math.abs(this.angle) - Math.abs(this.cangle));
-		if (dist <= this.deadZone)
-			return true;
-		else
-			return false;
+		double avg = 0;
+		for(int i=0;i<Constants.TURN_AVERAGE_SIZE;i++)
+			avg += trailingCorrections[i];
+		avg /= Constants.TURN_AVERAGE_SIZE;
+		System.out.println("trailing avg " + avg);
+		return Math.abs(avg - this.angle) <= Constants.TURN_THRESHOLD;
 	}
 	
 	@Override

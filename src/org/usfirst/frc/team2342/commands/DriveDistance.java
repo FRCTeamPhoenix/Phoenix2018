@@ -16,7 +16,7 @@ public class DriveDistance extends Command {
 		//only one system can use westCoast
 		requires(westCoast);
 		m_westCoast = westCoast;
-		m_distance = distance / Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
+		m_distance = -distance / Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
 		DistancePIDController.setGoal(-m_distance);
 		GyroPIDController.updateAngle(GyroPIDController.getCurAngle());
 	}

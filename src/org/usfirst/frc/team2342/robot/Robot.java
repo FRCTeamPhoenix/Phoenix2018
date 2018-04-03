@@ -128,7 +128,7 @@ public class Robot extends IterativeRobot {
 		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		PCM.turnOn();
-		Command driveJoystick = new DriveGamepad(gamepad, );
+		Command driveJoystick = new DriveGamepad(gamepad, westCoast);
 		Scheduler.getInstance().add(driveJoystick);
 		westCoast.setGyroControl(false);
 		this.updatePID();

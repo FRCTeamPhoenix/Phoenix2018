@@ -7,6 +7,7 @@ import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.json.GyroPIDJson;
 import org.usfirst.frc.team2342.json.JsonHandler;
+import org.usfirst.frc.team2342.json.*;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
@@ -64,6 +65,9 @@ public class Robot extends IterativeRobot {
 
 	boolean intakeLowVoltage = false;
 	boolean pressed8 = false;
+	JsonHandler json;
+	TalonReader treader;
+	GyroReader greader;
 
 	public Robot() {
 		gamepad = new Joystick(0);
@@ -77,7 +81,6 @@ public class Robot extends IterativeRobot {
 		talonIntakeLeft = new WPI_TalonSRX(Constants.TALON_INTAKE_LEFT);
 		talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
 		tankDrive = new TankDrive(PCM,talonFL,talonFR,talonBL,talonBR);
-		westCoast = new WestCoastTankDrive(PCM, talonFL, talonFR, talonBL, talonBR);
 		joystickR = new Joystick(2);
 		XBOX = new Joystick(1);
 		cascadeElevator = new CascadeElevator(talonCascade);
@@ -131,7 +134,6 @@ public class Robot extends IterativeRobot {
 		westCoast.setGyroControl(false);
 		this.updatePID(this.talonPID);
 
-
 		//westCoast.debug = true;
 
 		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
@@ -142,8 +144,6 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopPeriodic() {
-
-		//this.updatePID();
 		Scheduler.getInstance().run();
 
 		//Drive with joystick control in velocity mode
@@ -191,9 +191,21 @@ public class Robot extends IterativeRobot {
 				cascadeElevator.talonCascade.selectProfileSlot(1, 0);
 				cascadeElevator.talonCascade.set(ControlMode.Position, cascadeElevator.lastPosition);
 			}
+		} else {
+			cascadeElevator.setVelocity(0);
 			//System.out.println("setting 0 no preset");
 		}
 
+
+		if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) || XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER) || gamepad.getRawButton(7))
+			boxManipulator.closeManipulator();
+		else
+			boxManipulator.openManipulator();
+
+		if(XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER) > 0.1) {
+			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0.5);
+			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -0.5);
+		}
 
 		if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) || XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER) || gamepad.getRawAxis(2) > 0.8 || gamepad.getRawAxis(3) > 0.8)
 			boxManipulator.closeManipulator();
@@ -219,7 +231,11 @@ public class Robot extends IterativeRobot {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, -0.1);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0.1);
 		}
-		else {
+
+		else if(XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER) > 0.1) {
+			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, -0.5);
+			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0.5);
+		} else {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0);
 		} 
@@ -253,6 +269,7 @@ public class Robot extends IterativeRobot {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+
 		//this.updatePID(this.talonPID);
 
 		//Scheduler.getInstance().add(new ScaleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
@@ -302,18 +319,68 @@ public class Robot extends IterativeRobot {
     			Scheduler.getInstance().add(new rightscaleleft(westCoast));
     		}
     		break;
+=======
+		//calculate auto mode
+		switch(FMS.getPosition()){
+		case 1:
+			if(FMS.scale()){
+				System.out.println("1;1");
+				//go for scale left side
+				Scheduler.getInstance().add(new leftscaleleftside(westCoast));
+			}else if(FMS.teamSwitch()){
+				System.out.println("1;2");
+				//go for switch on left side
+				Scheduler.getInstance().add(new leftswitchleft(westCoast));
+			}else{
+				System.out.println("1;3");
+				//go for switch on right side
+				Scheduler.getInstance().add(new leftscalerightside(westCoast));
+			}
+			break;
+		case 2:
+			if(FMS.teamSwitch()){
+				System.out.println("2;1");
+				//middle to left side
+				Scheduler.getInstance().add(new middleleftside(westCoast));
+			}else{
+				System.out.println("2;2");
+				//middle to right side
+				Scheduler.getInstance().add(new middlerightside(westCoast));
+			}
+			break;
+		case 3:
+			if(!FMS.scale()){
+				System.out.println("3;1");
+				//go for scale right side
+				Scheduler.getInstance().add(new rightscaleright(westCoast));
+			}else if(!FMS.teamSwitch()){
+				System.out.println("3;2");
+				//go for switch on right side
+				Scheduler.getInstance().add(new rightswitchright(westCoast));
+			}else{
+				System.out.println("3;3");
+				//go for switch on left side
+				Scheduler.getInstance().add(new rightscaleleft(westCoast));
+			}
+			break;
+>>>>>>> refs/remotes/origin/develop
 		default:
 			System.out.println("Default called!");
 			//just drive forward 10 ft if a glitch occurs
 			Scheduler.getInstance().add(new DriveDistance(westCoast, 10));
 			break;
+<<<<<<< HEAD
     	}
+=======
+		}
+>>>>>>> refs/remotes/origin/develop
 
 		try {
 			Thread.sleep(10);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+<<<<<<< HEAD
 		}*/
 		//Scheduler.getInstance().add(new DriveVoltageTime(tankDrive,2000,0.5));
 		//westCoast.debug = false;
@@ -327,12 +394,12 @@ public class Robot extends IterativeRobot {
 		GyroPIDController.setD(SmartDashboard.getNumber("DB/Slider 2", 0));
 		tankDrive.debug = true;
 		Scheduler.getInstance().add(new MultiCubeAutoRightSide(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		
 		//TalonNWT.updateGyroPID(westCoast.pidc);
 	}
 
 	public void autonomousPeriodic(){
 		//this.updatePID();
-
 		Scheduler.getInstance().run();
 
 		try { Thread.sleep(10); }
@@ -352,10 +419,12 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testInit() {
 		System.out.println("TEST MODE INIT");
+
 		//talonCascade.set(ControlMode.PercentOutput, XBOX.getRawAxis(3));
 		tankDrive.debug = true;
 		this.updatePID(gpidjson.gyroPid);
 		tankDrive.updateGyroPID(gpidjson.gyroPid);
+		this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
 	}
 
 	@Override
@@ -368,7 +437,6 @@ public class Robot extends IterativeRobot {
 		} catch(Exception e) {
 			//DONOTHING
 		}
-
 	}
 
 	// updates the PID in gyro with the sliders or the networktables.
@@ -384,4 +452,5 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putString("DB/String 8", String.valueOf(p.d));
 		SmartDashboard.putString("DB/String 9", String.valueOf(p.ff));
 	}
+
 }

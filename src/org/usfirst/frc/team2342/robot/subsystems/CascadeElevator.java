@@ -22,11 +22,10 @@ public class CascadeElevator extends Subsystem {
 	private final int PidTimeOutMs = 10;
 	private final boolean SensorPhase = true;
 	private final boolean InvertMotor = false;
+	public boolean runningPreset = false;
 
 	public DigitalInput lowerLimit;
 	public DigitalInput upperLimit;
-	
-	public boolean runningPreset = false;
 	
 	public double lastPosition = 0;
 

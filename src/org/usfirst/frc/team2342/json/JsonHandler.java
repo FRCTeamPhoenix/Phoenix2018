@@ -116,4 +116,14 @@ public class JsonHandler
 			//DONOTHING
 		}
 	}
+		
+	//**************************************************************************************
+	// This is the read method. It essentially reads values to the file                    *
+	// WARNING: When you try to read values off of the file you must pass in a Class Type  *
+	//**************************************************************************************
+	public <T> T read(Class<T> pass) throws JsonGenerationException, JsonMappingException, IOException 
+	{
+		return m_mapper.readValue(m_fileHandler, pass);
+
+	}
 }

@@ -350,5 +350,11 @@ public class WestCoastTankDrive extends Subsystem {
 	public void setGyroControl(boolean b) {
 		this.gyroControl = b;
 	}
+	
+	public void setGyroPID(double p, double i, double d) {
+		pidc.setP(p);
+		pidc.setI(i);
+		pidc.setD(d);
+	}
 
 }

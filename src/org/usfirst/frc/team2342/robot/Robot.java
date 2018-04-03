@@ -59,7 +59,6 @@ public class Robot extends IterativeRobot {
 	UsbCamera camera1;
 	VideoSink server;
 	
-	JsonHandler json;
 	GyroPIDJson gpidjson;
 
 	boolean intakeLowVoltage = false;
@@ -98,9 +97,8 @@ public class Robot extends IterativeRobot {
 		//westCoast.updateTalonPID(0, talonPID);
 		pc = new DistancePIDController();
 		pc.init(talonPID.p, talonPID.i, talonPID.d, talonPID.ff, talonFL, talonFR);
-		json = new JsonHandler("");
 		gpidjson = new GyroPIDJson();
-		json.getJson("gyropidr.json", gpidjson);
+		JsonHandler.readJson("gyropidr.json", gpidjson);
 	}
 
 	@Override

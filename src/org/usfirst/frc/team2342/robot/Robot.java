@@ -117,22 +117,21 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopInit() {
-		westCoast.debug = false;
 		talonPID.p     = Constants.dtKp;
 		talonPID.i     = Constants.dtKi;
 		talonPID.d     = Constants.dtKd;
 		talonPID.ff    = Constants.dtKff;
 		talonPID.rr    = 0;
 		talonPID.izone = Constants.dtKizone;
-		westCoast.updateTalonPID(0, talonPID);
+		//westCoast.updateTalonPID(0, talonPID);
 		System.out.println("TELEOP MODE INIT");
 		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		PCM.turnOn();
-		Command driveJoystick = new DriveGamepad(gamepad, westCoast);
+		Command driveJoystick = new DriveGamepad(gamepad, );
 		Scheduler.getInstance().add(driveJoystick);
 		westCoast.setGyroControl(false);
-		this.updatePID(this.talonPID);
+		this.updatePID();
 
 		//westCoast.debug = true;
 
@@ -242,8 +241,8 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void disabledInit() {
-		westCoast.setVelocity(0.0d, 0.0d);
-		westCoast.zeroSensors();
+		//westCoast.setVelocity(0.0d, 0.0d);
+		//westCoast.zeroSensors();
 		Scheduler.getInstance().removeAll();
 	}
 
@@ -257,7 +256,7 @@ public class Robot extends IterativeRobot {
 		talonPID.ff    = Constants.dtKff;
 		talonPID.rr    = Constants.dtKrr;
 		talonPID.izone = Constants.dtKizone;
-		westCoast.updateTalonPID(0, talonPID);
+		//westCoast.updateTalonPID(0, talonPID);
 		//westCoast.updateTalonPID(0, talonPID);
 		System.out.println("AUTOMODE INIT");
 		JsonHandler.readJson("gyropidr.json", gpidjson);
@@ -388,20 +387,30 @@ public class Robot extends IterativeRobot {
 		//Scheduler.getInstance().add(new RightSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//Scheduler.getInstance().add(new DriveDistance(westCoast, 20));
 		//Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		updatePID();
 		tankDrive.updateGyroPID(gpidjson.gyroPid);
 		GyroPIDController.setP(SmartDashboard.getNumber("DB/Slider 0", 0));
 		GyroPIDController.setI(SmartDashboard.getNumber("DB/Slider 1", 0));
 		GyroPIDController.setD(SmartDashboard.getNumber("DB/Slider 2", 0));
 		tankDrive.debug = true;
-		Scheduler.getInstance().add(new MultiCubeAutoRightSide(tankDrive, cascadeElevator, boxManipulator, gamepad));
-		
+		//Scheduler.getInstance().add(new MultiCubeAutoRightSide(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		tankDrive.setGyroControl(false);
 		//TalonNWT.updateGyroPID(westCoast.pidc);
 	}
 
 	public void autonomousPeriodic(){
 		//this.updatePID();
 		Scheduler.getInstance().run();
-
+		
+		talonFR.set(ControlMode.Velocity, -Constants.WESTCOAST_HALF_SPEED);
+		talonFL.set(ControlMode.Velocity, -Constants.WESTCOAST_HALF_SPEED);
+		
+		TalonNWT.updateGyroPID();
+		TalonNWT.updateTalon(talonFR);
+		TalonNWT.updateTalon(talonFL);
+		TalonNWT.updateTalon(talonBR);
+		TalonNWT.updateTalon(talonBL);
+		
 		try { Thread.sleep(10); }
 		catch (Exception e) { }
 
@@ -422,7 +431,7 @@ public class Robot extends IterativeRobot {
 
 		//talonCascade.set(ControlMode.PercentOutput, XBOX.getRawAxis(3));
 		tankDrive.debug = true;
-		this.updatePID(gpidjson.gyroPid);
+		//this.updatePID(gpidjson.gyroPid);
 		tankDrive.updateGyroPID(gpidjson.gyroPid);
 		this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
 	}
@@ -440,12 +449,14 @@ public class Robot extends IterativeRobot {
 	}
 
 	// updates the PID in gyro with the sliders or the networktables.
-	public void updatePID(PIDGains p) {
+	public void updatePID() {
+		PIDGains p = new PIDGains();
 		//TalonNWT.populateGyroPID(this.pidc);
 		p.p = SmartDashboard.getNumber("DB/Slider 0", 0);
 		p.i = SmartDashboard.getNumber("DB/Slider 1", 0);
 		p.d = SmartDashboard.getNumber("DB/Slider 2", 0);
-		p.ff = SmartDashboard.getNumber("DB/Slider 2", 0);
+		p.ff = SmartDashboard.getNumber("DB/Slider 3", 0);
+		tankDrive.setPid(p);
 		//westCoast.updateTalonPID(0, talonPID);
 		SmartDashboard.putString("DB/String 6", String.valueOf(p.p));
 		SmartDashboard.putString("DB/String 7", String.valueOf(p.i));

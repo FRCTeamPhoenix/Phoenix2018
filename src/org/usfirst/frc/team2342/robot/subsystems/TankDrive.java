@@ -23,7 +23,7 @@ public class TankDrive extends Subsystem{
 	public DistancePIDController dpid = new DistancePIDController();
 	public GyroPIDController gpid = new GyroPIDController();
 	private final int PidLoopIndexHigh = 0;
-	private final int PidLoopIndexLow = 0;
+	private final int PidLoopIndexLow = 1;
 	private final int PidTimeOutMs = 10;
 	public boolean debug = false;
 	public boolean gyroControl = false;

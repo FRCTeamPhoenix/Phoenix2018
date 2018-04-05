@@ -36,7 +36,7 @@ public class DriveDistance2 extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	tankDrive.goDistance(distance, speed);
+    	tankDrive.goDistance2(distance, -speed);
     }
 
     // Make this return true when this Command no longer needs to run execute()

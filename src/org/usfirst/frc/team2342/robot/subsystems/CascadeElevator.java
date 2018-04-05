@@ -20,7 +20,7 @@ public class CascadeElevator extends Subsystem {
 
 	private final int PidLoopIndex = 0;
 	private final int PidTimeOutMs = 10;
-	private final boolean SensorPhase = true;
+	private final boolean SensorPhase = false;
 	private final boolean InvertMotor = false;
 	public boolean runningPreset = false;
 
@@ -41,8 +41,8 @@ public class CascadeElevator extends Subsystem {
 		talonCascade.configPeakOutputReverse(-1, PidTimeOutMs);
 		talonCascade.configAllowableClosedloopError(0, PidLoopIndex, PidTimeOutMs);
 
-		talonCascade.config_kF(0, 0.5, PidTimeOutMs);
-		talonCascade.config_kP(0, 0.02, PidTimeOutMs);
+		talonCascade.config_kF(0, 0.75, PidTimeOutMs);
+		talonCascade.config_kP(0, 0.1, PidTimeOutMs);
 		talonCascade.config_kI(0, 0.001, PidTimeOutMs);
 		talonCascade.config_kD(0, 50, PidTimeOutMs);
 		

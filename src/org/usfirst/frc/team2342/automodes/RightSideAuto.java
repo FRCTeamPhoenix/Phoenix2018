@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2342.automodes;
 
 import org.usfirst.frc.team2342.commands.CascadePosition;
+import org.usfirst.frc.team2342.commands.DriveDistance;
 import org.usfirst.frc.team2342.commands.DriveDistance2;
 import org.usfirst.frc.team2342.commands.PushBox;
 import org.usfirst.frc.team2342.commands.TiltManipulator;
@@ -23,7 +24,7 @@ public class RightSideAuto extends CommandGroup {
 
 	public RightSideAuto(TankDrive drive, CascadeElevator cascade, BoxManipulator manip, Joystick gamepad) {
 		if(DriverStation.getInstance().getGameSpecificMessage().charAt(1) == 'R') {
-			addSequential(new DriveDistance2(drive,25));
+			addSequential(new DriveDistance(drive,25));
 			//addParallel(new CascadeHold(cascade, Constants.CASCADE_SWITCH, gamepad));
 			addSequential(new Wait(500));
 			addParallel(new TiltManipulator(manip));

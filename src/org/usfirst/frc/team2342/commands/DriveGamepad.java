@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2342.commands;
 
+import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 
@@ -12,15 +13,15 @@ public class DriveGamepad extends Command {
 	double leftVelocity = 0.0;
 	double rightVelocity = 0.0;
 	Joystick m_gamepad;
-	WestCoastTankDrive m_westCoast;
+	TankDrive m_westCoast;
 
 
-	public DriveGamepad(Joystick gamepad, WestCoastTankDrive westCoast) {
-		requires(westCoast);
+	public DriveGamepad(Joystick gamepad, TankDrive tankDrive) {
+		requires(tankDrive);
 		//limit at max val
 		m_gamepad = gamepad;
 
-		m_westCoast = westCoast;
+		m_westCoast = tankDrive;
 		if(Math.abs(gamepad.getRawAxis(1)) > Constants.JOYSTICK_DEADZONE)
 			leftVelocity = gamepad.getRawAxis(1);
 		else
@@ -33,7 +34,7 @@ public class DriveGamepad extends Command {
 	}
 
 	protected void initialize() {
-		m_westCoast.setPercentage(leftVelocity, rightVelocity);
+		m_westCoast.setPercentage(-leftVelocity, -rightVelocity);
 	}
 
 	@Override
@@ -49,7 +50,7 @@ public class DriveGamepad extends Command {
 
 		if(Math.abs(axis3) > Constants.JOYSTICK_DEADZONE)
 			rightVelocity = axis3; // velocity maybe
-		m_westCoast.setPercentage(leftVelocity, rightVelocity);
+		m_westCoast.setPercentage(-leftVelocity, -rightVelocity);
 	}
 
 	protected boolean isFinished(){

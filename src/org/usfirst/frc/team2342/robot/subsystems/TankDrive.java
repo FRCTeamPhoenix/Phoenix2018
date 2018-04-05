@@ -183,9 +183,19 @@ public class TankDrive extends Subsystem{
 
 		speed*=dpid.getCorrection();
 		
-		System.out.println(""+GyroPIDController.getCorrection());
+		//System.out.println(""+GyroPIDController.getCorrection());
 		
 		setVelocity(speed*(1.0-GyroPIDController.getCorrection()), speed*(1.0+GyroPIDController.getCorrection()));
+	}
+	public void goDistance2(double distance, double speed) {
+		if (-leftA.getSelectedSensorPosition(PidLoopIndexHigh) < distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV)
+			speed *= -1;
+
+		
+		
+		//System.out.println(""+GyroPIDController.getCorrection());
+		
+		setVelocity(speed, speed);
 	}
 
 	public void rotateAuto(double velocity) {

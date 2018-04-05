@@ -128,9 +128,9 @@ public class Robot extends IterativeRobot {
 		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		PCM.turnOn();
-		Command driveJoystick = new DriveGamepad(gamepad, westCoast);
+		Command driveJoystick = new DriveGamepad(gamepad, tankDrive);
 		Scheduler.getInstance().add(driveJoystick);
-		westCoast.setGyroControl(false);
+		//////westCoast.setGyroControl(false);
 		this.updatePID();
 
 		//westCoast.debug = true;
@@ -148,11 +148,11 @@ public class Robot extends IterativeRobot {
 		//Drive with joystick control in velocity mode
 		//Buttons 8 & 9 or (gamepad) 5 & 6 are Low & High gear, respectively
 		if (gamepad.getRawButton(Constants.LOGITECH_LEFTBUMPER))
-			westCoast.setLowGear();
+			tankDrive.setLowGear();
 		else if (gamepad.getRawButton(Constants.LOGITECH_RIGHTBUMPER))
-			westCoast.setHighGear();
+			tankDrive.setHighGear();
 		else
-			westCoast.setNoGear();
+			tankDrive.setNoGear();
 
 		boolean p = XBOX.getRawButton(8);
 		if(p && !pressed8) {
@@ -176,6 +176,7 @@ public class Robot extends IterativeRobot {
 
 			cascadeElevator.setVelocity(s * max);
 			cascadeElevator.lastPosition = cascadeElevator.talonCascade.getSelectedSensorPosition(0);
+			//System.out.println("last position = " + cascadeElevator.lastPosition);
 		}
 		else if(XBOX.getRawButton(Constants.XBOX_A))
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
@@ -189,12 +190,14 @@ public class Robot extends IterativeRobot {
 			if(Math.abs(cascadeElevator.talonCascade.getSelectedSensorPosition(0)) > 100 && !cascadeElevator.lowerLimit.get()) {
 				cascadeElevator.talonCascade.selectProfileSlot(1, 0);
 				cascadeElevator.talonCascade.set(ControlMode.Position, cascadeElevator.lastPosition);
+				//cascadeElevator.setVelocity(0);
+				//System.out.println("last position = " + cascadeElevator.lastPosition + " actual position = " + cascadeElevator.talonCascade.getSelectedSensorPosition(0));
 			}
 		} else {
 			cascadeElevator.setVelocity(0);
 			//System.out.println("setting 0 no preset");
 		}
-
+		//System.out.println("lower: " + cascadeElevator.lowerLimit.get() + " upper: " + cascadeElevator.upperLimit.get());
 
 		if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) || XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER) || gamepad.getRawButton(7))
 			boxManipulator.closeManipulator();
@@ -269,131 +272,13 @@ public class Robot extends IterativeRobot {
 			e1.printStackTrace();
 		}
 
-		//this.updatePID(this.talonPID);
-
-		//Scheduler.getInstance().add(new ScaleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
-		//calculate auto mode
-		/*switch(FMS.getPosition()){
-
-    	switch(FMS.getPosition()){
->>>>>>> refs/remotes/origin/turn90
-    	case 1:
-    		if(FMS.scale()){
-    			System.out.println("1;1");
-    			//go for scale left side
-    			Scheduler.getInstance().add(new leftscaleleftside(westCoast));
-    		}else if(FMS.teamSwitch()){
-    			System.out.println("1;2");
-    			//go for switch on left side
-    			Scheduler.getInstance().add(new leftswitchleft(westCoast));
-    		}else{
-    			System.out.println("1;3");
-    			//go for switch on right side
-    			Scheduler.getInstance().add(new leftscalerightside(westCoast));
-    		}
-    		break;
-    	case 2:
-    		if(FMS.teamSwitch()){
-    			System.out.println("2;1");
-        		//middle to left side
-    			Scheduler.getInstance().add(new middleleftside(westCoast));
-        	}else{
-        		System.out.println("2;2");
-        		//middle to right side
-        		Scheduler.getInstance().add(new middlerightside(westCoast));
-        	}
-    		break;
-    	case 3:
-    		if(!FMS.scale()){
-    			System.out.println("3;1");
-    			//go for scale right side
-    			Scheduler.getInstance().add(new rightscaleright(westCoast));
-    		}else if(!FMS.teamSwitch()){
-    			System.out.println("3;2");
-    			//go for switch on right side
-    			Scheduler.getInstance().add(new rightswitchright(westCoast));
-    		}else{
-    			System.out.println("3;3");
-    			//go for switch on left side
-    			Scheduler.getInstance().add(new rightscaleleft(westCoast));
-    		}
-    		break;
-=======
-		//calculate auto mode
-		switch(FMS.getPosition()){
-		case 1:
-			if(FMS.scale()){
-				System.out.println("1;1");
-				//go for scale left side
-				Scheduler.getInstance().add(new leftscaleleftside(westCoast));
-			}else if(FMS.teamSwitch()){
-				System.out.println("1;2");
-				//go for switch on left side
-				Scheduler.getInstance().add(new leftswitchleft(westCoast));
-			}else{
-				System.out.println("1;3");
-				//go for switch on right side
-				Scheduler.getInstance().add(new leftscalerightside(westCoast));
-			}
-			break;
-		case 2:
-			if(FMS.teamSwitch()){
-				System.out.println("2;1");
-				//middle to left side
-				Scheduler.getInstance().add(new middleleftside(westCoast));
-			}else{
-				System.out.println("2;2");
-				//middle to right side
-				Scheduler.getInstance().add(new middlerightside(westCoast));
-			}
-			break;
-		case 3:
-			if(!FMS.scale()){
-				System.out.println("3;1");
-				//go for scale right side
-				Scheduler.getInstance().add(new rightscaleright(westCoast));
-			}else if(!FMS.teamSwitch()){
-				System.out.println("3;2");
-				//go for switch on right side
-				Scheduler.getInstance().add(new rightswitchright(westCoast));
-			}else{
-				System.out.println("3;3");
-				//go for switch on left side
-				Scheduler.getInstance().add(new rightscaleleft(westCoast));
-			}
-			break;
->>>>>>> refs/remotes/origin/develop
-		default:
-			System.out.println("Default called!");
-			//just drive forward 10 ft if a glitch occurs
-			Scheduler.getInstance().add(new DriveDistance(westCoast, 10));
-			break;
-<<<<<<< HEAD
-    	}
-=======
-		}
->>>>>>> refs/remotes/origin/develop
-
-		try {
-			Thread.sleep(10);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-<<<<<<< HEAD
-		}*/
-		//Scheduler.getInstance().add(new DriveVoltageTime(tankDrive,2000,0.5));
-		//westCoast.debug = false;
-		//Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
-		//Scheduler.getInstance().add(new RightSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
-		//Scheduler.getInstance().add(new DriveDistance(westCoast, 20));
-		//Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		updatePID();
 		tankDrive.updateGyroPID(gpidjson.gyroPid);
 		GyroPIDController.setP(SmartDashboard.getNumber("DB/Slider 0", 0));
 		GyroPIDController.setI(SmartDashboard.getNumber("DB/Slider 1", 0));
 		GyroPIDController.setD(SmartDashboard.getNumber("DB/Slider 2", 0));
 		tankDrive.debug = true;
-		//Scheduler.getInstance().add(new MultiCubeAutoRightSide(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		Scheduler.getInstance().add(new MultiCubeAutoRightSide(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		tankDrive.setGyroControl(false);
 		//TalonNWT.updateGyroPID(westCoast.pidc);
 	}
@@ -401,15 +286,13 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic(){
 		//this.updatePID();
 		Scheduler.getInstance().run();
+
 		
-		talonFR.set(ControlMode.Velocity, -Constants.WESTCOAST_HALF_SPEED);
-		talonFL.set(ControlMode.Velocity, -Constants.WESTCOAST_HALF_SPEED);
-		
-		TalonNWT.updateGyroPID();
-		TalonNWT.updateTalon(talonFR);
-		TalonNWT.updateTalon(talonFL);
-		TalonNWT.updateTalon(talonBR);
-		TalonNWT.updateTalon(talonBL);
+		//TalonNWT.updateGyroPID();
+		//TalonNWT.updateTalon(talonFR);
+		//TalonNWT.updateTalon(talonFL);
+		//TalonNWT.updateTalon(talonBR);
+		//TalonNWT.updateTalon(talonBL);
 		
 		try { Thread.sleep(10); }
 		catch (Exception e) { }
@@ -452,10 +335,10 @@ public class Robot extends IterativeRobot {
 	public void updatePID() {
 		PIDGains p = new PIDGains();
 		//TalonNWT.populateGyroPID(this.pidc);
-		p.p = SmartDashboard.getNumber("DB/Slider 0", 0);
-		p.i = SmartDashboard.getNumber("DB/Slider 1", 0);
-		p.d = SmartDashboard.getNumber("DB/Slider 2", 0);
-		p.ff = SmartDashboard.getNumber("DB/Slider 3", 0);
+		p.p = 2.0; //SmartDashboard.getNumber("DB/Slider 0", 0);
+		p.i = 0; //SmartDashboard.getNumber("DB/Slider 1", 0);
+		p.d = 0; //SmartDashboard.getNumber("DB/Slider 2", 0);
+		p.ff = 0.4; //SmartDashboard.getNumber("DB/Slider 3", 0);
 		tankDrive.setPid(p);
 		//westCoast.updateTalonPID(0, talonPID);
 		SmartDashboard.putString("DB/String 6", String.valueOf(p.p));

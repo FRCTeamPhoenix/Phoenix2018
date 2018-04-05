@@ -2,38 +2,46 @@ package org.usfirst.frc.team2342.robot.sensors;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
 
+import edu.wpi.first.wpilibj.PIDSourceType;
+
 public class Gyro {
 	static ADIS16448_IMU imu;
 	
-	private double goalAngle;
+	private static double goalAngle;
 	
-	public Gyro(){
-		goalAngle = 0.0;
-	}
-	
-	public void init(){
+	public static void init(){
 		imu = new ADIS16448_IMU();
+		goalAngle = 0.0;
 	}
 	
 	/*
 	 * sets current position to 0 degrees*/
-	public void reset(){
+	public static void reset(){
 		imu.reset();
 	}
 	
-	public void setGoal(){
+	public static void setGoal(){
 		goalAngle = imu.getAngleX();
 	}
 	
-	public void setGoal(double offset){
+	public static void setGoal(double offset){
 		goalAngle = imu.getAngleX() + offset;
 	}
 	
-	public double angleFromGoal(){
+	public static double angleFromGoal(){
 		return goalAngle - imu.getAngleX();
 	}
 	
-	public double angle(){
+	public static double angle(){
 		return imu.getAngleX();
+	}
+
+	public static void setPIDSourceType(PIDSourceType pidSource) {
+		// TODO Auto-generated method stub
+		imu.setPIDSourceType(pidSource);
+	}
+
+	public static PIDSourceType getPIDSourceType() {
+		return imu.getPIDSourceType();
 	}
 }

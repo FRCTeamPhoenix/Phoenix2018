@@ -22,7 +22,11 @@ public class Constants {
 	// Scales the speed of velocity mode (in rps)
 	public static final double WESTCOAST_MAX_SPEED = TALON_SPEED_RPS * 5.95d; // It is set for the tuning of the controller manuverablility
 	public static final double WESTCOAST_HALF_SPEED = WESTCOAST_MAX_SPEED * 0.5d;
-
+	public static final double WESTCOAST_TURN_SPEED = WESTCOAST_MAX_SPEED * 0.7d;
+	
+	public static final int TURN_AVERAGE_SIZE = 10;
+	public static final double TURN_THRESHOLD = 1;
+	
 	public static final int PCM_PORT = 11;
 
 	public static final int LOWER_SENSOR_POSITION = 0;
@@ -64,15 +68,16 @@ public class Constants {
 
 	//positions of important cascade heights
 	public static final int CASCADE_BASE = 0;
-	public static final int CASCADE_SWITCH = 24;
-	public static final int CASCADE_LOWER_SCALE = 72;
-	public static final int CASCADE_UPPER_SCALE = 72;
+	public static final int CASCADE_SWITCH = 12000;
+	public static final int CASCADE_LOWER_SCALE = 22000;
+	public static final int CASCADE_UPPER_SCALE = 25500;
 
 	//solenoid constants
 	public static final int PCM_CAN_ID = 11;
 	public static final int PCM_SLOT_HIGHGEAR = 0;
 	public static final int PCM_SLOT_LOWGEAR = 1;
-	public static final int PCM_BOX_MANIPULATOR = 2;	
+
+	public static final int PCM_BOX_MANIPULATOR = 2;
 	
 	//logitech controller
 	public static final int LOGITECH_LEFTSTICK_XAXIS = 0;

@@ -1,49 +1,52 @@
 package org.usfirst.frc.team2342.commands;
 
-import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
+import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
+import org.usfirst.frc.team2342.util.Constants;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class PushBox extends Command {
-	Timer timer;
-	BoxManipulator manipulator;
+/**
+ *
+ */
+public class CascadeHold extends Command {
+	CascadeElevator cascade;
+	private double position;
 	Joystick gamepad;
-	double power;
 	
-	public PushBox(BoxManipulator manipulator, Joystick gamepad) {
-		this(manipulator, gamepad, 1);
-	}
-	
-    public PushBox(BoxManipulator manipulator, Joystick gamepad, double power) {
+    public CascadeHold(CascadeElevator cascade, double position, Joystick gamepad) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-    	requires(manipulator);
+    	requires(cascade);
+    	this.cascade = cascade;
+    	this.position = position;
     	this.gamepad = gamepad;
-    	this.manipulator = manipulator;
-    	timer = new Timer();
-    	this.power = power;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	manipulator.pushBox(power);
-    	timer.start();
+    	cascade.goToPosition(position);
+    	cascade.runningPreset = true;
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	/*if (Math.abs(cascade.talonCascade.getSelectedSensorPosition(0) - position * Constants.INCHES_TO_TICKS_CASCADE) < 500)
+    		cascade.holdPosition();
+    	else */
+    		cascade.goToPosition(position);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return timer.get() > 0.5;
+    	return false;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	manipulator.stop();
+    	cascade.stop();
+    	cascade.runningPreset = false;
+    	cascade.lastPosition = -position;
     }
 
     // Called when another command which requires one or more of the same

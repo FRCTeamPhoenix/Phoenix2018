@@ -23,19 +23,20 @@ public class DriveArc extends Command {
 	}
 	
 	protected void initialize() {
-		m_westCoast.goArc(this.radius, this.angle, this.outerMultiplyer, this.innerMultiplyer, this.isLeftInner);
+		//m_westCoast.goArc(this.radius, this.angle, this.outerMultiplyer, this.innerMultiplyer, this.isLeftInner);
 	}
 	
 	protected void execute() {
-		m_westCoast.arcLoop(this.isLeftInner);
+		//m_westCoast.arcLoop(this.isLeftInner);
 	}
 	
 	public boolean isFinished(){
-    	return m_westCoast.isDistanceFinished();
+		return true;
+    	//return m_westCoast.isDistanceFinished();
     }
 	
 	protected void end() {
-		m_westCoast.setVelocity(0, 0);
+		//m_westCoast.setVelocity(0, 0);
 	}
 	
 	protected void interrupted() {

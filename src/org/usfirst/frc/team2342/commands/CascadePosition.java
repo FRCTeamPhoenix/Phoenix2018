@@ -26,24 +26,27 @@ public class CascadePosition extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	cascade.goToPosition(position);
+    	cascade.runningPreset = true;
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if (Math.abs(cascade.talonCascade.getSelectedSensorPosition(0) - position * Constants.INCHES_TO_TICKS_CASCADE) < 500)
+    	/*if (Math.abs(cascade.talonCascade.getSelectedSensorPosition(0) - position * Constants.INCHES_TO_TICKS_CASCADE) < 500)
     		cascade.holdPosition();
-    	else 
+    	else */
     		cascade.goToPosition(position);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Math.abs(gamepad.getRawAxis(3)) > Constants.CASCADE_DEADZONE;
+        return Math.abs(gamepad.getRawAxis(5)) > Constants.CASCADE_DEADZONE || Math.abs(cascade.talonCascade.getSelectedSensorPosition(0) + position) < 200;
     }
 
     // Called once after isFinished returns true
     protected void end() {
     	cascade.stop();
+    	cascade.runningPreset = false;
+    	cascade.lastPosition = -position;
     }
 
     // Called when another command which requires one or more of the same

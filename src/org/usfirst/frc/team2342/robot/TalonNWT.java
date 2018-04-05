@@ -1,13 +1,11 @@
 package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
-import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.util.Constants;
 import org.usfirst.frc.team2342.util.NetworkTableInterface;
 
 import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class TalonNWT {
 	private static long initial = 0;
@@ -39,24 +37,24 @@ public class TalonNWT {
 		String pidTable = Constants.TALON_TABLE_LOCATION + "/" + id + "/pid-0";
 //		String angleTable = Constants.TALON_TABLE_LOCATION + "/" + id + "/Angle";
 //		String errorTable = Constants.TALON_TABLE_LOCATION + "/" + id + "/Error";
-		gyro.setP(NetworkTableInterface.getDouble(pidTable, "/P"));
-		gyro.setI(NetworkTableInterface.getDouble(pidTable, "/I"));
-		gyro.setD(NetworkTableInterface.getDouble(pidTable, "/D"));
+		GyroPIDController.setP(NetworkTableInterface.getDouble(pidTable, "/P"));
+		GyroPIDController.setI(NetworkTableInterface.getDouble(pidTable, "/I"));
+		GyroPIDController.setD(NetworkTableInterface.getDouble(pidTable, "/D"));
 	}
 	
-	public static void updateGyroPID(GyroPIDController gyro) {
+	public static void updateGyroPID() {
 		int id = 100;
 		String talonTable = Constants.TALON_TABLE_LOCATION + "/" + id;
-		NetworkTableInterface.setValue(talonTable, "P", gyro.getP());
-		NetworkTableInterface.setValue(talonTable, "I", gyro.getI());
-		NetworkTableInterface.setValue(talonTable, "D", gyro.getD());
-		NetworkTableInterface.setValue(talonTable, "Current Angle", gyro.getCurAngle());
-		NetworkTableInterface.setValue(talonTable, "Angle Error", gyro.calculateAE());
+		NetworkTableInterface.setValue(talonTable, "P", GyroPIDController.getP());
+		NetworkTableInterface.setValue(talonTable, "I", GyroPIDController.getI());
+		NetworkTableInterface.setValue(talonTable, "D", GyroPIDController.getD());
+		NetworkTableInterface.setValue(talonTable, "Current Angle", GyroPIDController.getCurAngle());
+		NetworkTableInterface.setValue(talonTable, "Angle Error", GyroPIDController.calculateAE());
 	}
 	
 	public static void updateTalon(TalonSRX talon){
 		String talonTable = Constants.TALON_TABLE_LOCATION + "/"+talon.getDeviceID();
-		
+		NetworkTableInterface.setValue(talonTable, "setpoint", -Constants.WESTCOAST_HALF_SPEED);
 		NetworkTableInterface.setValue(talonTable, "Inverted", talon.getInverted());
 		NetworkTableInterface.setValue(talonTable, "Percent Output", talon.getMotorOutputPercent());
 		NetworkTableInterface.setValue(talonTable, "Output Voltage", talon.getMotorOutputVoltage());
@@ -67,9 +65,9 @@ public class TalonNWT {
 		NetworkTableInterface.setValue(talonTable, "Closed Loop Error", talon.getClosedLoopError(0));
 		NetworkTableInterface.setValue(talonTable, "Error Derivative", talon.getErrorDerivative(0));
 		NetworkTableInterface.setValue(talonTable, "Integral Acummulator", talon.getIntegralAccumulator(0));
-		//NetworkTableInterface.setValue(talonTable, "Forward Limit Closed", talon.);
+		//NetworkTableInterface.setValue(talonTable, "Forward Limit Closed", talon.getSensorCollection().get);
 		//NetworkTableInterface.setValue(talonTable, "Reverse Limit Closed", talon.);
-		//NetworkTableInterface.setValue(talonTable, "inverted", talon);
+		NetworkTableInterface.setValue(talonTable, "inverted", talon.getInverted());
 		//Assumes usage of 2 PID loops
 		setPIDValues(Constants.TALON_VELOCITY_SLOT_IDX, talon);
 		setPIDValues(Constants.TALON_DISTANCE_SLOT_IDX, talon);

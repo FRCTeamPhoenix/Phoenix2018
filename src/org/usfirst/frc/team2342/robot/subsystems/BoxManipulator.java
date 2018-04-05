@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class BoxManipulator extends Subsystem {
 	public WPI_TalonSRX talonIntakeRight;
 	public WPI_TalonSRX talonIntakeLeft;
-	private WPI_TalonSRX talonTip;
+	public WPI_TalonSRX talonTip;
 	private PCMHandler pcm;
 	Timer timer = new Timer();
 	
@@ -75,14 +75,18 @@ public class BoxManipulator extends Subsystem {
 	}
 	
 	public void pullBox() {
-		talonIntakeRight.set(ControlMode.PercentOutput, 1);
-		talonIntakeLeft.set(ControlMode.PercentOutput, -1);
+		talonIntakeRight.set(ControlMode.PercentOutput, -0.5);
+		talonIntakeLeft.set(ControlMode.PercentOutput, 0.5);
 		
 	}
 	
 	public void pushBox() {
-		talonIntakeRight.set(ControlMode.PercentOutput, -1);
-		talonIntakeLeft.set(ControlMode.PercentOutput, 1);
+		pushBox(1);
+	}
+	
+	public void pushBox(double power) {
+		talonIntakeRight.set(ControlMode.PercentOutput, power);
+		talonIntakeLeft.set(ControlMode.PercentOutput, -power);
 	}
 	
 	public void outputToSmartDashboard() {

@@ -91,10 +91,10 @@ public class TankDrive extends Subsystem{
 	}
 
 	public void zeroSensors() {
-		leftA.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 0);
-		leftB.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 0);
-		rightA.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 0);
-		rightB.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 0);
+		leftA.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 10);
+		leftB.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 10);
+		rightA.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 10);
+		rightB.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 10);
 	}
 
 	public void setPercentage(double left,double right) {
@@ -106,7 +106,7 @@ public class TankDrive extends Subsystem{
 		PCM.setLowGear(false);
 		PCM.setHighGear(true);
 		PCM.compressorRegulate();
-		leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, PidLoopIndexHigh);
+		leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 1);
 	}
 
 	public void setHighGear() {
@@ -123,7 +123,7 @@ public class TankDrive extends Subsystem{
 		PCM.setHighGear(false);
 		PCM.setLowGear(true);
 		PCM.compressorRegulate();
-		leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, PidLoopIndexLow);
+		leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
 	}
 
 	public void setNoGear() {
@@ -177,6 +177,7 @@ public class TankDrive extends Subsystem{
 		rightA.config_kI(PidLoopIndexHigh, pid.i, PidTimeOutMs);
 		rightA.config_kD(PidLoopIndexHigh, pid.d, PidTimeOutMs);
 	}
+	
 	public void goDistance(double distance, double speed) {
 		/*if (-leftA.getSelectedSensorPosition(PidLoopIndexHigh) < distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV)
 			speed *= -1;*/
@@ -187,11 +188,10 @@ public class TankDrive extends Subsystem{
 		
 		setVelocity(speed*(1.0-GyroPIDController.getCorrection()), speed*(1.0+GyroPIDController.getCorrection()));
 	}
+	
 	public void goDistance2(double distance, double speed) {
-		if (-leftA.getSelectedSensorPosition(PidLoopIndexHigh) < distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV)
-			speed *= -1;
-
-		
+//		if (-leftA.getSelectedSensorPosition(PidLoopIndexHigh) < distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV)
+//			speed *= -1;
 		
 		//System.out.println(""+GyroPIDController.getCorrection());
 		

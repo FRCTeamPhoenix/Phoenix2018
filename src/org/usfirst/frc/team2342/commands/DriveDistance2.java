@@ -14,12 +14,17 @@ public class DriveDistance2 extends Command {
 	private double distance;
 	
 	private double speed;
+	
+	private double timeSinceStopped;
+	private boolean stopping;
 
 	public DriveDistance2(TankDrive tankDrive, double distance, double speed) {
     	requires(tankDrive);
     	this.tankDrive = tankDrive;
     	this.distance = distance;
     	this.speed = speed;
+    	tankDrive.gyroControl = false;
+    	stopping = false;
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
@@ -31,22 +36,33 @@ public class DriveDistance2 extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	tankDrive.zeroSensors();
-    	tankDrive.setHighGear();
+    	//tankDrive.setHighGear();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	tankDrive.goDistance2(distance, -speed);
+    	tankDrive.goDistance2(distance, speed);
+    	if(-tankDrive.leftA.getSelectedSensorPosition(0) > distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV) {
+    		timeSinceStopped = System.currentTimeMillis();
+    		stopping = true;
+    	}
+    	
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Math.abs((tankDrive.leftA.getSelectedSensorPosition(0)) + distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV) < 300;
+    	System.out.println(tankDrive.leftA.getSelectedSensorPosition(0));
+        //return -tankDrive.leftA.getSelectedSensorPosition(0) > distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
+    	if(!stopping)
+    		return false;
+    	tankDrive.setVelocity(0, 0);
+    	return System.currentTimeMillis() - timeSinceStopped > 300;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	tankDrive.setVelocity(0, 0);
+    	System.out.println("ending distance");
+    	tankDrive.setPercentage(0, 0);
     }
 
     // Called when another command which requires one or more of the same

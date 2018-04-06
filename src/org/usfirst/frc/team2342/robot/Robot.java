@@ -7,7 +7,7 @@ import org.usfirst.frc.team2342.automodes.MiddleAuto;
 import org.usfirst.frc.team2342.automodes.RightSideAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
-import org.usfirst.frc.team2342.commands.TurnAngle;
+import org.usfirst.frc.team2342.commands.DriveVoltageTime;
 import org.usfirst.frc.team2342.json.GyroPIDJson;
 import org.usfirst.frc.team2342.json.GyroReader;
 import org.usfirst.frc.team2342.json.JsonHandler;
@@ -292,8 +292,10 @@ public class Robot extends IterativeRobot {
 		GyroPIDController.setD(0);
 		//tankDrive.debug = true;
 		
-		Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		//Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//Scheduler.getInstance().add(new TurnAngle(Constants.WESTCOAST_TURN_SPEED, 90, tankDrive));
+		Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		//Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, gamepad));
 		//tankDrive.setGyroControl(false);
 		//TalonNWT.updateGyroPID(westCoast.pidc);
 	}
@@ -304,21 +306,21 @@ public class Robot extends IterativeRobot {
 
 		
 		//TalonNWT.updateGyroPID();
-		//TalonNWT.updateTalon(talonFR);
-		//TalonNWT.updateTalon(talonFL);
-		//TalonNWT.updateTalon(talonBR);
-		//TalonNWT.updateTalon(talonBL);
+		TalonNWT.updateTalon(talonFR);
+		TalonNWT.updateTalon(talonFL);
+		TalonNWT.updateTalon(talonBR);
+		TalonNWT.updateTalon(talonBL);
 		
 		try { Thread.sleep(10); }
 		catch (Exception e) { }
 
-		/*if(!cascadeElevator.runningPreset) {
+		if(!cascadeElevator.runningPreset) {
 			if(Math.abs(cascadeElevator.talonCascade.getSelectedSensorPosition(0)) > 100 && !cascadeElevator.lowerLimit.get()) {
 				cascadeElevator.talonCascade.selectProfileSlot(1, 0);
 				cascadeElevator.talonCascade.set(ControlMode.Position, cascadeElevator.lastPosition);
 			}
 			//System.out.println("setting 0 no preset");
-		}*/
+		}
 
 		//System.out.println(tankDrive.leftA.getSelectedSensorPosition(0));
 	}

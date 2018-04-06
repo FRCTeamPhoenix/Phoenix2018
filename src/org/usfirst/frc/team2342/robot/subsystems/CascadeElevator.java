@@ -20,7 +20,7 @@ public class CascadeElevator extends Subsystem {
 
 	private final int PidLoopIndex = 0;
 	private final int PidTimeOutMs = 10;
-	private final boolean SensorPhase = false;
+	private final boolean SensorPhase = true;
 	private final boolean InvertMotor = false;
 	public boolean runningPreset = false;
 
@@ -127,7 +127,7 @@ public class CascadeElevator extends Subsystem {
 
 		}
 
-		System.out.println("going velocity " + speed);
+		//System.out.println("going velocity " + speed);
 		talonCascade.set(ControlMode.Velocity, speed);
 
 	}

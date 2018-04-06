@@ -28,6 +28,10 @@ public class Gyro {
 		goalAngle = imu.getAngleX() + offset;
 	}
 	
+	public static void calibrate() {
+		imu.calibrate();
+	}
+	
 	public static double angleFromGoal(){
 		return goalAngle - imu.getAngleX();
 	}

@@ -145,10 +145,10 @@ public class TankDrive extends Subsystem{
 			}
 		}
 		else {
-			left  = -left  * (1  - GyroPIDController.getCorrection());
-			right = -right * (1  + GyroPIDController.getCorrection());
-			leftA.set(ControlMode.Velocity,  left);
-			rightA.set(ControlMode.Velocity, right);
+			left  = left  * (1  - GyroPIDController.getCorrection());
+			right = right * (1  + GyroPIDController.getCorrection());
+			leftA.set(ControlMode.Velocity,  -left);
+			rightA.set(ControlMode.Velocity, -right);
 			if (this.debug) {
 				SmartDashboard.putString("DB/String 0", String.valueOf(gpid.getCorrection()));
 				SmartDashboard.putString("DB/String 1", String.valueOf(gpid.getCurAngle()));
@@ -202,7 +202,7 @@ public class TankDrive extends Subsystem{
 		if (!leftA.getControlMode().equals(ControlMode.Velocity)) {
 			leftA.selectProfileSlot(Constants.TALON_VELOCITY_SLOT_IDX, 0);
 		}
-
+		this.gyroControl = true;
 		if (this.gyroControl == true) {
 			double lspeed =   velocity * GyroPIDController.getCorrection();
 			double rspeed =  -velocity * GyroPIDController.getCorrection();

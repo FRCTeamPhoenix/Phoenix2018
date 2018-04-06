@@ -44,7 +44,7 @@ public class TurnAngle extends Command {
 	// Initialize the setup for the target angle
 	protected void initialize(){
 		GyroPIDController.gyroReset();
-		this.cangle = GyroPIDController.getCurAngle();
+		this.cangle = 0;
 		if(m_westCoast.debug)
 			System.out.println("turning angle "+angle+" degrees");
 		m_westCoast.turnSet(this.angle);
@@ -73,7 +73,7 @@ public class TurnAngle extends Command {
 		for(int i=0;i<Constants.TURN_AVERAGE_SIZE;i++)
 			avg += trailingCorrections[i];
 		avg /= Constants.TURN_AVERAGE_SIZE;
-		System.out.println("trailing avg " + avg);
+		//System.out.println("trailing avg " + avg);
 		return Math.abs(avg - this.angle) <= Constants.TURN_THRESHOLD;
 	}
 	
@@ -87,6 +87,7 @@ public class TurnAngle extends Command {
 	
 	// stop the robot from turning when done
 	protected void end() {
+		System.out.println("finished angle");
 		if(m_westCoast.debug)
 			System.out.println("finished turn angle");
 		m_westCoast.setVelocity(0, 0);

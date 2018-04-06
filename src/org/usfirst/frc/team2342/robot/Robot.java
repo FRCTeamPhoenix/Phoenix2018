@@ -2,13 +2,18 @@ package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
 import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
-import org.usfirst.frc.team2342.automodes.MultiCubeAutoRightSide;
+import org.usfirst.frc.team2342.automodes.LeftSideAuto;
+import org.usfirst.frc.team2342.automodes.MiddleAuto;
+import org.usfirst.frc.team2342.automodes.RightSideAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
+import org.usfirst.frc.team2342.commands.TurnAngle;
 import org.usfirst.frc.team2342.json.GyroPIDJson;
+import org.usfirst.frc.team2342.json.GyroReader;
 import org.usfirst.frc.team2342.json.JsonHandler;
-import org.usfirst.frc.team2342.json.*;
 import org.usfirst.frc.team2342.json.PIDGains;
+import org.usfirst.frc.team2342.json.TalonReader;
+import org.usfirst.frc.team2342.robot.sensors.Gyro;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
@@ -26,6 +31,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -68,8 +74,16 @@ public class Robot extends IterativeRobot {
 	JsonHandler json;
 	TalonReader treader;
 	GyroReader greader;
+	
+	SendableChooser<Command> autoChooser;
+	
+	//0 = left
+	//1 = mid
+	//2 = right
+	int autonomous_position = 0;
 
 	public Robot() {
+		Gyro.init();
 		gamepad = new Joystick(0);
 		PCM = new PCMHandler(11);
 		talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
@@ -113,6 +127,13 @@ public class Robot extends IterativeRobot {
 		//Start up cameras
 		CameraControl cameras = new CameraControl(640, 480, 15);
 		cascadeElevator.lastPosition = 0;
+		
+		autoChooser = new SendableChooser<Command>();
+		autoChooser.addDefault("Left Side Auto", new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		autoChooser.addObject("Right Side Auto", new RightSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		autoChooser.addObject("Center Auto", new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		SmartDashboard.putData("Select Autonomous Mode", autoChooser);
+		
 		//Gyro.init();
 	}
 
@@ -132,7 +153,7 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().add(driveJoystick);
 		//////westCoast.setGyroControl(false);
 		this.updatePID();
-
+		
 		//westCoast.debug = true;
 
 		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
@@ -193,16 +214,8 @@ public class Robot extends IterativeRobot {
 				//cascadeElevator.setVelocity(0);
 				//System.out.println("last position = " + cascadeElevator.lastPosition + " actual position = " + cascadeElevator.talonCascade.getSelectedSensorPosition(0));
 			}
-		} else {
-			cascadeElevator.setVelocity(0);
-			//System.out.println("setting 0 no preset");
 		}
 		//System.out.println("lower: " + cascadeElevator.lowerLimit.get() + " upper: " + cascadeElevator.upperLimit.get());
-
-		if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) || XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER) || gamepad.getRawButton(7))
-			boxManipulator.closeManipulator();
-		else
-			boxManipulator.openManipulator();
 
 		if(XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER) > 0.1) {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0.5);
@@ -273,13 +286,15 @@ public class Robot extends IterativeRobot {
 		}
 
 		updatePID();
-		tankDrive.updateGyroPID(gpidjson.gyroPid);
-		GyroPIDController.setP(SmartDashboard.getNumber("DB/Slider 0", 0));
-		GyroPIDController.setI(SmartDashboard.getNumber("DB/Slider 1", 0));
-		GyroPIDController.setD(SmartDashboard.getNumber("DB/Slider 2", 0));
-		tankDrive.debug = true;
-		Scheduler.getInstance().add(new MultiCubeAutoRightSide(tankDrive, cascadeElevator, boxManipulator, gamepad));
-		tankDrive.setGyroControl(false);
+		//tankDrive.updateGyroPID(gpidjson.gyroPid);
+		GyroPIDController.setP(0.02);
+		GyroPIDController.setI(0);
+		GyroPIDController.setD(0);
+		//tankDrive.debug = true;
+		
+		Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		//Scheduler.getInstance().add(new TurnAngle(Constants.WESTCOAST_TURN_SPEED, 90, tankDrive));
+		//tankDrive.setGyroControl(false);
 		//TalonNWT.updateGyroPID(westCoast.pidc);
 	}
 

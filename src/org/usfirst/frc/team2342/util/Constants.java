@@ -3,6 +3,11 @@ package org.usfirst.frc.team2342.util;
 import edu.wpi.first.wpilibj.SerialPort;
 
 public class Constants {
+	
+	public static final int AUTO_POS_LEFT = 0;
+	public static final int AUTO_POS_MID = 1;
+	public static final int AUTO_POS_RIGHT = 2;
+	
 	public static final int LEFT_MASTER_TALON_ID = 1;
 	public static final int RIGHT_MASTER_TALON_ID = 2;
 	public static final int LEFT_SLAVE_TALON_ID = 3;
@@ -25,7 +30,7 @@ public class Constants {
 	public static final double WESTCOAST_TURN_SPEED = WESTCOAST_MAX_SPEED * 0.7d;
 	
 	public static final int TURN_AVERAGE_SIZE = 10;
-	public static final double TURN_THRESHOLD = 1;
+	public static final double TURN_THRESHOLD = 3;
 	
 	public static final int PCM_PORT = 11;
 

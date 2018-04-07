@@ -20,7 +20,7 @@ public class TiltManipulator extends Command {
 	
 	@Override
 	protected boolean isFinished() {
-		return System.currentTimeMillis() - startTime > 125;
+		return System.currentTimeMillis() - startTime > 25;
 	}
 
 }

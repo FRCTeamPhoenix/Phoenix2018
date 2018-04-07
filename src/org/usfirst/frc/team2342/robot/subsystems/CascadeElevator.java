@@ -20,7 +20,7 @@ public class CascadeElevator extends Subsystem {
 
 	private final int PidLoopIndex = 0;
 	private final int PidTimeOutMs = 10;
-	private final boolean SensorPhase = true;
+	private final boolean SensorPhase = false;
 	private final boolean InvertMotor = false;
 	public boolean runningPreset = false;
 

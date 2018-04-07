@@ -128,11 +128,13 @@ public class Robot extends IterativeRobot {
 		CameraControl cameras = new CameraControl(640, 480, 15);
 		cascadeElevator.lastPosition = 0;
 		
+		/*
 		autoChooser = new SendableChooser<Command>();
 		autoChooser.addDefault("Left Side Auto", new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		autoChooser.addObject("Right Side Auto", new RightSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		autoChooser.addObject("Center Auto", new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		SmartDashboard.putData("Select Autonomous Mode", autoChooser);
+		*/
 		
 		//Gyro.init();
 	}

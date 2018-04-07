@@ -30,7 +30,7 @@ public class MiddleAuto extends CommandGroup {
 		//If DB/Button 1 is PRESSED, we will be on the LEFT side.
 		//If DB/Button 1 is NOT PRESSED, we will be on the RIGHT side.
 		//This should not need to be changed significantly.
-		if(!(DriverStation.getInstance().getGameSpecificMessage().charAt(0) == 'L' ^ SmartDashboard.getBoolean("DB/Button 1", false))) {	
+		if((DriverStation.getInstance().getGameSpecificMessage().length() > 0) && (!(DriverStation.getInstance().getGameSpecificMessage().charAt(0) == 'L' ^ SmartDashboard.getBoolean("DB/Button 1", false)))) {	
 			//Push a box into the switch. The third parameter is the shooting power (percentage 0.0 to 1.0).
 			addSequential(new PushBox(manip, gamepad, 0.25));
 		}

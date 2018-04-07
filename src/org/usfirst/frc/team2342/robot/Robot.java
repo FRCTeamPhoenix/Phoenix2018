@@ -1,23 +1,20 @@
 package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
-import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
 import org.usfirst.frc.team2342.automodes.LeftSideAuto;
 import org.usfirst.frc.team2342.automodes.MiddleAuto;
-import org.usfirst.frc.team2342.automodes.RightSideAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
+import org.usfirst.frc.team2342.commands.DriveDistance2;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
-import org.usfirst.frc.team2342.commands.DriveVoltageTime;
 import org.usfirst.frc.team2342.json.GyroPIDJson;
 import org.usfirst.frc.team2342.json.GyroReader;
 import org.usfirst.frc.team2342.json.JsonHandler;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.json.TalonReader;
-import org.usfirst.frc.team2342.robot.sensors.Gyro;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
 import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
-import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
+//import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 import org.usfirst.frc.team2342.util.FMS;
 
@@ -55,7 +52,7 @@ public class Robot extends IterativeRobot {
 	DistancePIDController pc;
 	
 	TankDrive tankDrive;
-	WestCoastTankDrive westCoast;
+	//WestCoastTankDrive westCoast;
 	Joystick joystickR;
 	Joystick XBOX;
 	CascadeElevator cascadeElevator;
@@ -83,7 +80,7 @@ public class Robot extends IterativeRobot {
 	int autonomous_position = 0;
 
 	public Robot() {
-		Gyro.init();
+		//Gyro.init();
 		gamepad = new Joystick(0);
 		PCM = new PCMHandler(11);
 		talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
@@ -127,6 +124,8 @@ public class Robot extends IterativeRobot {
 		//Start up cameras
 		CameraControl cameras = new CameraControl(640, 480, 15);
 		cascadeElevator.lastPosition = 0;
+		
+		updatePID();
 		
 		/*
 		autoChooser = new SendableChooser<Command>();
@@ -289,14 +288,20 @@ public class Robot extends IterativeRobot {
 
 		updatePID();
 		//tankDrive.updateGyroPID(gpidjson.gyroPid);
-		GyroPIDController.setP(0.02);
-		GyroPIDController.setI(0);
-		GyroPIDController.setD(0);
+		//GyroPIDController.setP(0.02);
+	//	GyroPIDController.setI(0);
+		//GyroPIDController.setD(0);
 		//tankDrive.debug = true;
 		
 		//Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//Scheduler.getInstance().add(new TurnAngle(Constants.WESTCOAST_TURN_SPEED, 90, tankDrive));
-		Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		if(SmartDashboard.getBoolean("DB/Button 1", false))
+			Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		else if(SmartDashboard.getBoolean("DB/Button 2", false)) {
+			Scheduler.getInstance().add(new DriveDistance2(tankDrive, 23));
+		}
+		else
+			Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, gamepad));
 		//tankDrive.setGyroControl(false);
 		//TalonNWT.updateGyroPID(westCoast.pidc);
@@ -308,13 +313,15 @@ public class Robot extends IterativeRobot {
 
 		
 		//TalonNWT.updateGyroPID();
-		TalonNWT.updateTalon(talonFR);
+		/*TalonNWT.updateTalon(talonFR);
 		TalonNWT.updateTalon(talonFL);
 		TalonNWT.updateTalon(talonBR);
-		TalonNWT.updateTalon(talonBL);
+		TalonNWT.updateTalon(talonBL);*/
 		
 		try { Thread.sleep(10); }
 		catch (Exception e) { }
+		
+		//System.out.println("left @ " + talonFL.getSelectedSensorPosition(0) + " right @ " + talonFR.getSelectedSensorPosition(0));
 
 		if(!cascadeElevator.runningPreset) {
 			if(Math.abs(cascadeElevator.talonCascade.getSelectedSensorPosition(0)) > 100 && !cascadeElevator.lowerLimit.get()) {
@@ -332,15 +339,17 @@ public class Robot extends IterativeRobot {
 		System.out.println("TEST MODE INIT");
 
 		//talonCascade.set(ControlMode.PercentOutput, XBOX.getRawAxis(3));
-		tankDrive.debug = true;
+		//tankDrive.debug = true;
 		//this.updatePID(gpidjson.gyroPid);
-		tankDrive.updateGyroPID(gpidjson.gyroPid);
-		this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
+		//tankDrive.updateGyroPID(gpidjson.gyroPid);
+		System.out.println("going " + talonFR.getSelectedSensorVelocity(0) + " " + talonFL.getSelectedSensorVelocity(0));
+		//this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
 	}
 
 	@Override
 	public void testPeriodic() {
 		try {
+			System.out.println("going " + talonFR.getSelectedSensorVelocity(0) + " " + talonFL.getSelectedSensorVelocity(0));
 			//Scheduler.getInstance().run();
 			//tankDrive.setVelocity(Constants.WESTCOAST_HALF_SPEED, Constants.WESTCOAST_HALF_SPEED);
 			Scheduler.getInstance().run();
@@ -354,10 +363,10 @@ public class Robot extends IterativeRobot {
 	public void updatePID() {
 		PIDGains p = new PIDGains();
 		//TalonNWT.populateGyroPID(this.pidc);
-		p.p = 2.0; //SmartDashboard.getNumber("DB/Slider 0", 0);
+		p.p = 1.0; //SmartDashboard.getNumber("DB/Slider 0", 0);
 		p.i = 0; //SmartDashboard.getNumber("DB/Slider 1", 0);
 		p.d = 0; //SmartDashboard.getNumber("DB/Slider 2", 0);
-		p.ff = 0.4; //SmartDashboard.getNumber("DB/Slider 3", 0);
+		p.ff = 0; //SmartDashboard.getNumber("DB/Slider 3", 0);
 		tankDrive.setPid(p);
 		//westCoast.updateTalonPID(0, talonPID);
 		SmartDashboard.putString("DB/String 6", String.valueOf(p.p));

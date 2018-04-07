@@ -22,5 +22,11 @@ public class TiltManipulator extends Command {
 	protected boolean isFinished() {
 		return System.currentTimeMillis() - startTime > 25;
 	}
+	
+	protected void end() {
+		manip.talonTip.set(0);
+	}
+	
+	
 
 }

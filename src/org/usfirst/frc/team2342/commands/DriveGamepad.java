@@ -1,7 +1,7 @@
 package org.usfirst.frc.team2342.commands;
 
 import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
-import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
+
 import org.usfirst.frc.team2342.util.Constants;
 
 import edu.wpi.first.wpilibj.Joystick;

@@ -1,0 +1,39 @@
+package org.usfirst.frc.team2342.automodes;
+
+import org.usfirst.frc.team2342.commands.CascadePosition;
+import org.usfirst.frc.team2342.commands.DriveVoltageTime;
+import org.usfirst.frc.team2342.commands.PushBox;
+import org.usfirst.frc.team2342.commands.TiltManipulator;
+import org.usfirst.frc.team2342.commands.Turn90;
+import org.usfirst.frc.team2342.commands.Wait;
+import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
+import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
+import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
+import org.usfirst.frc.team2342.util.Constants;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+public class ScaleAuto extends CommandGroup {
+	public ScaleAuto(TankDrive drive, CascadeElevator cascade, BoxManipulator manip, Joystick gamepad) {
+		//Drive forward, tilt down and raise to switch height. Second paramater is drive time (ms) and third parameter is voltage (percentage 0.0 to 1.0).
+		addSequential(new DriveVoltageTime(drive, 4000, 0.75));
+		addSequential(new Turn90(drive,false));
+		addSequential(new CascadePosition(cascade, Constants.CASCADE_UPPER_SCALE, gamepad));
+		addSequential(new TiltManipulator(manip));
+		new Wait(1000);
+		//addSequential(new PushBox(manip, gamepad, 0.5));
+		//This if statement does logic to determine if we should push a cube into the switch.
+		//If "DB/Button 2" is PRESSED, it will not push the box no matter what
+		//If "DB/Button 2" is NOT PRESSED, it will push the box if and only if the other part is true.
+		//If DB/Button 1 is PRESSED, we will be on the LEFT side.
+		//If DB/Button 1 is NOT PRESSED, we will be on the RIGHT side.
+		//This should not need to be changed significantly.
+		if((!(SmartDashboard.getBoolean("DB/Button 2", false))) && (DriverStation.getInstance().getGameSpecificMessage().length() > 0) && (!(DriverStation.getInstance().getGameSpecificMessage().charAt(1) == 'L' ^ SmartDashboard.getBoolean("DB/Button 1", false)))) {	
+			//Push a box into the switch. The third parameter is the shooting power (percentage 0.0 to 1.0).
+			addSequential(new PushBox(manip, gamepad, 0.25));
+		}				
+	}
+}

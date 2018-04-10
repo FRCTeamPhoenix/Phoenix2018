@@ -20,21 +20,43 @@ public class MiddleAuto extends CommandGroup {
 	public MiddleAuto(TankDrive drive, CascadeElevator cascade, BoxManipulator manip, Joystick gamepad) {
 		
 		//Drive forward, tilt down and raise to switch height. Second paramater is drive time (ms) and third parameter is voltage (percentage 0.0 to 1.0).
+		//If "DB/Button 3" is PRESSED, run the experimental code
+		if(SmartDashboard.getBoolean("DB/Button 4", false)) {
+			//Experimental code
+			addParallel(new CascadePosition(cascade, Constants.CASCADE_SWITCH, gamepad));
+			addParallel(new TiltManipulator(manip));
+			addSequential(new DriveVoltageTime(drive, 2000, 0.75));
+			new Wait(1000);
+			//addSequential(new PushBox(manip, gamepad, 0.5));
+			//This if statement does logic to determine if we should push a cube into the switch.
+			//If "DB/Button 2" is PRESSED, it will not push the box no matter what
+			//If "DB/Button 2" is NOT PRESSED, it will push the box if and only if the other part is true.
+			//If DB/Button 1 is PRESSED, we will be on the LEFT side.
+			//If DB/Button 1 is NOT PRESSED, we will be on the RIGHT side.
+			//This should not need to be changed significantly.
+			if((!(SmartDashboard.getBoolean("DB/Button 2", false))) && ((DriverStation.getInstance().getGameSpecificMessage().length() > 0) && (!(DriverStation.getInstance().getGameSpecificMessage().charAt(0) == 'L' ^ SmartDashboard.getBoolean("DB/Button 1", false))))) {	
+				//Push a box into the switch. The third parameter is the shooting power (percentage 0.0 to 1.0).
+				addSequential(new PushBox(manip, gamepad, 0.25));
+			}	
 		
-		addSequential(new CascadePosition(cascade, Constants.CASCADE_SWITCH, gamepad));
-		addParallel(new TiltManipulator(manip));
-		addSequential(new DriveVoltageTime(drive, 2000, 0.75));
-		new Wait(1000);
-		//addSequential(new PushBox(manip, gamepad, 0.5));
-		//This if statement does logic to determine if we should push a cube into the switch.
-		//If DB/Button 1 is PRESSED, we will be on the LEFT side.
-		//If DB/Button 1 is NOT PRESSED, we will be on the RIGHT side.
-		//This should not need to be changed significantly.
-		if((DriverStation.getInstance().getGameSpecificMessage().length() > 0) && (!(DriverStation.getInstance().getGameSpecificMessage().charAt(0) == 'L' ^ SmartDashboard.getBoolean("DB/Button 1", false)))) {	
-			//Push a box into the switch. The third parameter is the shooting power (percentage 0.0 to 1.0).
-			addSequential(new PushBox(manip, gamepad, 0.25));
+		} else {//If "DB/Button 3" is NOT PRESSED, run last known good code
+			//Last known good code
+			addParallel(new CascadePosition(cascade, Constants.CASCADE_SWITCH, gamepad));
+			addParallel(new TiltManipulator(manip));
+			addSequential(new DriveVoltageTime(drive, 2000, 0.75));
+			new Wait(1000);
+			//addSequential(new PushBox(manip, gamepad, 0.5));
+			//This if statement does logic to determine if we should push a cube into the switch.
+			//If "New Name" is PRESSED, it will not push the box no matter what
+			//If "New Name" is NOT PRESSED, it will push the box if and only if the other part is true.
+			//If DB/Button 1 is PRESSED, we will be on the LEFT side.
+			//If DB/Button 1 is NOT PRESSED, we will be on the RIGHT side.
+			//This should not need to be changed significantly.
+			if((DriverStation.getInstance().getGameSpecificMessage().length() > 0) && (!(DriverStation.getInstance().getGameSpecificMessage().charAt(0) == 'L' ^ SmartDashboard.getBoolean("DB/Button 1", false)))) {	
+				//Push a box into the switch. The third parameter is the shooting power (percentage 0.0 to 1.0).
+				addSequential(new PushBox(manip, gamepad, 0.25));
+			}
 		}
-		
 		
 	}
 	

@@ -12,6 +12,8 @@ public class Constants {
 	public static final int RIGHT_MASTER_TALON_ID = 2;
 	public static final int LEFT_SLAVE_TALON_ID = 3;
 	public static final int RIGHT_SLAVE_TALON_ID = 4;
+	
+	public static final int WINCH_MOTOR = 10;
 
 	public static final int TALON_VELOCITY_SLOT_IDX = 0;
 	public static final int TALON_DISTANCE_SLOT_IDX = 1;
@@ -73,6 +75,7 @@ public class Constants {
 
 	//positions of important cascade heights
 	public static final int CASCADE_BASE = 0;
+	public static final int CASCADE_6_INCHES = 1714;
 	public static final int CASCADE_SWITCH = 12000;
 	public static final int CASCADE_LOWER_SCALE = 22000;
 	public static final int CASCADE_UPPER_SCALE = 25500;
@@ -119,8 +122,11 @@ public class Constants {
 	public static final int XBOX_LEFTBUMPER = 5;
 	public static final int XBOX_RIGHTBUMPER = 6;
 	
-	public static final int XBOX_SELECT = 8;
-	public static final int XBOX_START = 7;
+	public static final int XBOX_SELECT = 7;
+	public static final int XBOX_START = 8;
+	
+	public static final int XBOX_LEFTSTICK_BUTTON = 9;
+	public static final int XBOX_RIGHTSTICK_BUTTON = 10;
 	
 	public static final double tSpeed = 4.5d;
 	

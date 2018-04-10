@@ -2,12 +2,12 @@ package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
 import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
-import org.usfirst.frc.team2342.automodes.LeftSideAuto;
 import org.usfirst.frc.team2342.automodes.MiddleAuto;
-import org.usfirst.frc.team2342.automodes.RightSideAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
-import org.usfirst.frc.team2342.commands.DriveVoltageTime;
+import org.usfirst.frc.team2342.commands.WindDown;
+import org.usfirst.frc.team2342.commands.WindStop;
+import org.usfirst.frc.team2342.commands.WindUp;
 import org.usfirst.frc.team2342.json.GyroPIDJson;
 import org.usfirst.frc.team2342.json.GyroReader;
 import org.usfirst.frc.team2342.json.JsonHandler;
@@ -16,6 +16,7 @@ import org.usfirst.frc.team2342.json.TalonReader;
 import org.usfirst.frc.team2342.robot.sensors.Gyro;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
+import org.usfirst.frc.team2342.robot.subsystems.Climber;
 import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
 import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
@@ -51,6 +52,7 @@ public class Robot extends IterativeRobot {
 	WPI_TalonSRX talonIntakeRight;
 	WPI_TalonSRX talonIntakeLeft;
 	WPI_TalonSRX talonTip;
+	WPI_TalonSRX winch;
 
 	DistancePIDController pc;
 	
@@ -60,6 +62,7 @@ public class Robot extends IterativeRobot {
 	Joystick XBOX;
 	CascadeElevator cascadeElevator;
 	BoxManipulator boxManipulator;
+	Climber climber;
 	PIDGains talonPID;
 	double speed = 0.0d;
 	double tangle = 0.0d;
@@ -94,11 +97,13 @@ public class Robot extends IterativeRobot {
 		talonIntakeRight = new WPI_TalonSRX(Constants.TALON_INTAKE_RIGHT);
 		talonIntakeLeft = new WPI_TalonSRX(Constants.TALON_INTAKE_LEFT);
 		talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
+		winch = new WPI_TalonSRX(Constants.WINCH_MOTOR);
 		tankDrive = new TankDrive(PCM,talonFL,talonFR,talonBL,talonBR);
 		joystickR = new Joystick(2);
 		XBOX = new Joystick(1);
 		cascadeElevator = new CascadeElevator(talonCascade);
 		boxManipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, PCM);
+		climber = new Climber(winch);
 		talonPID = new PIDGains();
 		//camera0 = CameraServer.getInstance().startAutomaticCapture(0);
 		//camera1 = CameraServer.getInstance().startAutomaticCapture(1);
@@ -177,7 +182,7 @@ public class Robot extends IterativeRobot {
 		else
 			tankDrive.setNoGear();
 
-		boolean p = XBOX.getRawButton(8);
+		boolean p = XBOX.getRawButton(Constants.XBOX_START) && !XBOX.getRawButton(Constants.XBOX_SELECT);
 		if(p && !pressed8) {
 			intakeLowVoltage = !intakeLowVoltage;
 			pressed8 = p;
@@ -209,6 +214,8 @@ public class Robot extends IterativeRobot {
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, XBOX));
 		else if(XBOX.getRawButton(Constants.XBOX_Y))
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
+		else if (XBOX.getRawButton(Constants.XBOX_LEFTSTICK_BUTTON))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_6_INCHES, XBOX));
 		else if(!cascadeElevator.runningPreset) {
 			if(Math.abs(cascadeElevator.talonCascade.getSelectedSensorPosition(0)) > 100 && !cascadeElevator.lowerLimit.get()) {
 				cascadeElevator.talonCascade.selectProfileSlot(1, 0);
@@ -228,6 +235,13 @@ public class Robot extends IterativeRobot {
 			boxManipulator.closeManipulator();
 		else
 			boxManipulator.openManipulator();
+		
+		if(XBOX.getRawButton(Constants.XBOX_RIGHTSTICK_BUTTON))
+			Scheduler.getInstance().add(new WindUp(climber));
+		else if(XBOX.getRawButton(Constants.XBOX_SELECT))
+			Scheduler.getInstance().add(new WindDown(climber));
+		else
+			Scheduler.getInstance().add(new WindStop(climber));
 
 		double triggerL = XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER);
 		double triggerR = XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER);
@@ -256,6 +270,7 @@ public class Robot extends IterativeRobot {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0);
 		} 
+		
 	}
 
 	public void disabledInit() {
@@ -296,10 +311,10 @@ public class Robot extends IterativeRobot {
 		
 		//Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//Scheduler.getInstance().add(new TurnAngle(Constants.WESTCOAST_TURN_SPEED, 90, tankDrive));
-		Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, gamepad));
 		//tankDrive.setGyroControl(false);
 		//TalonNWT.updateGyroPID(westCoast.pidc);
+		Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 	}
 
 	public void autonomousPeriodic(){

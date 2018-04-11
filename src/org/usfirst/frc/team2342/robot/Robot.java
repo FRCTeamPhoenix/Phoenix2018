@@ -292,13 +292,13 @@ public class Robot extends IterativeRobot {
 		
 		String AutonomousMode;
 		AutonomousMode = SmartDashboard.getString("Auto Selector", "");
-		if (AutonomousMode.equals("defaultAuto")) {
+		if (AutonomousMode.equals("Drive Forward")) {
 			Scheduler.getInstance().add(new DriveDistance2(tankDrive, 10));
 		}
-		if (AutonomousMode.equals("switchAuto")) {
+		if (AutonomousMode.equals("Switch Auto")) {
 			Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		}
-		if (AutonomousMode.equals("scaleAuto")) {
+		if (AutonomousMode.equals("Left Scale Forward")) {
 			Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		}
 		

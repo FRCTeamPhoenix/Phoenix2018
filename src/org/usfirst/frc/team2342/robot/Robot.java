@@ -118,6 +118,15 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void robotInit() {
+		final String defaultAuto = "Drive Forward";
+		final String switchAuto = "Switch Auto";
+		final String scaleAuto = "Left Scale Forward";
+		String[] autoList = {defaultAuto, switchAuto, scaleAuto};
+		
+/*		NetworkTable table = NetworkTable.getTable("SmartDasboard");
+		table.putStringArray();*/
+		SmartDashboard.putStringArray("Auto List", autoList);
+		
 		if(!cascadeElevator.lowerLimit.get())
 			cascadeElevator.zeroSensors();
 
@@ -136,6 +145,7 @@ public class Robot extends IterativeRobot {
 		*/
 		
 		//Gyro.init();
+	
 	}
 
 	public void teleopInit() {
@@ -279,6 +289,19 @@ public class Robot extends IterativeRobot {
 		JsonHandler.readJson("gyropidr.json", gpidjson);
 		System.out.println(String.valueOf(gpidjson.gyroPid.p));
 		FMS.init();
+		
+		String AutonomousMode;
+		AutonomousMode = SmartDashboard.getString("Auto Selector", "");
+		if (AutonomousMode.equals("defaultAuto")) {
+			Scheduler.getInstance().add(new DriveDistance2(tankDrive, 10));
+		}
+		if (AutonomousMode.equals("switchAuto")) {
+			Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		}
+		if (AutonomousMode.equals("scaleAuto")) {
+			Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		}
+		
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e1) {

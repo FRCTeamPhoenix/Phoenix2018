@@ -97,7 +97,7 @@ public class Robot extends IterativeRobot {
 		talonIntakeRight = new WPI_TalonSRX(Constants.TALON_INTAKE_RIGHT);
 		talonIntakeLeft = new WPI_TalonSRX(Constants.TALON_INTAKE_LEFT);
 		talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
-		winch = new WPI_TalonSRX(7);
+		winch = new WPI_TalonSRX(Constants.WINCH_MOTOR);
 		tankDrive = new TankDrive(PCM,talonFL,talonFR,talonBL,talonBR);
 		joystickR = new Joystick(2);
 		XBOX = new Joystick(1);
@@ -240,12 +240,12 @@ public class Robot extends IterativeRobot {
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BAR_OVER, XBOX));
 		else if(XBOX.getPOV() == Constants.XBOX_DPAD_RIGHT)
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BAR_HOOK, XBOX));
-		else if(XBOX.getPOV() == Constants.XBOX_DPAD_DOWN) {
+		else if(XBOX.getPOV() == Constants.XBOX_DPAD_DOWN) 
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
-			while (XBOX.getPOV() == Constants.XBOX_DPAD_DOWN)
-				Scheduler.getInstance().add(new WindUp(climber));
+		else if(XBOX.getPOV() == Constants.XBOX_DPAD_LEFT)
+			Scheduler.getInstance().add(new WindUp(climber));
+		else
 			Scheduler.getInstance().add(new WindStop(climber));
-		}
 
 		double triggerL = XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER);
 		double triggerR = XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER);
@@ -274,6 +274,8 @@ public class Robot extends IterativeRobot {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0);
 		} 
+		
+		SmartDashboard.putString("DB/String 0", "" + XBOX.getPOV());
 		
 	}
 

@@ -97,7 +97,7 @@ public class Robot extends IterativeRobot {
 		talonIntakeRight = new WPI_TalonSRX(Constants.TALON_INTAKE_RIGHT);
 		talonIntakeLeft = new WPI_TalonSRX(Constants.TALON_INTAKE_LEFT);
 		talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
-		winch = new WPI_TalonSRX(Constants.WINCH_MOTOR);
+		winch = new WPI_TalonSRX(7);
 		tankDrive = new TankDrive(PCM,talonFL,talonFR,talonBL,talonBR);
 		joystickR = new Joystick(2);
 		XBOX = new Joystick(1);
@@ -236,12 +236,16 @@ public class Robot extends IterativeRobot {
 		else
 			boxManipulator.openManipulator();
 		
-		if(XBOX.getRawButton(Constants.XBOX_RIGHTSTICK_BUTTON))
-			Scheduler.getInstance().add(new WindUp(climber));
-		else if(XBOX.getRawButton(Constants.XBOX_SELECT))
-			Scheduler.getInstance().add(new WindDown(climber));
-		else
+		if(XBOX.getPOV() == Constants.XBOX_DPAD_UP)
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BAR_OVER, XBOX));
+		else if(XBOX.getPOV() == Constants.XBOX_DPAD_RIGHT)
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BAR_HOOK, XBOX));
+		else if(XBOX.getPOV() == Constants.XBOX_DPAD_DOWN) {
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
+			while (XBOX.getPOV() == Constants.XBOX_DPAD_DOWN)
+				Scheduler.getInstance().add(new WindUp(climber));
 			Scheduler.getInstance().add(new WindStop(climber));
+		}
 
 		double triggerL = XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER);
 		double triggerR = XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER);
@@ -344,25 +348,12 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void testInit() {
-		System.out.println("TEST MODE INIT");
-
-		//talonCascade.set(ControlMode.PercentOutput, XBOX.getRawAxis(3));
-		tankDrive.debug = true;
-		//this.updatePID(gpidjson.gyroPid);
-		tankDrive.updateGyroPID(gpidjson.gyroPid);
-		this.speed = SmartDashboard.getNumber("DB/Slider 3", 0);
+		
 	}
 
 	@Override
 	public void testPeriodic() {
-		try {
-			//Scheduler.getInstance().run();
-			//tankDrive.setVelocity(Constants.WESTCOAST_HALF_SPEED, Constants.WESTCOAST_HALF_SPEED);
-			Scheduler.getInstance().run();
-			Thread.sleep(10);
-		} catch(Exception e) {
-			//DONOTHING
-		}
+		SmartDashboard.putString("DB/String 0", "" + XBOX.getPOV());
 	}
 
 	// updates the PID in gyro with the sliders or the networktables.

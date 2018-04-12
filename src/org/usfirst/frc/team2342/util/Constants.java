@@ -77,6 +77,7 @@ public class Constants {
 	public static final int CASCADE_BAR_HOOK = 17000;
 	public static final int CASCADE_BAR_OVER = 21000;
 	public static final int CASCADE_LOWER_SCALE = 22000;
+	public static final int CASCADE_6INCH = 2000;
 	public static final int CASCADE_UPPER_SCALE = 25500;
 
 	//solenoid constants

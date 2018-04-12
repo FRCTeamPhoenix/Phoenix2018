@@ -43,7 +43,7 @@ public class Gyro {
 	}
 	
 	public static double angle(){
-		return current;
+		return imu.getAngleX();
 	}
 	
 	public static void update() {

@@ -3,8 +3,8 @@ package org.usfirst.frc.team2342.robot;
 import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
 import org.usfirst.frc.team2342.automodes.LeftSideAuto;
 import org.usfirst.frc.team2342.automodes.MiddleAuto;
+import org.usfirst.frc.team2342.automodes.MiddleAutoCorrected;
 import org.usfirst.frc.team2342.commands.CascadePosition;
-import org.usfirst.frc.team2342.commands.DriveArc;
 import org.usfirst.frc.team2342.commands.DriveDistance2;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.json.GyroPIDJson;
@@ -226,6 +226,8 @@ public class Robot extends IterativeRobot {
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, XBOX));
 		else if(XBOX.getRawButton(Constants.XBOX_Y))
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
+		else if(XBOX.getRawButton(9))
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_6INCH, XBOX));
 		else if(!cascadeElevator.runningPreset) {
 			if(Math.abs(cascadeElevator.talonCascade.getSelectedSensorPosition(0)) > 100 && !cascadeElevator.lowerLimit.get()) {
 				cascadeElevator.talonCascade.selectProfileSlot(1, 0);
@@ -240,6 +242,11 @@ public class Robot extends IterativeRobot {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0.5);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -0.5);
 		}
+		
+//		if (Math.abs(gamepad.getRawAxis(3)) > 0.1) {
+//			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, gamepad.getRawAxis(3));
+//			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -gamepad.getRawAxis(3));
+//		}
 
 		if(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) || XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER) || gamepad.getRawAxis(2) > 0.8 || gamepad.getRawAxis(3) > 0.8)
 			boxManipulator.closeManipulator();
@@ -321,10 +328,11 @@ public class Robot extends IterativeRobot {
 		else if (AutonomousMode.equals("Left Scale Forward"))
 			Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		else if(AutonomousMode.equals("Test Auto"))
-			Scheduler.getInstance().add(new DriveArc(tankDrive, 0, 90));
+			//Scheduler.getInstance().add(new MiddleAutoCorrected();
+			Scheduler.getInstance().add(new MiddleAutoCorrected(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		
 		try {
-			Thread.sleep(100);
+			Thread.sleep(10);
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -353,6 +361,7 @@ public class Robot extends IterativeRobot {
 
 	public void autonomousPeriodic(){
 		//this.updatePID();
+		Gyro.update();
 		Scheduler.getInstance().run();
 
 		

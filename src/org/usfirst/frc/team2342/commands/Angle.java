@@ -9,17 +9,20 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class DriveArc extends Command {
+public class Angle extends Command {
 
 	private TankDrive tankDrive;
 	private double angle;
 	private double currentAngle;
-	private double distance;
+	private long start;
+	private boolean direction;
 	
-    public DriveArc(TankDrive tankDrive,double distance, double angle) {
+    public Angle(TankDrive tankDrive, double angle, boolean direction) {
+    	this.direction = direction;
+    	
     	this.tankDrive = tankDrive;
     	this.angle = angle;
-    	this.distance = distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
+    		
     	requires(tankDrive);
     	
         // Use requires() here to declare subsystem dependencies
@@ -28,31 +31,35 @@ public class DriveArc extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	if(tankDrive.leftA.getSelectedSensorPosition(0) == 0)
+    	start = System.currentTimeMillis(); 
+    	if(System.currentTimeMillis() - start == 0)
     		currentAngle = 0;
     	else
-    		currentAngle = distance / tankDrive.leftA.getSelectedSensorPosition(0) * angle;
-    	tankDrive.zeroSensors();
+    		currentAngle = 850 / (System.currentTimeMillis() - start) * angle;
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	currentAngle = distance / tankDrive.leftA.getSelectedSensorPosition(0) * angle;
-    	double speed = Constants.WESTCOAST_HALF_SPEED;
-    	
-    	tankDrive.setVelocity(-Constants.WESTCOAST_HALF_SPEED * ( 1 - .1 * (currentAngle - Gyro.angle())), -speed);
-    	System.out.println("Gyro angle: " + Gyro.angle() + " correction: " + ( 1 - .1 * (currentAngle - Gyro.angle())));
-    }
+    	if(System.currentTimeMillis() - start == 0)
+    		currentAngle = 0;
+    	if (System.currentTimeMillis() - start > 850)
+    		currentAngle = angle;
+    	else
+	    	currentAngle = 850 / (System.currentTimeMillis() - start) * angle;
+    	int speed = 1;
+    	if (direction)
+    		speed *= -1;
+	    	
+	    tankDrive.setVelocity( speed * -Constants.WESTCOAST_HALF_SPEED * ( 1 - Constants.ARC_CONSTANT * (currentAngle - Gyro.angle())),  speed * Constants.WESTCOAST_HALF_SPEED);
+	}
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	System.out.println(tankDrive.leftA.getSelectedSensorPosition(0) + "   " + distance);
-    	return Math.abs(tankDrive.leftA.getSelectedSensorPosition(0) + distance) < 300;
+    	return System.currentTimeMillis() - start > 1000;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	tankDrive.setVelocity(0, 0);
     }
 
     // Called when another command which requires one or more of the same
@@ -60,3 +67,4 @@ public class DriveArc extends Command {
     protected void interrupted() {
     }
 }
+

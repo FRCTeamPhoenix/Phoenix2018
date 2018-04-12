@@ -3,6 +3,7 @@ package org.usfirst.frc.team2342.robot;
 import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
 import org.usfirst.frc.team2342.automodes.LeftSideAuto;
 import org.usfirst.frc.team2342.automodes.MiddleAuto;
+import org.usfirst.frc.team2342.automodes.MiddleAuto2;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveDistance2;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
@@ -94,7 +95,7 @@ public class Robot extends IterativeRobot {
 		tankDrive = new TankDrive(PCM,talonFL,talonFR,talonBL,talonBR);
 		joystickR = new Joystick(2);
 		XBOX = new Joystick(1);
-		cascadeElevator = new CascadeElevator(talonCascade);
+		cascadeElevator = new CascadeElevator(talonCascade, gamepad);
 		boxManipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, PCM);
 		talonPID = new PIDGains();
 		//camera0 = CameraServer.getInstance().startAutomaticCapture(0);
@@ -297,9 +298,10 @@ public class Robot extends IterativeRobot {
 		//Scheduler.getInstance().add(new TurnAngle(Constants.WESTCOAST_TURN_SPEED, 90, tankDrive));
 		if(SmartDashboard.getBoolean("DB/Button 1", false))
 			Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
-		else if(SmartDashboard.getBoolean("DB/Button 2", false)) {
+		else if(SmartDashboard.getBoolean("DB/Button 2", false))
 			Scheduler.getInstance().add(new DriveDistance2(tankDrive, 23));
-		}
+		else if(SmartDashboard.getBoolean("DB/Button 3", false))
+			Scheduler.getInstance().add(new MiddleAuto2(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		else
 			Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, gamepad));

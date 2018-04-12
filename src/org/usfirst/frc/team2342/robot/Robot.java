@@ -1,6 +1,11 @@
 package org.usfirst.frc.team2342.robot;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+
 import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
+import org.usfirst.frc.team2342.automodes.AutoRecorder;
 import org.usfirst.frc.team2342.automodes.LeftSideAuto;
 import org.usfirst.frc.team2342.automodes.MiddleAuto;
 import org.usfirst.frc.team2342.automodes.MiddleAutoCorrected;
@@ -77,6 +82,7 @@ public class Robot extends IterativeRobot {
 	TalonReader treader;
 	GyroReader greader;
 	
+	PrintStream output;
 	SendableChooser<Command> autoChooser;
 	
 	//0 = left
@@ -85,6 +91,12 @@ public class Robot extends IterativeRobot {
 	int autonomous_position = 0;
 
 	public Robot() {
+		 try {
+			output = new PrintStream(new File("/home/lvuser/auto_data.txt"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Gyro.init();
 		gamepad = new Joystick(0);
 		PCM = new PCMHandler(11);
@@ -128,7 +140,7 @@ public class Robot extends IterativeRobot {
 		final String defaultAuto = "Drive Forward";
 		final String switchAuto = "Switch Auto";
 		final String scaleAuto = "Left Scale Forward";
-		String[] autoList = {defaultAuto, switchAuto, scaleAuto, "Test Auto"};
+		String[] autoList = {defaultAuto, switchAuto, scaleAuto, "Test Auto", "Record"};
 		
 /*		NetworkTable table = NetworkTable.getTable("SmartDasboard");
 		table.putStringArray();*/
@@ -293,7 +305,13 @@ public class Robot extends IterativeRobot {
 		} else {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0);
-		} 
+		}
+		
+		try {
+			Thread.sleep(10);
+		} catch(Exception e) { }
+		
+		output.print(gamepad.getRawAxis(1) + " " + gamepad.getRawAxis(5) + " " + XBOX.getRawButton(Constants.XBOX_LEFTTRIGGER) + " ");
 	}
 
 	public void disabledInit() {

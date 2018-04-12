@@ -2,7 +2,6 @@ package org.usfirst.frc.team2342.automodes;
 
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveArc;
-import org.usfirst.frc.team2342.commands.DriveDistance2;
 import org.usfirst.frc.team2342.commands.PushBox;
 import org.usfirst.frc.team2342.commands.TiltManipulator;
 import org.usfirst.frc.team2342.commands.Turn90;

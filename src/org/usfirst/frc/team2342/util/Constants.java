@@ -153,4 +153,6 @@ public class Constants {
 	public static final double tKp = 0.1d;
 	public static final double tKi = 0.001d;
 	public static final double tKd = 0.0d;
+	
+	public static final double ARC_CONSTANT = 0.1;
 }

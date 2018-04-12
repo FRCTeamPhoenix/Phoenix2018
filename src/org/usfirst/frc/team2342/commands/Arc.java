@@ -9,17 +9,16 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class DriveArc extends Command {
+public class Arc extends Command {
 
 	private TankDrive tankDrive;
 	private double angle;
 	private double currentAngle;
 	private double distance;
-	
-    public DriveArc(TankDrive tankDrive,double distance, double angle) {
+    public Arc(TankDrive tankDrive,double distance, double angle) {
     	this.tankDrive = tankDrive;
     	this.angle = angle;
-    	this.distance = distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
+    	this.distance = distance;
     	requires(tankDrive);
     	
         // Use requires() here to declare subsystem dependencies
@@ -28,27 +27,29 @@ public class DriveArc extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	currentAngle = distance / tankDrive.leftA.getSelectedSensorPosition(0) * angle;
-    	tankDrive.zeroSensors();
+    	if(tankDrive.leftA.getSelectedSensorPosition(0) == 0)
+    		currentAngle = 0;
+    	else
+    		currentAngle = distance / tankDrive.leftA.getSelectedSensorPosition(0) * angle;
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	currentAngle = distance / tankDrive.leftA.getSelectedSensorPosition(0) * angle;
-    	double speed = Constants.WESTCOAST_HALF_SPEED;
-    	
-    	tankDrive.setVelocity(-Constants.WESTCOAST_HALF_SPEED * ( 1 - .1 * (currentAngle - Gyro.angle())), -speed);
-    	System.out.println("Gyro angle: " + Gyro.angle() + " correction: " + ( 1 - .1 * (currentAngle - Gyro.angle())));
-    }
+    	if(tankDrive.leftA.getSelectedSensorPosition(0) == 0)
+    		currentAngle = 0;
+    	else
+	    	currentAngle = distance / tankDrive.leftA.getSelectedSensorPosition(0) * angle;
+	    	
+	    tankDrive.setVelocity(Constants.WESTCOAST_HALF_SPEED * ( 1 - Constants.ARC_CONSTANT * (currentAngle - Gyro.angle())), Constants.WESTCOAST_HALF_SPEED);
+	}
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	return Math.abs(tankDrive.leftA.getSelectedSensorPosition(0) - distance) < 300;
+    	return Math.abs((tankDrive.leftA.getSelectedSensorPosition(0)) + distance) < 300;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	tankDrive.setVelocity(0, 0);
     }
 
     // Called when another command which requires one or more of the same

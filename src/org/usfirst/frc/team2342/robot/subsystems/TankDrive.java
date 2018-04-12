@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
 import org.usfirst.frc.team2342.robot.PCMHandler;
+import org.usfirst.frc.team2342.robot.sensors.Gyro;
 import org.usfirst.frc.team2342.util.Constants;
 import org.usfirst.frc.team2342.json.PIDGains;
 
@@ -89,6 +90,7 @@ public class TankDrive extends Subsystem{
 		leftB.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 10);
 		rightA.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 10);
 		rightB.setSelectedSensorPosition(0, Constants.TALON_VELOCITY_SLOT_IDX, 10);
+		Gyro.reset();
 	}
 	
 	public void setPercentage(double left,double right) {
@@ -127,17 +129,18 @@ public class TankDrive extends Subsystem{
 	}
 	
 	public void setVelocity(double left,double right) {
-//		if (left > 0)
-//			left = Math.min(left, Constants.WESTCOAST_MAX_SPEED);
-//		else if (left < 0)
-//			left = Math.max(left, -Constants.WESTCOAST_MAX_SPEED);
-//		if (right > 0)
-//			right = Math.min(right, Constants.WESTCOAST_MAX_SPEED);
-//		else if (right < 0)
-//			right = Math.max(right, -Constants.WESTCOAST_MAX_SPEED);
+		if (left > 0)
+			left = Math.min(left, Constants.WESTCOAST_MAX_SPEED);
+		else if (left < 0)
+			left = Math.max(left, -Constants.WESTCOAST_MAX_SPEED);
+		if (right > 0)
+			right = Math.min(right, Constants.WESTCOAST_MAX_SPEED);
+		else if (right < 0)
+			right = Math.max(right, -Constants.WESTCOAST_MAX_SPEED);
 		//System.out.println("going " + left + " " + right + "    " + leftA.getSelectedSensorVelocity(0) + " " + rightA.getSelectedSensorVelocity(0));
 		leftA.set(ControlMode.Velocity,left);
 		rightA.set(ControlMode.Velocity,right);
+		System.out.println("going " + left + "     " + right);
 	}
 	
 	//the encoder values has to be zeroed for this to work

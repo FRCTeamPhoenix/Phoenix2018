@@ -9,9 +9,15 @@ public class Gyro {
 	
 	private static double goalAngle;
 	
+	private static double last;
+	private static double current;
+	private static double acc;
+	private static double ticks;
+	
 	public static void init(){
 		imu = new ADIS16448_IMU();
 		goalAngle = 0.0;
+		acc = 0;
 	}
 	
 	/*
@@ -37,7 +43,19 @@ public class Gyro {
 	}
 	
 	public static double angle(){
-		return imu.getAngleX();
+		return current;
+	}
+	
+	public static void update() {
+		last = current;
+		current = imu.getAngleX() - 3e-5 * ticks;
+		acc += (current - last);
+		ticks++;
+		//System.out.println("Gyro delta: " + (current - last));
+	}
+	
+	public static double getAverage() {
+		return acc / ticks;
 	}
 
 	public static void setPIDSourceType(PIDSourceType pidSource) {

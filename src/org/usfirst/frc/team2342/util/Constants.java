@@ -74,6 +74,8 @@ public class Constants {
 	//positions of important cascade heights
 	public static final int CASCADE_BASE = 0;
 	public static final int CASCADE_SWITCH = 12000;
+	public static final int CASCADE_BAR_HOOK = 17000;
+	public static final int CASCADE_BAR_OVER = 21000;
 	public static final int CASCADE_LOWER_SCALE = 22000;
 	public static final int CASCADE_UPPER_SCALE = 25500;
 
@@ -121,6 +123,14 @@ public class Constants {
 	
 	public static final int XBOX_SELECT = 8;
 	public static final int XBOX_START = 7;
+	
+	public static final int XBOX_DPAD_UP = 0;
+	public static final int XBOX_DPAD_DOWN = 180;
+	public static final int XBOX_DPAD_RIGHT = 90;
+	public static final int XBOX_DPAD_LEFT = 270;
+	
+	public static final int XBOX_RIGHTBUTTON = 9;
+	public static final int XBOX_LEFTBUTTON = 10;
 	
 	public static final double tSpeed = 4.5d;
 	

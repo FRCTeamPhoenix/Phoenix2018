@@ -13,6 +13,7 @@ import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.json.TalonReader;
 import org.usfirst.frc.team2342.robot.subsystems.BoxManipulator;
 import org.usfirst.frc.team2342.robot.subsystems.CascadeElevator;
+import org.usfirst.frc.team2342.robot.subsystems.Climber;
 import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
 //import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
@@ -48,6 +49,7 @@ public class Robot extends IterativeRobot {
 	WPI_TalonSRX talonIntakeRight;
 	WPI_TalonSRX talonIntakeLeft;
 	WPI_TalonSRX talonTip;
+	WPI_TalonSRX talonWinch;
 
 	DistancePIDController pc;
 	
@@ -63,6 +65,7 @@ public class Robot extends IterativeRobot {
 	UsbCamera camera0;
 	UsbCamera camera1;
 	VideoSink server;
+	Climber climber;
 	
 	GyroPIDJson gpidjson;
 
@@ -92,11 +95,13 @@ public class Robot extends IterativeRobot {
 		talonIntakeLeft = new WPI_TalonSRX(Constants.TALON_INTAKE_LEFT);
 		talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
 		tankDrive = new TankDrive(PCM,talonFL,talonFR,talonBL,talonBR);
+		talonWinch = new WPI_TalonSRX(10);
 		joystickR = new Joystick(2);
 		XBOX = new Joystick(1);
 		cascadeElevator = new CascadeElevator(talonCascade);
 		boxManipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, PCM);
 		talonPID = new PIDGains();
+		climber = new Climber(talonWinch);
 		//camera0 = CameraServer.getInstance().startAutomaticCapture(0);
 		//camera1 = CameraServer.getInstance().startAutomaticCapture(1);
 		//server = CameraServer.getInstance().getServer();
@@ -131,6 +136,7 @@ public class Robot extends IterativeRobot {
 			cascadeElevator.zeroSensors();
 
 		//Start up cameras
+		@SuppressWarnings("unused")
 		CameraControl cameras = new CameraControl(640, 480, 15);
 		cascadeElevator.lastPosition = 0;
 		
@@ -237,6 +243,20 @@ public class Robot extends IterativeRobot {
 			boxManipulator.closeManipulator();
 		else
 			boxManipulator.openManipulator();
+		
+		if(XBOX.getRawButton(Constants.XBOX_RIGHTBUTTON))
+			climber.windUp();
+		else if(XBOX.getRawButton(Constants.XBOX_LEFTBUTTON))
+			climber.windDown();
+		else
+			climber.stop();
+		
+		if(XBOX.getPOV() == Constants.XBOX_DPAD_UP)
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BAR_OVER, XBOX));
+		else if(XBOX.getPOV() == Constants.XBOX_DPAD_RIGHT)
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BAR_HOOK, XBOX));
+		else if(XBOX.getPOV() == Constants.XBOX_DPAD_DOWN) 
+			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
 
 		double triggerL = XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER);
 		double triggerR = XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER);
@@ -292,15 +312,12 @@ public class Robot extends IterativeRobot {
 		
 		String AutonomousMode;
 		AutonomousMode = SmartDashboard.getString("Auto Selector", "");
-		if (AutonomousMode.equals("Drive Forward")) {
+		if (AutonomousMode.equals("Drive Forward")) 
 			Scheduler.getInstance().add(new DriveDistance2(tankDrive, 10));
-		}
-		if (AutonomousMode.equals("Switch Auto")) {
+		else if (AutonomousMode.equals("Switch Auto"))
 			Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
-		}
-		if (AutonomousMode.equals("Left Scale Forward")) {
+		else if (AutonomousMode.equals("Left Scale Forward"))
 			Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
-		}
 		
 		try {
 			Thread.sleep(100);

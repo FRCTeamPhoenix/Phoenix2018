@@ -22,6 +22,7 @@ public class LeftSwitchAuto extends CommandGroup {
 			addParallel(new CascadePosition(cascade, Constants.CASCADE_SWITCH, gamepad));
 			addSequential(new DriveDistance2(drive, 12.75));
 			addSequential(new Turn90(drive, false));
+			addSequential(new DriveDistance2(drive, 0.75));
 			addSequential(new PushBox(manip, gamepad, 0.5));
 		} else {
 			addParallel(new CascadePosition(cascade, Constants.CASCADE_SWITCH, gamepad));

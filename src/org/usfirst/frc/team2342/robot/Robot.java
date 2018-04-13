@@ -1,9 +1,15 @@
 package org.usfirst.frc.team2342.robot;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+
 import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
 import org.usfirst.frc.team2342.automodes.LeftSideAuto;
+import org.usfirst.frc.team2342.automodes.LeftSwitchAuto;
 import org.usfirst.frc.team2342.automodes.MiddleAuto;
-import org.usfirst.frc.team2342.automodes.MiddleAuto2;
+import org.usfirst.frc.team2342.automodes.RightSideAuto;
+import org.usfirst.frc.team2342.automodes.RightSwitchAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveDistance2;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
@@ -73,6 +79,9 @@ public class Robot extends IterativeRobot {
 	TalonReader treader;
 	GyroReader greader;
 	
+	PrintStream output;
+	PrintStream output2;
+	
 	SendableChooser<Command> autoChooser;
 	
 	//0 = left
@@ -121,8 +130,8 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		final String defaultAuto = "Drive Forward";
 		final String switchAuto = "Switch Auto";
-		final String scaleAuto = "Left Scale Forward";
-		String[] autoList = {"Center Switch", "Right Switch", "Drive Forward", "Test Auto"};
+		final String scaleAuto = "Forward to ";
+		String[] autoList = {"Center Switch", "Right Switch", "Left Switch", "Drive Forward", "Left Side", "Right Side", "Test Auto"};
 		
 /*		NetworkTable table = NetworkTable.getTable("SmartDasboard");
 		table.putStringArray();*/
@@ -132,7 +141,7 @@ public class Robot extends IterativeRobot {
 			cascadeElevator.zeroSensors();
 
 		//Start up cameras
-		CameraControl cameras = new CameraControl(640, 480, 15);
+		CameraControl cameras = new CameraControl(320, 240, 15);
 		cascadeElevator.lastPosition = 0;
 		
 		updatePID();
@@ -172,6 +181,13 @@ public class Robot extends IterativeRobot {
 		talonTip.setSelectedSensorPosition(0, 0, 10);
 
 		//cascadeElevator.lastPosition = 0;
+		try {
+			output =  new PrintStream(new File("home/lvuser/fullmatch.txt"));
+			output2 = new PrintStream(new File("/home/lvuser/fullmatch.txtA"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void teleopPeriodic() {
@@ -265,6 +281,24 @@ public class Robot extends IterativeRobot {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0);
 		} 
+		try { Thread.sleep(2); } catch(Exception e) {}
+		if (!SmartDashboard.getString("DB/String 0", "").equals("")) {
+			output.print(gamepad.getRawAxis(1) + " " );
+			output.print(gamepad.getRawAxis(5) + " ");
+			output.print(XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS) + " ");
+			output.print(XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER) + " ");
+			output.print(XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER) + " ");
+			/*output.print(gamepad.getRawButton(Constants.LOGITECH_LEFTBUMPER) + " ");
+			output.print(gamepad.getRawButton(Constants.LOGITECH_RIGHTBUMPER) + " ");*/
+			
+			output2.print(XBOX.getRawButton(Constants.XBOX_A) + " ");
+			output2.print(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) + " ");
+			output2.print(XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER) + " ");
+			//output.print(gamepad.getRawAxis(2) + " ");
+			//output.print(gamepad.getRawAxis(3) + " ");
+			/*output.print(XBOX.getPOV() + " ");*/
+			output.println(); output2.println();
+		}
 	}
 
 	public void disabledInit() {
@@ -313,6 +347,12 @@ public class Robot extends IterativeRobot {
 			Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		else if (AutonomousMode.equals("Right Switch"))
 			Scheduler.getInstance().add(new RightSwitchAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		else if (AutonomousMode.equals("Left Switch"))
+			Scheduler.getInstance().add(new LeftSwitchAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		else if (AutonomousMode.equals("Right Side"))
+			Scheduler.getInstance().add(new RightSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		else if (AutonomousMode.equals("Left Side"))
+			Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		else if(AutonomousMode.equals("Test Auto"))
 			//Scheduler.getInstance().add(new MiddleAutoCorrected();
 			Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));

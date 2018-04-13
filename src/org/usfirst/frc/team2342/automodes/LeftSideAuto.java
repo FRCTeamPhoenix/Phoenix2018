@@ -19,19 +19,14 @@ public class LeftSideAuto extends CommandGroup {
 	public LeftSideAuto(TankDrive drive, CascadeElevator cascade, BoxManipulator manip, Joystick gamepad) {
 		if(DriverStation.getInstance().getGameSpecificMessage().length() > 0 && DriverStation.getInstance().getGameSpecificMessage().charAt(1) == 'L') {
 			addSequential(new TiltManipulator(manip));
+			addSequential(new DriveDistance2(drive, 12));
 			addParallel(new CascadePosition(cascade, Constants.CASCADE_UPPER_SCALE, gamepad));
-			addSequential(new DriveDistance2(drive, 23.75));
+			addSequential(new DriveDistance2(drive, 13));
 			addSequential(new Turn90(drive, false));
 			addSequential(new PushBox(manip, gamepad, 0.5));
 		} else {
-			addSequential(new TiltManipulator(manip));
-			addSequential(new DriveDistance2(drive, 15.75));
-			addSequential(new Turn90(drive, false));
-			addSequential(new DriveDistance2(drive, 16));
-			addSequential(new Turn90(drive, true));
-			addSequential(new CascadePosition(cascade, Constants.CASCADE_UPPER_SCALE, gamepad));
-			addSequential(new DriveDistance2(drive, 5));
-			addSequential(new PushBox(manip, gamepad, 1.0));
+			addParallel(new CascadePosition(cascade, Constants.CASCADE_SWITCH, gamepad));
+			addSequential(new DriveDistance2(drive, 17));
 		}
 	}
 	

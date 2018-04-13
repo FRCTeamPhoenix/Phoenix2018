@@ -1,4 +1,4 @@
-package org.usfirst.frc.team2342.robot;
+package org.usfirst.frc.team2342.automodes;
 
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveDistance2;

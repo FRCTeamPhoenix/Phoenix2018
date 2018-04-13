@@ -122,7 +122,7 @@ public class Robot extends IterativeRobot {
 		final String defaultAuto = "Drive Forward";
 		final String switchAuto = "Switch Auto";
 		final String scaleAuto = "Left Scale Forward";
-		String[] autoList = {defaultAuto, switchAuto, scaleAuto, "Test Auto", "Record"};
+		String[] autoList = {"Center Switch", "Right Switch", "Drive Forward", "Test Auto"};
 		
 /*		NetworkTable table = NetworkTable.getTable("SmartDasboard");
 		table.putStringArray();*/
@@ -309,10 +309,10 @@ public class Robot extends IterativeRobot {
 		AutonomousMode = SmartDashboard.getString("Auto Selector", "");
 		if (AutonomousMode.equals("Drive Forward")) 
 			Scheduler.getInstance().add(new DriveDistance2(tankDrive, 10));
-		else if (AutonomousMode.equals("Switch Auto"))
+		else if (AutonomousMode.equals("Center Switch"))
 			Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
-		else if (AutonomousMode.equals("Left Scale Forward"))
-			Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		else if (AutonomousMode.equals("Right Switch"))
+			Scheduler.getInstance().add(new RightSwitchAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		else if(AutonomousMode.equals("Test Auto"))
 			//Scheduler.getInstance().add(new MiddleAutoCorrected();
 			Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));

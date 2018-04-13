@@ -6,11 +6,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
-import org.usfirst.frc.team2342.automodes.LeftSideAuto;
-import org.usfirst.frc.team2342.automodes.MiddleAuto;
-import org.usfirst.frc.team2342.automodes.MiddleAutoCorrected;
 import org.usfirst.frc.team2342.commands.CascadePosition;
-import org.usfirst.frc.team2342.commands.DriveDistance2;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
 import org.usfirst.frc.team2342.json.GyroPIDJson;
 import org.usfirst.frc.team2342.json.GyroReader;
@@ -83,8 +79,10 @@ public class Robot extends IterativeRobot {
 	GyroReader greader;
 	
 	PrintStream output;
+	PrintStream output2;
 	SendableChooser<Command> autoChooser;
 	Scanner input;
+	Scanner input2;
 	//0 = left
 	//1 = mid
 	//2 = right
@@ -186,13 +184,16 @@ public class Robot extends IterativeRobot {
 		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		talonTip.setSelectedSensorPosition(0, 0, 10);
 		
-		if (SmartDashboard.getString("DB/String 0", "").equals("")) {
+		if (!SmartDashboard.getString("DB/String 0", "").equals("")) {
 			try {
 				output = new PrintStream(new File("/home/lvuser/autos/" + SmartDashboard.getString("DB/String 0", "")));
+				output2 = new PrintStream(new File("/home/lvuser/autos/" + SmartDashboard.getString("DB/String 0", "") + "A"));
+				System.out.println("ddddddddd" + SmartDashboard.getString("DB/String 0", ""));
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 		}
 		
 		//cascadeElevator.lastPosition = 0;
@@ -298,27 +299,24 @@ public class Robot extends IterativeRobot {
 		}
 		
 		try {
-			Thread.sleep(10);
+			Thread.sleep(2);
 		} catch(Exception e) { }
-		if (SmartDashboard.getString("DB/String 0", "").equals("")) {
+		if (!SmartDashboard.getString("DB/String 0", "").equals("")) {
 			output.print(gamepad.getRawAxis(1) + " " );
 			output.print(gamepad.getRawAxis(5) + " ");
-			output.print(gamepad.getRawButton(Constants.LOGITECH_LEFTBUMPER) + " ");
-			output.print(gamepad.getRawButton(Constants.LOGITECH_RIGHTBUMPER) + " ");
-			output.print(XBOX.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS) + " ");
 			output.print(XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS) + " ");
-			output.print(XBOX.getRawButton(Constants.XBOX_A) + " ");
-			output.print(XBOX.getRawButton(Constants.XBOX_B) + " ");
-			output.print(XBOX.getRawButton(Constants.XBOX_X) + " ");
-			output.print((XBOX.getRawButton(Constants.XBOX_Y)) + " ");
-			output.print(XBOX.getRawButton(9) + " ");
-			output.print(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) + " ");
-			output.print(XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER) + " ");
-			output.print(gamepad.getRawAxis(2) + " ");
-			output.print(gamepad.getRawAxis(3) + " ");
-			output.print(XBOX.getPOV() + " ");
 			output.print(XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER) + " ");
 			output.print(XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER) + " ");
+			/*output.print(gamepad.getRawButton(Constants.LOGITECH_LEFTBUMPER) + " ");
+			output.print(gamepad.getRawButton(Constants.LOGITECH_RIGHTBUMPER) + " ");*/
+			
+			output2.print(XBOX.getRawButton(Constants.XBOX_A) + " ");
+			output2.print(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) + " ");
+			output2.print(XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER) + " ");
+			//output.print(gamepad.getRawAxis(2) + " ");
+			//output.print(gamepad.getRawAxis(3) + " ");
+			/*output.print(XBOX.getPOV() + " ");*/
+			output.println(); output2.println();
 		}
 		
 		
@@ -339,7 +337,7 @@ public class Robot extends IterativeRobot {
 		//westCoast.zeroSensors();
 		Scheduler.getInstance().removeAll();
 		
-		File folder = new File("home/lvuser/autos/");
+		/*File folder = new File("home/lvuser/autos/");
 		File[] listOfFiles = folder.listFiles();
 
 		    for (int i = 0; i < listOfFiles.length; i++) {
@@ -348,7 +346,7 @@ public class Robot extends IterativeRobot {
 		      } else if (listOfFiles[i].isDirectory()) {
 		        System.out.println("Directory " + listOfFiles[i].getName());
 		      }
-		    }
+		    }*/
 	}
 
 	public void autonomousInit() {
@@ -382,7 +380,7 @@ public class Robot extends IterativeRobot {
 			Scheduler.getInstance().add(new MiddleAutoCorrected(tankDrive, cascadeElevator, boxManipulator, gamepad));*/
 		
 		try {
-			Thread.sleep(10);
+			Thread.sleep(2);
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -395,6 +393,7 @@ public class Robot extends IterativeRobot {
 			
 			try {
 				input = new Scanner(new File("/home/lvuser/autos/" + SmartDashboard.getString("DB/String 1", "")));
+				input2 = new Scanner(new File("/home/lvuser/autos/" + SmartDashboard.getString("DB/String 1", "") + "A"));
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -436,9 +435,9 @@ public class Robot extends IterativeRobot {
 				left = 0;
 			if (Math.abs(right) < Constants.JOYSTICK_DEADZONE)
 				right = 0;
-			tankDrive.setPercentage(left, right);
+			tankDrive.setPercentage(-left, -right);
 				
-			if (input.nextBoolean())
+			/*if (input.nextBoolean())
 				tankDrive.setLowGear();
 			else if (input.nextBoolean())
 				tankDrive.setHighGear();
@@ -454,9 +453,9 @@ public class Robot extends IterativeRobot {
 				talonTip.set(ControlMode.PercentOutput, -speed);
 			}
 			else
-				talonTip.set(ControlMode.PercentOutput, 0);
+				talonTip.set(ControlMode.PercentOutput, 0);*/
 
-			i = input.nextDouble();
+			double i = input.nextDouble();
 			if (Math.abs(i) > Constants.CASCADE_DEADZONE) {
 				double s = i;
 				double max = s < 0 ? 1200 : 600;
@@ -465,16 +464,16 @@ public class Robot extends IterativeRobot {
 				cascadeElevator.lastPosition = cascadeElevator.talonCascade.getSelectedSensorPosition(0);
 				//System.out.println("last position = " + cascadeElevator.lastPosition);
 			}
-			else if(input.nextBoolean())
+			else if(input2.nextBoolean())
 				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
-			else if(input.nextBoolean())
+			/*else if(input.nextBoolean())
 				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
 			else if(input.nextBoolean())
 				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, XBOX));
 			else if(input.nextBoolean())
 				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
 			else if(input.nextBoolean())
-				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_6INCH, XBOX));
+				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_6INCH, XBOX));*/
 			else if(!cascadeElevator.runningPreset) {
 				if(Math.abs(cascadeElevator.talonCascade.getSelectedSensorPosition(0)) > 100 && !cascadeElevator.lowerLimit.get()) {
 					cascadeElevator.talonCascade.selectProfileSlot(1, 0);
@@ -490,13 +489,15 @@ public class Robot extends IterativeRobot {
 //				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, gamepad.getRawAxis(3));
 //				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -gamepad.getRawAxis(3));
 //			}
-
-			if(input.nextBoolean() ||input.nextBoolean() || input.nextDouble() > 0.8 ||input.nextDouble() > 0.8)
+			
+			boolean a = input2.nextBoolean();
+			boolean b = input2.nextBoolean();
+			if(a || b)
 				boxManipulator.closeManipulator();
 			else
 				boxManipulator.openManipulator();
 			
-			
+			/*
 			
 			i = input.nextDouble();
 			if(i == Constants.XBOX_DPAD_UP)
@@ -505,7 +506,7 @@ public class Robot extends IterativeRobot {
 				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BAR_HOOK, XBOX));
 			else if(i == Constants.XBOX_DPAD_DOWN) 
 				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
-
+			*/
 			double triggerL = input.nextDouble();
 			double triggerR = input.nextDouble();
 
@@ -521,15 +522,12 @@ public class Robot extends IterativeRobot {
 				boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, -triggerR * triggerR / 2);
 				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, triggerR * triggerR / 2);
 			}
-			else if(intakeLowVoltage) {
-				boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, -0.1);
-				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0.1);
-			} else {
+			else {
 				boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0);
 				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0);
 			}
 			
-		} else if (!input.hasNext()) {
+		} else if (input != null &&!input.hasNext()) {
 			System.out.println("End of File");
 		}
 
@@ -540,7 +538,7 @@ public class Robot extends IterativeRobot {
 		TalonNWT.updateTalon(talonBR);
 		TalonNWT.updateTalon(talonBL);*/
 		
-		try { Thread.sleep(10); }
+		try { Thread.sleep(2); }
 		catch (Exception e) { }
 		
 		//System.out.println("left @ " + talonFL.getSelectedSensorPosition(0) + " right @ " + talonFR.getSelectedSensorPosition(0));

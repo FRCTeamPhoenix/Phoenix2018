@@ -529,6 +529,8 @@ public class Robot extends IterativeRobot {
 				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0);
 			}
 			
+		} else if (!input.hasNext()) {
+			System.out.println("End of File");
 		}
 
 		

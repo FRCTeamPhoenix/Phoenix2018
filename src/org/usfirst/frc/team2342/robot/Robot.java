@@ -305,13 +305,16 @@ public class Robot extends IterativeRobot {
 		
 		//Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//Scheduler.getInstance().add(new TurnAngle(Constants.WESTCOAST_TURN_SPEED, 90, tankDrive));
-		if(SmartDashboard.getBoolean("DB/Button 1", false))
+		String AutonomousMode;
+		AutonomousMode = SmartDashboard.getString("Auto Selector", "");
+		if (AutonomousMode.equals("Drive Forward")) 
+			Scheduler.getInstance().add(new DriveDistance2(tankDrive, 10));
+		else if (AutonomousMode.equals("Switch Auto"))
+			Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		else if (AutonomousMode.equals("Left Scale Forward"))
 			Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
-		else if(SmartDashboard.getBoolean("DB/Button 2", false))
-			Scheduler.getInstance().add(new DriveDistance2(tankDrive, 23));
-		else if(SmartDashboard.getBoolean("DB/Button 3", false))
-			Scheduler.getInstance().add(new MiddleAuto2(tankDrive, cascadeElevator, boxManipulator, gamepad));
-		else
+		else if(AutonomousMode.equals("Test Auto"))
+			//Scheduler.getInstance().add(new MiddleAutoCorrected();
 			Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, gamepad));
 		//tankDrive.setGyroControl(false);

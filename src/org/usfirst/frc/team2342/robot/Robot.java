@@ -91,12 +91,7 @@ public class Robot extends IterativeRobot {
 	int autonomous_position = 0;
 
 	public Robot() {
-		 try {
-			output = new PrintStream(new File("/home/lvuser/auto_data.txt"));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		Gyro.init();
 		gamepad = new Joystick(0);
 		PCM = new PCMHandler(11);
@@ -193,7 +188,7 @@ public class Robot extends IterativeRobot {
 		
 		if (SmartDashboard.getString("DB/String 0", "").equals("")) {
 			try {
-				output = new PrintStream(new File("/home/lvuser/" + SmartDashboard.getString("DB/String 0", "")));
+				output = new PrintStream(new File("/home/lvuser/autos/" + SmartDashboard.getString("DB/String 0", "")));
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -271,12 +266,6 @@ public class Robot extends IterativeRobot {
 		else
 			boxManipulator.openManipulator();
 		
-		if(XBOX.getRawButton(Constants.XBOX_RIGHTBUTTON))
-			climber.windUp();
-		else if(XBOX.getRawButton(Constants.XBOX_LEFTBUTTON))
-			climber.windDown();
-		else
-			climber.stop();
 		
 		if(XBOX.getPOV() == Constants.XBOX_DPAD_UP)
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BAR_OVER, XBOX));
@@ -312,9 +301,8 @@ public class Robot extends IterativeRobot {
 			Thread.sleep(10);
 		} catch(Exception e) { }
 		if (SmartDashboard.getString("DB/String 0", "").equals("")) {
-			output.print(gamepad.getRawAxis(1) + " " + gamepad.getRawAxis(5) + " ");
-			
-			
+			output.print(gamepad.getRawAxis(1) + " " );
+			output.print(gamepad.getRawAxis(5) + " ");
 			output.print(gamepad.getRawButton(Constants.LOGITECH_LEFTBUMPER) + " ");
 			output.print(gamepad.getRawButton(Constants.LOGITECH_RIGHTBUMPER) + " ");
 			output.print(XBOX.getRawAxis(Constants.XBOX_LEFTSTICK_YAXIS) + " ");
@@ -323,6 +311,7 @@ public class Robot extends IterativeRobot {
 			output.print(XBOX.getRawButton(Constants.XBOX_B) + " ");
 			output.print(XBOX.getRawButton(Constants.XBOX_X) + " ");
 			output.print((XBOX.getRawButton(Constants.XBOX_Y)) + " ");
+			output.print(XBOX.getRawButton(9) + " ");
 			output.print(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) + " ");
 			output.print(XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER) + " ");
 			output.print(gamepad.getRawAxis(2) + " ");
@@ -349,6 +338,17 @@ public class Robot extends IterativeRobot {
 		//westCoast.setVelocity(0.0d, 0.0d);
 		//westCoast.zeroSensors();
 		Scheduler.getInstance().removeAll();
+		
+		File folder = new File("home/lvuser/autos/");
+		File[] listOfFiles = folder.listFiles();
+
+		    for (int i = 0; i < listOfFiles.length; i++) {
+		      if (listOfFiles[i].isFile()) {
+		        System.out.println("File " + listOfFiles[i].getName());
+		      } else if (listOfFiles[i].isDirectory()) {
+		        System.out.println("Directory " + listOfFiles[i].getName());
+		      }
+		    }
 	}
 
 	public void autonomousInit() {
@@ -368,6 +368,7 @@ public class Robot extends IterativeRobot {
 		System.out.println(String.valueOf(gpidjson.gyroPid.p));
 		FMS.init();
 		
+		/*
 		String AutonomousMode;
 		AutonomousMode = SmartDashboard.getString("Auto Selector", "");
 		if (AutonomousMode.equals("Drive Forward")) 
@@ -378,7 +379,7 @@ public class Robot extends IterativeRobot {
 			Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		else if(AutonomousMode.equals("Test Auto"))
 			//Scheduler.getInstance().add(new MiddleAutoCorrected();
-			Scheduler.getInstance().add(new MiddleAutoCorrected(tankDrive, cascadeElevator, boxManipulator, gamepad));
+			Scheduler.getInstance().add(new MiddleAutoCorrected(tankDrive, cascadeElevator, boxManipulator, gamepad));*/
 		
 		try {
 			Thread.sleep(10);
@@ -386,12 +387,14 @@ public class Robot extends IterativeRobot {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		if (!(new File("/home/lvuser/" + SmartDashboard.getString("DB/String 1", "")).exists())) {
+		input = null;
+		if (!(new File("/home/lvuser/autos/" + SmartDashboard.getString("DB/String 1", "")).exists())) {
 			System.out.print("File doesnt exist");
+			
 		} else {
-			input = null;
+			
 			try {
-				input = new Scanner(new File("/home/lvuser/" + SmartDashboard.getString("DB/String 1", "")));
+				input = new Scanner(new File("/home/lvuser/autos/" + SmartDashboard.getString("DB/String 1", "")));
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -423,9 +426,10 @@ public class Robot extends IterativeRobot {
 
 	public void autonomousPeriodic(){
 		//this.updatePID();
-		Gyro.update();
-		Scheduler.getInstance().run();
-		if (input != null) {
+		//Gyro.update();
+		//Scheduler.getInstance().run();
+		if (input != null && input.hasNext()) {
+			
 			double left = input.nextDouble();
 			double right = input.nextDouble();
 			if (Math.abs(left)  < Constants.JOYSTICK_DEADZONE)
@@ -441,12 +445,7 @@ public class Robot extends IterativeRobot {
 			else
 				tankDrive.setNoGear();
 
-			boolean p = XBOX.getRawButton(8);
-			if(p && !pressed8) {
-				intakeLowVoltage = !intakeLowVoltage;
-				pressed8 = p;
-			} else if(!p && pressed8)
-				pressed8 = p;
+			
 			double i = input.nextDouble();
 			if(Math.abs(i) > 0.1) {
 				double speed = i;
@@ -497,12 +496,7 @@ public class Robot extends IterativeRobot {
 			else
 				boxManipulator.openManipulator();
 			
-			if(XBOX.getRawButton(Constants.XBOX_RIGHTBUTTON))
-				climber.windUp();
-			else if(XBOX.getRawButton(Constants.XBOX_LEFTBUTTON))
-				climber.windDown();
-			else
-				climber.stop();
+			
 			
 			i = input.nextDouble();
 			if(i == Constants.XBOX_DPAD_UP)
@@ -549,13 +543,13 @@ public class Robot extends IterativeRobot {
 		
 		//System.out.println("left @ " + talonFL.getSelectedSensorPosition(0) + " right @ " + talonFR.getSelectedSensorPosition(0));
 
-		if(!cascadeElevator.runningPreset) {
+		/*if(!cascadeElevator.runningPreset) {
 			if(Math.abs(cascadeElevator.talonCascade.getSelectedSensorPosition(0)) > 100 && !cascadeElevator.lowerLimit.get()) {
 				cascadeElevator.talonCascade.selectProfileSlot(1, 0);
 				cascadeElevator.talonCascade.set(ControlMode.Position, cascadeElevator.lastPosition);
 			}
 			//System.out.println("setting 0 no preset");
-		}
+		}*/
 
 		//System.out.println(tankDrive.leftA.getSelectedSensorPosition(0));
 	}

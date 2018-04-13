@@ -119,6 +119,15 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void robotInit() {
+		final String defaultAuto = "Drive Forward";
+		final String switchAuto = "Switch Auto";
+		final String scaleAuto = "Left Scale Forward";
+		String[] autoList = {defaultAuto, switchAuto, scaleAuto, "Test Auto", "Record"};
+		
+/*		NetworkTable table = NetworkTable.getTable("SmartDasboard");
+		table.putStringArray();*/
+		SmartDashboard.putStringArray("Auto List", autoList);
+		
 		if(!cascadeElevator.lowerLimit.get())
 			cascadeElevator.zeroSensors();
 

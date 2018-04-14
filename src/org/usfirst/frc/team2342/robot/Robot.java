@@ -6,9 +6,11 @@ import java.io.PrintStream;
 
 import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
 import org.usfirst.frc.team2342.automodes.LeftSideAuto;
+import org.usfirst.frc.team2342.automodes.LeftSideAuto2;
 import org.usfirst.frc.team2342.automodes.LeftSwitchAuto;
 import org.usfirst.frc.team2342.automodes.MiddleAuto;
 import org.usfirst.frc.team2342.automodes.RightSideAuto;
+import org.usfirst.frc.team2342.automodes.RightSideAuto2;
 import org.usfirst.frc.team2342.automodes.RightSwitchAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveDistance2;
@@ -131,7 +133,7 @@ public class Robot extends IterativeRobot {
 		final String defaultAuto = "Drive Forward";
 		final String switchAuto = "Switch Auto";
 		final String scaleAuto = "Forward to ";
-		String[] autoList = {"Center Switch", "Right Switch", "Left Switch", "Drive Forward", "Left Scale", "Right Scale", "Test Auto"};
+		String[] autoList = {"Center Switch", "Right Switch", "Left Switch", "Drive Forward", "Left Scale", "Right Scale", "Left Switch/Scale", "Right Switch/Scale", "Test Auto"};
 		
 /*		NetworkTable table = NetworkTable.getTable("SmartDasboard");
 		table.putStringArray();*/
@@ -353,6 +355,10 @@ public class Robot extends IterativeRobot {
 			Scheduler.getInstance().add(new RightSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		else if (AutonomousMode.equals("Left Scale"))
 			Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		else if(AutonomousMode.equals("Left Switch/Scale"))
+			Scheduler.getInstance().add(new LeftSideAuto2(tankDrive, cascadeElevator, boxManipulator, gamepad));
+		else if(AutonomousMode.equals("Right Switch/Scale"))
+			Scheduler.getInstance().add(new RightSideAuto2(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		else if(AutonomousMode.equals("Test Auto"))
 			//Scheduler.getInstance().add(new MiddleAutoCorrected();
 			Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));

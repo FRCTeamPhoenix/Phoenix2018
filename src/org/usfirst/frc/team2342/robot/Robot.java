@@ -15,6 +15,7 @@ import org.usfirst.frc.team2342.automodes.RightSwitchAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
 import org.usfirst.frc.team2342.commands.DriveDistance2;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
+import org.usfirst.frc.team2342.commands.TiltPosition;
 import org.usfirst.frc.team2342.json.GyroPIDJson;
 import org.usfirst.frc.team2342.json.GyroReader;
 import org.usfirst.frc.team2342.json.JsonHandler;
@@ -156,7 +157,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Select Autonomous Mode", autoChooser);
 		*/
 		
-		//Gyro.init();
+		//Gyro.init();boxManipulator.talonTip.setSelectedSensorPosition(0, 0, 10);
 	}
 
 	public void teleopInit() {
@@ -180,7 +181,6 @@ public class Robot extends IterativeRobot {
 
 		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
-		talonTip.setSelectedSensorPosition(0, 0, 10);
 
 		//cascadeElevator.lastPosition = 0;
 		try {
@@ -190,6 +190,8 @@ public class Robot extends IterativeRobot {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		talonTip.setSelectedSensorPosition(0, 0, 10);
 	}
 
 	public void teleopPeriodic() {
@@ -234,8 +236,8 @@ public class Robot extends IterativeRobot {
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
 		else if(XBOX.getRawButton(Constants.XBOX_X))
 			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, XBOX));
-		else if(XBOX.getRawButton(Constants.XBOX_Y))
-			Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
+		//else if(XBOX.getRawButton(Constants.XBOX_Y))
+			//Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
 		else if(!cascadeElevator.runningPreset) {
 			if(Math.abs(cascadeElevator.talonCascade.getSelectedSensorPosition(0)) > 100 && !cascadeElevator.lowerLimit.get()) {
 				cascadeElevator.talonCascade.selectProfileSlot(1, 0);
@@ -244,6 +246,15 @@ public class Robot extends IterativeRobot {
 				//System.out.println("last position = " + cascadeElevator.lastPosition + " actual position = " + cascadeElevator.talonCascade.getSelectedSensorPosition(0));
 			}
 		}
+		
+		if (XBOX.getRawButton(Constants.XBOX_START))
+			Scheduler.getInstance().add(new TiltPosition(boxManipulator, Constants.TILT_UPPER_POSITION));
+		else if (XBOX.getRawButton(Constants.XBOX_SELECT))
+			Scheduler.getInstance().add(new TiltPosition(boxManipulator, Constants.TILT_LOWER_POSITION));
+		else if (XBOX.getRawButton(Constants.XBOX_Y))
+			Scheduler.getInstance().add(new TiltPosition(boxManipulator, Constants.TILT_HALF_POSITION));
+		else 
+			boxManipulator.holdTiltPositon();
 		//System.out.println("lower: " + cascadeElevator.lowerLimit.get() + " upper: " + cascadeElevator.upperLimit.get());
 
 		if(XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER) > 0.1) {

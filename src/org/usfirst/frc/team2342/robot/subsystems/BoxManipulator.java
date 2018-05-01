@@ -25,6 +25,7 @@ public class BoxManipulator extends Subsystem {
 	private final int PidTimeOutMs = 10;
 	private final boolean SensorPhase = true;
 	private final boolean InvertMotor = false;
+	public double lastPosition;
 	
 	
 	public BoxManipulator(WPI_TalonSRX talonIntakeRight, WPI_TalonSRX talonIntakeLeft, WPI_TalonSRX talonTip, PCMHandler pcm) {
@@ -49,6 +50,12 @@ public class BoxManipulator extends Subsystem {
 		talonIntakeRight.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 		talonIntakeLeft.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 		this.talonIntakeLeft.follow(this.talonIntakeRight);
+		
+		talonTip.config_kF(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 3", 0), PidTimeOutMs);
+		talonTip.config_kP(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 0", 0), PidTimeOutMs);
+		talonTip.config_kI(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 1", 0), PidTimeOutMs);
+		talonTip.config_kD(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 2", 0), PidTimeOutMs);
+		
 		//Need equivalent for solenoids
 		this.pcm = pcm;
 		
@@ -105,6 +112,28 @@ public class BoxManipulator extends Subsystem {
 	public void stop() {
 		talonIntakeRight.set(ControlMode.PercentOutput, 0.0);
 		talonIntakeLeft.set(ControlMode.PercentOutput, 0.0);
+	}
+	
+	public void goToPositionTilt(double position) {
+		double speed;
+		
+		if (talonTip.getSelectedSensorPosition(PidLoopIndex) < -position) {
+			speed = 1200; //down speed POSITIVE
+		} else
+			speed = -3200; //up speed NEGATIVE
+		
+		if(Math.abs(talonTip.getSelectedSensorPosition(PidLoopIndex) + position) < 2000)
+			speed /= 2;
+
+		talonTip.set(ControlMode.Velocity, speed);
+	}
+	
+	public void holdTiltPositon() {
+		talonTip.set(ControlMode.Position, lastPosition);
+	}
+	
+	public void stopTilt() {
+		talonTip.set(ControlMode.PercentOutput, 0.0);
 	}
 
 	protected void initDefaultCommand() {

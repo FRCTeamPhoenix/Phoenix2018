@@ -50,10 +50,10 @@ public class CascadeElevator extends Subsystem {
 		talonCascade.config_kI(0, 0.0001, PidTimeOutMs);
 		talonCascade.config_kD(0, 0, PidTimeOutMs);
 		
-		talonCascade.config_kF(1, 0, 10);
-		talonCascade.config_kP(1, 1, 10);
-		talonCascade.config_kI(1, 0, 10);
-		talonCascade.config_kD(1, 0, 10);
+		talonCascade.config_kF(1, 0, PidTimeOutMs);
+		talonCascade.config_kP(1, 1, PidTimeOutMs);
+		talonCascade.config_kI(1, 0, PidTimeOutMs);
+		talonCascade.config_kD(1, 0, PidTimeOutMs);
 		
 		
 		talonCascade.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);

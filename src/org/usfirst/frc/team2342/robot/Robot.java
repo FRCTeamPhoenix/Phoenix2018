@@ -1,11 +1,9 @@
 package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
-import org.usfirst.frc.team2342.automodes.LeftSideAuto;
-import org.usfirst.frc.team2342.automodes.MiddleAuto;
 import org.usfirst.frc.team2342.commands.CascadePosition;
-import org.usfirst.frc.team2342.commands.DriveDistance2;
 import org.usfirst.frc.team2342.commands.DriveGamepad;
+import org.usfirst.frc.team2342.commands.TurnAngle;
 import org.usfirst.frc.team2342.json.GyroPIDJson;
 import org.usfirst.frc.team2342.json.GyroReader;
 import org.usfirst.frc.team2342.json.JsonHandler;
@@ -18,6 +16,7 @@ import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 import org.usfirst.frc.team2342.util.FMS;
 
+import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -37,7 +36,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 
 public class Robot extends IterativeRobot {
-
+	long maxDifference = 0;
 	Joystick gamepad;
 	PCMHandler PCM;
 	WPI_TalonSRX talonFR;
@@ -72,6 +71,8 @@ public class Robot extends IterativeRobot {
 	TalonReader treader;
 	GyroReader greader;
 	
+	ADIS16448_IMU imu;
+	
 	SendableChooser<Command> autoChooser;
 	
 	//0 = left
@@ -80,7 +81,6 @@ public class Robot extends IterativeRobot {
 	int autonomous_position = 0;
 
 	public Robot() {
-		//Gyro.init();
 		gamepad = new Joystick(0);
 		PCM = new PCMHandler(11);
 		talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
@@ -96,6 +96,7 @@ public class Robot extends IterativeRobot {
 		XBOX = new Joystick(1);
 		cascadeElevator = new CascadeElevator(talonCascade);
 		boxManipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, PCM);
+		imu = new ADIS16448_IMU();
 		talonPID = new PIDGains();
 		//camera0 = CameraServer.getInstance().startAutomaticCapture(0);
 		//camera1 = CameraServer.getInstance().startAutomaticCapture(1);
@@ -175,6 +176,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopPeriodic() {
+		long lastTime = System.currentTimeMillis();
 		Scheduler.getInstance().run();
 
 		//Drive with joystick control in velocity mode
@@ -265,6 +267,9 @@ public class Robot extends IterativeRobot {
 			boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0);
 			boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0);
 		} 
+		if((System.currentTimeMillis() - lastTime) > maxDifference)
+			maxDifference = (System.currentTimeMillis() - lastTime);
+		System.out.println("difference: " + maxDifference);
 	}
 
 	public void disabledInit() {
@@ -290,7 +295,7 @@ public class Robot extends IterativeRobot {
 		System.out.println(String.valueOf(gpidjson.gyroPid.p));
 		FMS.init();
 		
-		String AutonomousMode;
+		/*String AutonomousMode;
 		AutonomousMode = SmartDashboard.getString("Auto Selector", "");
 		if (AutonomousMode.equals("Drive Forward")) {
 			Scheduler.getInstance().add(new DriveDistance2(tankDrive, 10));
@@ -300,7 +305,7 @@ public class Robot extends IterativeRobot {
 		}
 		if (AutonomousMode.equals("Left Scale Forward")) {
 			Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
-		}
+		}*/
 		
 		try {
 			Thread.sleep(100);
@@ -318,16 +323,18 @@ public class Robot extends IterativeRobot {
 		
 		//Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		//Scheduler.getInstance().add(new TurnAngle(Constants.WESTCOAST_TURN_SPEED, 90, tankDrive));
-		if(SmartDashboard.getBoolean("DB/Button 1", false))
+		/*if(SmartDashboard.getBoolean("DB/Button 1", false))
 			Scheduler.getInstance().add(new LeftSideAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
 		else if(SmartDashboard.getBoolean("DB/Button 2", false)) {
 			Scheduler.getInstance().add(new DriveDistance2(tankDrive, 23));
 		}
 		else
-			Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));
+			Scheduler.getInstance().add(new MiddleAuto(tankDrive, cascadeElevator, boxManipulator, gamepad));*/
+		
 		//Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, gamepad));
 		//tankDrive.setGyroControl(false);
 		//TalonNWT.updateGyroPID(westCoast.pidc);
+		Scheduler.getInstance().add(new TurnAngle(tankDrive, imu, 90));
 	}
 
 	public void autonomousPeriodic(){
@@ -340,7 +347,8 @@ public class Robot extends IterativeRobot {
 		TalonNWT.updateTalon(talonFL);
 		TalonNWT.updateTalon(talonBR);
 		TalonNWT.updateTalon(talonBL);*/
-		
+		SmartDashboard.putString("DB/String 3", "position: " + talonFL.getSelectedSensorPosition(0));
+
 		try { Thread.sleep(10); }
 		catch (Exception e) { }
 		

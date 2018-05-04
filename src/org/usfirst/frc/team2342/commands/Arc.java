@@ -1,7 +1,5 @@
 package org.usfirst.frc.team2342.commands;
 
-import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
-import org.usfirst.frc.team2342.robot.sensors.Gyro;
 import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 
@@ -19,7 +17,7 @@ public class Arc extends Command {
     public Arc(TankDrive tankDrive,double distance, double angle) {
     	this.tankDrive = tankDrive;
     	this.angle = angle;
-    	this.distance = distance;
+    	this.distance = distance/Constants.TALON_RPS_TO_FPS * Constants.TALON_TICKS_PER_REV;
     	requires(tankDrive);
     	
         // Use requires() here to declare subsystem dependencies
@@ -28,6 +26,7 @@ public class Arc extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	tankDrive.zeroSensors();
     	currentAngle = distance / tankDrive.leftA.getSelectedSensorPosition(0) * angle;
     }
 
@@ -35,16 +34,17 @@ public class Arc extends Command {
     protected void execute() {
     	currentAngle = distance / tankDrive.leftA.getSelectedSensorPosition(0) * angle;
     	
-    	tankDrive.setVelocity(Constants.WESTCOAST_HALF_SPEED * ( 1 - .1 * (currentAngle - Gyro.angle())), Constants.WESTCOAST_HALF_SPEED);
+    	tankDrive.setVelocity(-Constants.WESTCOAST_HALF_SPEED * ( 1 - .1 * (currentAngle)), -Constants.WESTCOAST_HALF_SPEED);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	return Math.abs((tankDrive.leftA.getSelectedSensorPosition(0)) + distance) < 300;
+    	return Math.abs((tankDrive.leftA.getSelectedSensorPosition(0) + tankDrive.rightA.getSelectedSensorPosition(0)) / 2 + distance) < 300;
     }
 
     // Called once after isFinished returns true
     protected void end() {
+    	tankDrive.setVelocity(0, 0);
     }
 
     // Called when another command which requires one or more of the same

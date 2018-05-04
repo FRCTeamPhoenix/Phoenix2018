@@ -1,7 +1,6 @@
 package org.usfirst.frc.team2342.robot.subsystems;
 
 import org.usfirst.frc.team2342.PIDLoops.DistancePIDController;
-import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
 import org.usfirst.frc.team2342.json.PIDGains;
 import org.usfirst.frc.team2342.robot.PCMHandler;
 //import org.usfirst.frc.team2342.robot.TalonNWT;
@@ -19,7 +18,7 @@ public class WestCoastTankDrive extends Subsystem {
 	private WPI_TalonSRX leftA, rightA, leftB, rightB;
 	private PCMHandler m_PCM;
 	public DistancePIDController dpidc;
-	public GyroPIDController pidc;       // GyroPIDController
+	//public GyroPIDController pidc;       // GyroPIDController
 	public boolean debug = false;        // debug messages
 	private boolean gyroControl = false; // gyro Control
 	private boolean isLeftInner = false; // is the left wheel inner
@@ -88,7 +87,7 @@ public class WestCoastTankDrive extends Subsystem {
         WestCoastTankDrive.loadGains(rightB, Constants.TALON_VELOCITY_SLOT_IDX, rightVelocityGains);
         WestCoastTankDrive.loadGains(rightB, Constants.TALON_DISTANCE_SLOT_IDX, rightDistanceGains);*/
 
-		pidc = null; // gyropidcontroller is not needed in westcoast yet.
+		//pidc = null; // gyropidcontroller is not needed in westcoast yet.
 		zeroSensors(); 
 	}
 
@@ -113,8 +112,8 @@ public class WestCoastTankDrive extends Subsystem {
 			}
 		}
 		else {
-			left = left  * (1 - pidc.getCorrection());
-			right = right * (1 + pidc.getCorrection());
+			//left = left  * (1 - pidc.getCorrection());
+			//right = right * (1 + pidc.getCorrection());
 			leftA.set(ControlMode.Velocity,  left);
 			rightA.set(ControlMode.Velocity, right);
 			if (this.debug) {
@@ -181,10 +180,10 @@ public class WestCoastTankDrive extends Subsystem {
 		}
 
 		if (this.gyroControl == true) {
-			double lspeed = -velocity * pidc.getCorrection();
-			double rspeed =  velocity * pidc.getCorrection();
+			double lspeed = -velocity; //* pidc.getCorrection();
+			double rspeed =  velocity; //* pidc.getCorrection();
 			if (this.debug) {
-				SmartDashboard.putString("DB/String 0", String.valueOf(this.pidc.getCurAngle()));
+				//SmartDashboard.putString("DB/String 0", String.valueOf(this.pidc.getCurAngle()));
 				SmartDashboard.putString("DB/String 2", String.valueOf(lspeed));
 				SmartDashboard.putString("DB/String 3", String.valueOf(rspeed));
 				printGDebug(lspeed, rspeed);
@@ -205,7 +204,7 @@ public class WestCoastTankDrive extends Subsystem {
 		this.isLeftInner = isLeftInner;
 		innerMultiplyer = 1.0d;
 
-		this.pidc.updateAngle(this.pidc.getCurAngle());
+		//this.pidc.updateAngle(this.pidc.getCurAngle());
 		double circumfrence = 2 * radius * Math.PI;
 		double innerCircumfrence = 2 * (radius - (11.0/12.0)) * Math.PI;
 		double outerCircumfrence = 2 * (radius + (11.0/12.0)) * Math.PI;
@@ -290,7 +289,7 @@ public class WestCoastTankDrive extends Subsystem {
 	}
 
 	public void zeroSnesors() {
-		this.pidc.reset();
+		//this.pidc.reset();
 	}
 
 	private static void zeroEncoders(WPI_TalonSRX talon) {
@@ -322,24 +321,24 @@ public class WestCoastTankDrive extends Subsystem {
 	// updates the PID in gyro with the sliders or the networktables.
 	public void updateGyroPID() {
 		//TalonNWT.populateGyroPID(this.pidc);
-		pidc.setP(SmartDashboard.getNumber("DB/Slider 0", 0));
-		pidc.setI(SmartDashboard.getNumber("DB/Slider 1", 0));
-		pidc.setD(SmartDashboard.getNumber("DB/Slider 2", 0));
+		//pidc.setP(SmartDashboard.getNumber("DB/Slider 0", 0));
+		//pidc.setI(SmartDashboard.getNumber("DB/Slider 1", 0));
+		//pidc.setD(SmartDashboard.getNumber("DB/Slider 2", 0));
 		if (this.debug) {
-			SmartDashboard.putString("DB/String 7", String.valueOf(pidc.getP()));
-			SmartDashboard.putString("DB/String 8", String.valueOf(pidc.getI()));
-			SmartDashboard.putString("DB/String 9", String.valueOf(pidc.getD()));
+			//SmartDashboard.putString("DB/String 7", String.valueOf(pidc.getP()));
+			//SmartDashboard.putString("DB/String 8", String.valueOf(pidc.getI()));
+			//SmartDashboard.putString("DB/String 9", String.valueOf(pidc.getD()));
 		}
 	}
 
 	// print gyro debug
 	public void printGDebug(double lspeed, double rspeed) {
-		System.out.println("INNER SPEED: " + String.valueOf(this.innerSpeed) + "     OUTER SPEED: " + String.valueOf(this.outerSpeed));
+		/*System.out.println("INNER SPEED: " + String.valueOf(this.innerSpeed) + "     OUTER SPEED: " + String.valueOf(this.outerSpeed));
 		System.out.println("Correction: " + pidc.getCorrection() + "    CurAngle: " + pidc.getCurAngle() + "    AngleD: " + pidc.calculateAE());
 		System.out.println("LEFTV: " + String.valueOf(lspeed) + "  RIGHTV: " + String.valueOf(rspeed));
 		System.out.println("Kp Vlaue: " + String.valueOf(pidc.getP()));
 		System.out.println("Ki Vlaue: " + String.valueOf(pidc.getI()));
-		System.out.println("Kd Vlaue: " + String.valueOf(pidc.getD()));
+		System.out.println("Kd Vlaue: " + String.valueOf(pidc.getD()));*/
 	}
 
 	/*
@@ -352,9 +351,9 @@ public class WestCoastTankDrive extends Subsystem {
 	}
 	
 	public void setGyroPID(double p, double i, double d) {
-		pidc.setP(p);
-		pidc.setI(i);
-		pidc.setD(d);
+		//pidc.setP(p);
+		//pidc.setI(i);
+		//pidc.setD(d);
 	}
 
 }

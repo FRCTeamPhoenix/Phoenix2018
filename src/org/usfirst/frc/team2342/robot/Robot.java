@@ -204,7 +204,7 @@ public class Robot extends IterativeRobot {
 		else
 			tankDrive.setNoGear();
 
-		boolean p = XBOX.getRawButton(8);
+		boolean p = XBOX.getRawButton(Constants.XBOX_SELECT);
 		if(p && !pressed8) {
 			intakeLowVoltage = !intakeLowVoltage;
 			pressed8 = p;

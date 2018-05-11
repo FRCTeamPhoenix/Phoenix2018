@@ -46,7 +46,7 @@ public class DriveGamepad extends Command {
 
 		//get multiplier where 1.0 = all the way down and 0.2 is all the way up
 		double axisMultiplier = 1.0;
-		axisMultiplier -= 0.8 * Math.abs(m_cascade.lastPosition / Constants.CASCADE_UPPER_SCALE);
+		axisMultiplier -= 0.8 * Math.abs((float)m_cascade.talonCascade.getSelectedSensorPosition(0)/ (float)Constants.CASCADE_UPPER_SCALE);
 		
 		//		System.out.println(axis1);
 		if(Math.abs(axis1) > Constants.JOYSTICK_DEADZONE)

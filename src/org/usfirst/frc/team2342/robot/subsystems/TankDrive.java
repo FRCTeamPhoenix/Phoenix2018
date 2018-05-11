@@ -2,7 +2,7 @@ package org.usfirst.frc.team2342.robot.subsystems;
 
 import org.usfirst.frc.team2342.robot.PCMHandler;
 import org.usfirst.frc.team2342.util.Constants;
-import org.usfirst.frc.team2342.json.PIDGains;
+import org.usfirst.frc.team2342.util.PIDGains;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;

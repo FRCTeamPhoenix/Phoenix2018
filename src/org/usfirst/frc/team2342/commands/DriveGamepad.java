@@ -15,12 +15,16 @@ public class DriveGamepad extends Command {
 	TankDrive m_westCoast;
 	CascadeElevator m_cascade;
 
+	boolean wasCascadeSlowPressed;
+	boolean cascadeSlowEnabled;
+	
 	public DriveGamepad(Joystick gamepad, TankDrive tankDrive, CascadeElevator cascade) {
 		requires(tankDrive);
 		//limit at max val
 		m_gamepad = gamepad;
 		m_cascade = cascade;
-
+		cascadeSlowEnabled = false;
+		
 		m_westCoast = tankDrive;
 		if(Math.abs(gamepad.getRawAxis(1)) > Constants.JOYSTICK_DEADZONE)
 			leftVelocity = gamepad.getRawAxis(1);
@@ -44,9 +48,13 @@ public class DriveGamepad extends Command {
 		double axis1 = m_gamepad.getRawAxis(1);
 		double axis3 = m_gamepad.getRawAxis(5);
 
+		if(m_gamepad.getRawButtonPressed(20))
+			cascadeSlowEnabled = (!cascadeSlowEnabled);
+		
 		//get multiplier where 1.0 = all the way down and 0.2 is all the way up
 		double axisMultiplier = 1.0;
-		axisMultiplier -= 0.8 * Math.abs((float)m_cascade.talonCascade.getSelectedSensorPosition(0)/ (float)Constants.CASCADE_UPPER_SCALE);
+		if(cascadeSlowEnabled)
+			axisMultiplier -= 0.8 * Math.abs((float)m_cascade.talonCascade.getSelectedSensorPosition(0)/ (float)Constants.CASCADE_UPPER_SCALE);
 		
 		//		System.out.println(axis1);
 		if(Math.abs(axis1) > Constants.JOYSTICK_DEADZONE)

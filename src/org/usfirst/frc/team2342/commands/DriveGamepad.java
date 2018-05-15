@@ -23,7 +23,7 @@ public class DriveGamepad extends Command {
 		//limit at max val
 		m_gamepad = gamepad;
 		m_cascade = cascade;
-		cascadeSlowEnabled = false;
+		cascadeSlowEnabled = true;
 		
 		m_westCoast = tankDrive;
 		if(Math.abs(gamepad.getRawAxis(1)) > Constants.JOYSTICK_DEADZONE)

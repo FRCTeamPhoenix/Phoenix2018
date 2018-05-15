@@ -109,7 +109,7 @@ public class Robot extends IterativeRobot {
 		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		PCM.turnOn();
-		Command driveJoystick = new DriveGamepad(gamepad, tankDrive);
+		Command driveJoystick = new DriveGamepad(gamepad, tankDrive, cascadeElevator);
 		Scheduler.getInstance().add(driveJoystick);
 
 		this.updatePID();
@@ -134,8 +134,8 @@ public class Robot extends IterativeRobot {
 		else
 			tankDrive.setNoGear();
 
-		boolean p = XBOX.getRawButton(8);
-		if (p && !pressed8) {
+		boolean p = XBOX.getRawButton(Constants.XBOX_SELECT);
+		if(p && !pressed8) {
 			intakeLowVoltage = !intakeLowVoltage;
 			pressed8 = p;
 		} else if (!p && pressed8)

@@ -53,15 +53,20 @@ public class DriveGamepad extends Command {
 		
 		//get multiplier where 1.0 = all the way down and 0.2 is all the way up
 		double axisMultiplier = 1.0;
-		if(cascadeSlowEnabled)
-			axisMultiplier -= 0.8 * Math.abs((float)m_cascade.talonCascade.getSelectedSensorPosition(0)/ (float)Constants.CASCADE_UPPER_SCALE);
-		
+		if(cascadeSlowEnabled){
+			if(Math.abs(m_cascade.talonCascade.getSelectedSensorPosition(0)) <= ((float)Constants.CASCADE_UPPER_SCALE /2)){
+				axisMultiplier -= 0.9 * Math.abs((float)m_cascade.talonCascade.getSelectedSensorPosition(0)/ ((float)Constants.CASCADE_UPPER_SCALE /2));
+			}else{
+				axisMultiplier = 0.1;
+			}
+		}
 		//		System.out.println(axis1);
 		if(Math.abs(axis1) > Constants.JOYSTICK_DEADZONE)
 			leftVelocity = axis1 * axisMultiplier; // velocity maybe
 
 		if(Math.abs(axis3) > Constants.JOYSTICK_DEADZONE)
 			rightVelocity = axis3  * axisMultiplier; // velocity maybe
+		
 		m_westCoast.setPercentage(-leftVelocity, -rightVelocity);
 	}
 

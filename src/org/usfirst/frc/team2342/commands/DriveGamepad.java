@@ -15,15 +15,15 @@ public class DriveGamepad extends Command {
 	TankDrive m_westCoast;
 	CascadeElevator m_cascade;
 
-	boolean wasCascadeSlowPressed;
 	boolean cascadeSlowEnabled;
+	boolean oneJoystick;
 	
 	public DriveGamepad(Joystick gamepad, TankDrive tankDrive, CascadeElevator cascade) {
 		requires(tankDrive);
 		//limit at max val
 		m_gamepad = gamepad;
 		m_cascade = cascade;
-		cascadeSlowEnabled = false;
+		cascadeSlowEnabled = true;
 		
 		m_westCoast = tankDrive;
 		if(Math.abs(gamepad.getRawAxis(1)) > Constants.JOYSTICK_DEADZONE)
@@ -45,8 +45,8 @@ public class DriveGamepad extends Command {
 	protected void execute(){
 		double leftVelocity = 0.0;
 		double rightVelocity = 0.0;
-		double axis1 = m_gamepad.getRawAxis(1);
-		double axis3 = m_gamepad.getRawAxis(5);
+		double axis1 = m_gamepad.getRawAxis(0);
+		double axis2 = m_gamepad.getRawAxis(1);
 
 		if(m_gamepad.getRawButtonPressed(20))
 			cascadeSlowEnabled = (!cascadeSlowEnabled);
@@ -56,12 +56,41 @@ public class DriveGamepad extends Command {
 		if(cascadeSlowEnabled)
 			axisMultiplier -= 0.8 * Math.abs((float)m_cascade.talonCascade.getSelectedSensorPosition(0)/ (float)Constants.CASCADE_UPPER_SCALE);
 		
-		//		System.out.println(axis1);
-		if(Math.abs(axis1) > Constants.JOYSTICK_DEADZONE)
-			leftVelocity = axis1 * axisMultiplier; // velocity maybe
+		//do left right multiplier calculationss
+		double x = axis1;
+	
+		double y = axis2;
+		if(Math.abs(y) >= 0.1){
+			
+		}else{
+			y = 0.0;
+			x *= -1.0;
+		}
+		
+		
+		
+		double L = 0;
+		double R = 0;
+		
+		
+		if(y>=0){L=y+x; R=y-x;}
 
-		if(Math.abs(axis3) > Constants.JOYSTICK_DEADZONE)
-			rightVelocity = axis3  * axisMultiplier; // velocity maybe
+		else {L= y-x; R=y+x;}
+
+		double max = 0;
+		max=Math.abs(L); if(max<Math.abs(R))max=Math.abs(R);
+
+		if(max>1){L/=max; R/=max;}
+		
+		//		System.out.println(axis1);
+		if(Math.abs(axis1) > Constants.JOYSTICK_DEADZONE || Math.abs(axis2) > Constants.JOYSTICK_DEADZONE){
+			leftVelocity = L * axisMultiplier; // velocity maybe
+			rightVelocity = R  * axisMultiplier; // velocity maybe
+		}else{
+			leftVelocity = 0;
+			rightVelocity = 0;
+		}
+		
 		m_westCoast.setPercentage(-leftVelocity, -rightVelocity);
 	}
 

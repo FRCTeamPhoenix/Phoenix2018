@@ -57,7 +57,7 @@ public class DriveGamepad extends Command {
 			if(Math.abs(m_cascade.talonCascade.getSelectedSensorPosition(0)) <= ((float)Constants.CASCADE_UPPER_SCALE /2)){
 				axisMultiplier -= 0.8 * Math.abs((float)m_cascade.talonCascade.getSelectedSensorPosition(0)/ ((float)Constants.CASCADE_UPPER_SCALE /2));
 			}else{
-				axisMultiplier = 0.2;
+				axisMultiplier = 0.28;
 			}
 		}
 		//		System.out.println(axis1);

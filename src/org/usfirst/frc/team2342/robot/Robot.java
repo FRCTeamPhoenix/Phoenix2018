@@ -117,6 +117,8 @@ public class Robot extends IterativeRobot {
 		talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, 0);
 		talonTip.setSelectedSensorPosition(0, 0, 10);
+		
+		cascadeElevator.lastPosition = talonCascade.getSelectedSensorPosition(0);
 
 		// cascadeElevator.lastPosition = 0;
 

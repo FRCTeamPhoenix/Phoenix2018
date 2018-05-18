@@ -21,6 +21,7 @@ import org.usfirst.frc.team2342.robot.subsystems.TankDrive;
 //import org.usfirst.frc.team2342.robot.subsystems.WestCoastTankDrive;
 import org.usfirst.frc.team2342.util.Constants;
 import org.usfirst.frc.team2342.util.FMS;
+import org.usfirst.frc.team2342.util.TalonNetworkTableController;
 
 import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -201,7 +202,7 @@ public class Robot extends IterativeRobot {
 
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-
+		long time = System.currentTimeMillis();
 		//Drive with joystick control in velocity mode
 		//Buttons 8 & 9 or (gamepad) 5 & 6 are Low & High gear, respectively
 		if (gamepad.getRawButton(Constants.LOGITECH_LEFTBUMPER))
@@ -302,24 +303,32 @@ public class Robot extends IterativeRobot {
 			Thread.sleep(2);
 		} catch(Exception e) { }
 		if (!SmartDashboard.getString("DB/String 0", "").equals("")) {
-			output.print(gamepad.getRawAxis(1) + " " );
-			output.print(gamepad.getRawAxis(5) + " ");
-			output.print(XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS) + " ");
-			output.print(XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER) + " ");
-			output.print(XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER) + " ");
-			/*output.print(gamepad.getRawButton(Constants.LOGITECH_LEFTBUMPER) + " ");
-			output.print(gamepad.getRawButton(Constants.LOGITECH_RIGHTBUMPER) + " ");*/
-			
-			output2.print(XBOX.getRawButton(Constants.XBOX_A) + " ");
-			output2.print(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) + " ");
-			output2.print(XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER) + " ");
-			//output.print(gamepad.getRawAxis(2) + " ");
-			//output.print(gamepad.getRawAxis(3) + " ");
-			/*output.print(XBOX.getPOV() + " ");*/
-			output.println(); output2.println();
+//			output.print(gamepad.getRawAxis(1) + " " );
+//			output.print(gamepad.getRawAxis(5) + " ");
+//			output.print(XBOX.getRawAxis(Constants.XBOX_RIGHTSTICK_YAXIS) + " ");
+//			output.print(XBOX.getRawAxis(Constants.XBOX_LEFTTRIGGER) + " ");
+//			output.print(XBOX.getRawAxis(Constants.XBOX_RIGHTTRIGGER) + " ");
+//			/*output.print(gamepad.getRawButton(Constants.LOGITECH_LEFTBUMPER) + " ");
+//			output.print(gamepad.getRawButton(Constants.LOGITECH_RIGHTBUMPER) + " ");*/
+//			
+//			output2.print(XBOX.getRawButton(Constants.XBOX_A) + " ");
+//			output2.print(XBOX.getRawButton(Constants.XBOX_LEFTBUMPER) + " ");
+//			output2.print(XBOX.getRawButton(Constants.XBOX_RIGHTBUMPER) + " ");
+//			//output.print(gamepad.getRawAxis(2) + " ");
+//			//output.print(gamepad.getRawAxis(3) + " ");
+//			/*output.print(XBOX.getPOV() + " ");*/
+//			output.println(); output2.println();
+			output.print(talonFL.getSelectedSensorVelocity(0) + " ");
+			output.print(talonFR.getSelectedSensorVelocity(0) + " ");
+			output.println();
 		}
 		
-		
+		try {
+			Thread.sleep(Math.max(0, 100 - (System.currentTimeMillis() - time)));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		 
 		
@@ -365,6 +374,8 @@ public class Robot extends IterativeRobot {
 		JsonHandler.readJson("gyropidr.json", gpidjson);
 		System.out.println(String.valueOf(gpidjson.gyroPid.p));
 		FMS.init();
+		TalonNetworkTableController.pushTalon(talonFL);
+		TalonNetworkTableController.pushTalon(talonFR);
 		
 		/*
 		String AutonomousMode;
@@ -427,131 +438,155 @@ public class Robot extends IterativeRobot {
 		//this.updatePID();
 		//Gyro.update();
 		//Scheduler.getInstance().run();
-		if (input != null && input.hasNext()) {
-			
+		long time = System.currentTimeMillis();
+		try {
+			Thread.sleep(2);
+		} catch(Exception e) {}
+		if(input != null && input.hasNext()) {
 			double left = input.nextDouble();
 			double right = input.nextDouble();
-			if (Math.abs(left)  < Constants.JOYSTICK_DEADZONE)
-				left = 0;
-			if (Math.abs(right) < Constants.JOYSTICK_DEADZONE)
-				right = 0;
-			tankDrive.setPercentage(-left, -right);
-				
-			/*if (input.nextBoolean())
-				tankDrive.setLowGear();
-			else if (input.nextBoolean())
-				tankDrive.setHighGear();
-			else
-				tankDrive.setNoGear();
-
-			
-			double i = input.nextDouble();
-			if(Math.abs(i) > 0.1) {
-				double speed = i;
-				if(speed < 0)
-					speed /= 10;
-				talonTip.set(ControlMode.PercentOutput, -speed);
-			}
-			else
-				talonTip.set(ControlMode.PercentOutput, 0);*/
-
-			double i = input.nextDouble();
-			if (Math.abs(i) > Constants.CASCADE_DEADZONE) {
-				double s = i;
-				double max = s < 0 ? 1200 : 600;
-
-				cascadeElevator.setVelocity(s * max);
-				cascadeElevator.lastPosition = cascadeElevator.talonCascade.getSelectedSensorPosition(0);
-				//System.out.println("last position = " + cascadeElevator.lastPosition);
-			}
-			else if(input2.nextBoolean())
-				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
-			/*else if(input.nextBoolean())
-				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
-			else if(input.nextBoolean())
-				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, XBOX));
-			else if(input.nextBoolean())
-				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
-			else if(input.nextBoolean())
-				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_6INCH, XBOX));*/
-			else if(!cascadeElevator.runningPreset) {
-				if(Math.abs(cascadeElevator.talonCascade.getSelectedSensorPosition(0)) > 100 && !cascadeElevator.lowerLimit.get()) {
-					cascadeElevator.talonCascade.selectProfileSlot(1, 0);
-					cascadeElevator.talonCascade.set(ControlMode.Position, cascadeElevator.lastPosition);
-					//cascadeElevator.setVelocity(0);
-					//System.out.println("last position = " + cascadeElevator.lastPosition + " actual position = " + cascadeElevator.talonCascade.getSelectedSensorPosition(0));
-				}
-			}
-			//System.out.println("lower: " + cascadeElevator.lowerLimit.get() + " upper: " + cascadeElevator.upperLimit.get());
-
-			
-//			if (Math.abs(gamepad.getRawAxis(3)) > 0.1) {
-//				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, gamepad.getRawAxis(3));
-//				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -gamepad.getRawAxis(3));
-//			}
-			
-			boolean a = input2.nextBoolean();
-			boolean b = input2.nextBoolean();
-			if(a || b)
-				boxManipulator.closeManipulator();
-			else
-				boxManipulator.openManipulator();
-			
-			/*
-			
-			i = input.nextDouble();
-			if(i == Constants.XBOX_DPAD_UP)
-				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BAR_OVER, XBOX));
-			else if(i == Constants.XBOX_DPAD_RIGHT)
-				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BAR_HOOK, XBOX));
-			else if(i == Constants.XBOX_DPAD_DOWN) 
-				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
-			*/
-			double triggerL = input.nextDouble();
-			double triggerR = input.nextDouble();
-
-			if(triggerL > 0.9) {
-				boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, triggerL * triggerL);
-				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -triggerL * triggerL);
-			}
-			if(triggerL > 0.1) {
-				boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, triggerL * triggerL / 2);
-				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -triggerL * triggerL / 2);
-			}
-			else if(triggerR > 0.1) {
-				boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, -triggerR * triggerR / 2);
-				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, triggerR * triggerR / 2);
-			}
-			else {
-				boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0);
-				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0);
-			}
-			
-		} else if (input != null &&!input.hasNext()) {
-			System.out.println("End of File");
+			talonFL.set(ControlMode.Velocity, left);
+			talonFR.set(ControlMode.Velocity, right);
+			TalonNWT.updateTalon(talonFL, left);
+			TalonNWT.updateTalon(talonFR, right);
 		}
-
-		
-		//TalonNWT.updateGyroPID();
-		/*TalonNWT.updateTalon(talonFR);
-		TalonNWT.updateTalon(talonFL);
-		TalonNWT.updateTalon(talonBR);
-		TalonNWT.updateTalon(talonBL);*/
-		
-		try { Thread.sleep(2); }
-		catch (Exception e) { }
-		
-		//System.out.println("left @ " + talonFL.getSelectedSensorPosition(0) + " right @ " + talonFR.getSelectedSensorPosition(0));
-
-		/*if(!cascadeElevator.runningPreset) {
-			if(Math.abs(cascadeElevator.talonCascade.getSelectedSensorPosition(0)) > 100 && !cascadeElevator.lowerLimit.get()) {
-				cascadeElevator.talonCascade.selectProfileSlot(1, 0);
-				cascadeElevator.talonCascade.set(ControlMode.Position, cascadeElevator.lastPosition);
-			}
-			//System.out.println("setting 0 no preset");
-		}*/
-
-		//System.out.println(tankDrive.leftA.getSelectedSensorPosition(0));
+//		if (input != null && input.hasNext()) {
+//			
+//			double left = input.nextDouble();
+//			double right = input.nextDouble();
+//			if (Math.abs(left)  < Constants.JOYSTICK_DEADZONE)
+//				left = 0;
+//			if (Math.abs(right) < Constants.JOYSTICK_DEADZONE)
+//				right = 0;
+//			tankDrive.setPercentage(-left, -right);
+//				
+//			/*if (input.nextBoolean())
+//				tankDrive.setLowGear();
+//			else if (input.nextBoolean())
+//				tankDrive.setHighGear();
+//			else
+//				tankDrive.setNoGear();
+//
+//			
+//			double i = input.nextDouble();
+//			if(Math.abs(i) > 0.1) {
+//				double speed = i;
+//				if(speed < 0)
+//					speed /= 10;
+//				talonTip.set(ControlMode.PercentOutput, -speed);
+//			}
+//			else
+//				talonTip.set(ControlMode.PercentOutput, 0);*/
+//
+//			double i = input.nextDouble();
+//			if (Math.abs(i) > Constants.CASCADE_DEADZONE) {
+//				double s = i;
+//				double max = s < 0 ? 1200 : 600;
+//
+//				cascadeElevator.setVelocity(s * max);
+//				cascadeElevator.lastPosition = cascadeElevator.talonCascade.getSelectedSensorPosition(0);
+//				//System.out.println("last position = " + cascadeElevator.lastPosition);
+//			}
+//			else if(input2.nextBoolean())
+//				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
+//			/*else if(input.nextBoolean())
+//				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_SWITCH, XBOX));
+//			else if(input.nextBoolean())
+//				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_LOWER_SCALE, XBOX));
+//			else if(input.nextBoolean())
+//				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_UPPER_SCALE, XBOX));
+//			else if(input.nextBoolean())
+//				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_6INCH, XBOX));*/
+//			else if(!cascadeElevator.runningPreset) {
+//				if(Math.abs(cascadeElevator.talonCascade.getSelectedSensorPosition(0)) > 100 && !cascadeElevator.lowerLimit.get()) {
+//					cascadeElevator.talonCascade.selectProfileSlot(1, 0);
+//					cascadeElevator.talonCascade.set(ControlMode.Position, cascadeElevator.lastPosition);
+//					//cascadeElevator.setVelocity(0);
+//					//System.out.println("last position = " + cascadeElevator.lastPosition + " actual position = " + cascadeElevator.talonCascade.getSelectedSensorPosition(0));
+//				}
+//			}
+//			//System.out.println("lower: " + cascadeElevator.lowerLimit.get() + " upper: " + cascadeElevator.upperLimit.get());
+//
+//			
+////			if (Math.abs(gamepad.getRawAxis(3)) > 0.1) {
+////				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, gamepad.getRawAxis(3));
+////				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -gamepad.getRawAxis(3));
+////			}
+//			
+//			boolean a = input2.nextBoolean();
+//			boolean b = input2.nextBoolean();
+//			if(a || b)
+//				boxManipulator.closeManipulator();
+//			else
+//				boxManipulator.openManipulator();
+//			
+//			/*
+//			
+//			i = input.nextDouble();
+//			if(i == Constants.XBOX_DPAD_UP)
+//				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BAR_OVER, XBOX));
+//			else if(i == Constants.XBOX_DPAD_RIGHT)
+//				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BAR_HOOK, XBOX));
+//			else if(i == Constants.XBOX_DPAD_DOWN) 
+//				Scheduler.getInstance().add(new CascadePosition(cascadeElevator, Constants.CASCADE_BASE, XBOX));
+//			*/
+//			double triggerL = input.nextDouble();
+//			double triggerR = input.nextDouble();
+//
+//			if(triggerL > 0.9) {
+//				boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, triggerL * triggerL);
+//				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -triggerL * triggerL);
+//			}
+//			if(triggerL > 0.1) {
+//				boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, triggerL * triggerL / 2);
+//				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, -triggerL * triggerL / 2);
+//			}
+//			else if(triggerR > 0.1) {
+//				boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, -triggerR * triggerR / 2);
+//				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, triggerR * triggerR / 2);
+//			}
+//			else {
+//				boxManipulator.talonIntakeRight.set(ControlMode.PercentOutput, 0);
+//				boxManipulator.talonIntakeLeft.set(ControlMode.PercentOutput, 0);
+//			}
+//			
+//		} else if (input != null &&!input.hasNext()) {
+//			System.out.println("End of File");
+//		}
+//
+//		
+//		//TalonNWT.updateGyroPID();
+//		/*TalonNWT.updateTalon(talonFR);
+//		TalonNWT.updateTalon(talonFL);
+//		TalonNWT.updateTalon(talonBR);
+//		TalonNWT.updateTalon(talonBL);*/
+//		
+//		try { Thread.sleep(2); }
+//		catch (Exception e) { }
+//		
+//		//System.out.println("left @ " + talonFL.getSelectedSensorPosition(0) + " right @ " + talonFR.getSelectedSensorPosition(0));
+//
+//		/*if(!cascadeElevator.runningPreset) {
+//			if(Math.abs(cascadeElevator.talonCascade.getSelectedSensorPosition(0)) > 100 && !cascadeElevator.lowerLimit.get()) {
+//				cascadeElevator.talonCascade.selectProfileSlot(1, 0);
+//				cascadeElevator.talonCascade.set(ControlMode.Position, cascadeElevator.lastPosition);
+//			}
+//			//System.out.println("setting 0 no preset");
+//		}*/
+//
+//		//System.out.println(tankDrive.leftA.getSelectedSensorPosition(0));
+		else {
+			talonFR.set(ControlMode.PercentOutput, 0);
+			talonFL.set(ControlMode.PercentOutput, 0);
+			TalonNWT.updateTalon(talonFL, 0);
+			TalonNWT.updateTalon(talonFR, 0);
+		}
+		try {
+			Thread.sleep(Math.max(0, 100 - (System.currentTimeMillis() - time)));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -587,10 +622,10 @@ public class Robot extends IterativeRobot {
 	public void updatePID() {
 		PIDGains p = new PIDGains();
 		//TalonNWT.populateGyroPID(this.pidc);
-		p.p = 1.0; //SmartDashboard.getNumber("DB/Slider 0", 0);
-		p.i = 0; //SmartDashboard.getNumber("DB/Slider 1", 0);
+		p.p = 0.15; //SmartDashboard.getNumber("DB/Slider 0", 0);
+		p.i = 0.0015; //SmartDashboard.getNumber("DB/Slider 1", 0);
 		p.d = 0; //SmartDashboard.getNumber("DB/Slider 2", 0);
-		p.ff = 0; //SmartDashboard.getNumber("DB/Slider 3", 0);
+		p.ff = 0.353; //SmartDashboard.getNumber("DB/Slider 3", 0);
 		tankDrive.setPid(p);
 		//westCoast.updateTalonPID(0, talonPID);
 		SmartDashboard.putString("DB/String 6", String.valueOf(p.p));

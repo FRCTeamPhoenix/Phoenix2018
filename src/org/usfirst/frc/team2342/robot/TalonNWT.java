@@ -1,4 +1,4 @@
-/*package org.usfirst.frc.team2342.robot;
+package org.usfirst.frc.team2342.robot;
 
 import org.usfirst.frc.team2342.PIDLoops.GyroPIDController;
 import org.usfirst.frc.team2342.util.Constants;
@@ -52,9 +52,9 @@ public class TalonNWT {
 		NetworkTableInterface.setValue(talonTable, "Angle Error", GyroPIDController.calculateAE());
 	}
 	
-	public static void updateTalon(TalonSRX talon){
+	public static void updateTalon(TalonSRX talon, double setpoint){
 		String talonTable = Constants.TALON_TABLE_LOCATION + "/"+talon.getDeviceID();
-		NetworkTableInterface.setValue(talonTable, "setpoint", -Constants.WESTCOAST_HALF_SPEED);
+		NetworkTableInterface.setValue(talonTable, "setpoint", setpoint);
 		NetworkTableInterface.setValue(talonTable, "Inverted", talon.getInverted());
 		NetworkTableInterface.setValue(talonTable, "Percent Output", talon.getMotorOutputPercent());
 		NetworkTableInterface.setValue(talonTable, "Output Voltage", talon.getMotorOutputVoltage());
@@ -73,7 +73,7 @@ public class TalonNWT {
 		setPIDValues(Constants.TALON_DISTANCE_SLOT_IDX, talon);
 	}
 	
-	public static void setPIDValues(int idx, TalonSRX talon){
+	public static void setPIDValues(int idx, TalonSRX talon) {
 		String talonTable = Constants.TALON_TABLE_LOCATION + "/"+talon.getDeviceID()+"/pid:"+idx;
 		NetworkTableInterface.setValue(talonTable, "P", talon.configGetParameter(ParamEnum.eProfileParamSlot_P,idx, 0));
 		NetworkTableInterface.setValue(talonTable, "I", talon.configGetParameter(ParamEnum.eProfileParamSlot_I, idx, 0));
@@ -84,7 +84,6 @@ public class TalonNWT {
 	}
 	
 	public static void getPIDValue(int idx, TalonSRX talon) {
-		//Donothing
+	
 	}
 }
-*/

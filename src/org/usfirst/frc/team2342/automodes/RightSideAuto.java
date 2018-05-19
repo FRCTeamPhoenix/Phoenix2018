@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class RightSideAuto extends CommandGroup {
 
 	public RightSideAuto(TankDrive drive, CascadeElevator cascade, BoxManipulator manip, Joystick gamepad) {
-		if(DriverStation.getInstance().getGameSpecificMessage().length() > 0 && DriverStation.getInstance().getGameSpecificMessage().charAt(1) == 'L') {
+		if(DriverStation.getInstance().getGameSpecificMessage().length() > 0 && DriverStation.getInstance().getGameSpecificMessage().charAt(1) == 'R') {
 			addSequential(new TiltManipulator(manip));
 			addSequential(new DriveDistance2(drive, 12));
 			addParallel(new CascadePosition(cascade, Constants.CASCADE_UPPER_SCALE, gamepad));

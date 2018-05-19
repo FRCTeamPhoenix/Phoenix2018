@@ -48,8 +48,9 @@ public class DriveGamepad extends Command {
 		double axis1 = m_gamepad.getRawAxis(1);
 		double axis3 = m_gamepad.getRawAxis(5);
 
-		if(m_gamepad.getRawButtonPressed(20))
-			cascadeSlowEnabled = (!cascadeSlowEnabled);
+		//if(m_gamepad.getRawButtonPressed(20))
+		//	cascadeSlowEnabled = (!cascadeSlowEnabled);
+		cascadeSlowEnabled = !m_gamepad.getRawButton(16);
 		
 		//get multiplier where 1.0 = all the way down and 0.2 is all the way up
 		double axisMultiplier = 1.0;
